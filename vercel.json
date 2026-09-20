@@ -6,21 +6,17 @@
     },
     "backend": {
       "root": "backend",
-      "entrypoint": "app.py"
+      "entrypoint": "app:app"
     }
   },
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": {
-        "service": "backend"
-      }
+      "destination": { "service": "backend" }
     },
     {
       "source": "/(.*)",
-      "destination": {
-        "service": "frontend"
-      }
+      "destination": { "service": "frontend" }
     }
   ]
 }
