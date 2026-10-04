@@ -1,21 +1,24 @@
 import os
- 
+
 import psycopg2
 import psycopg2.extras
 from flask import Flask, jsonify, request
 from flask_cors import CORS
- 
+
 app = Flask(__name__)
 CORS(app)
- 
+
 DATABASE_URL = os.environ["DATABASE_URL"]
- 
- 
+
+
+USER_FIELDS = 'id,name,email,reg_no,department,class,interests,role'
+
+
 def conn():
     con = psycopg2.connect(DATABASE_URL, cursor_factory=psycopg2.extras.RealDictCursor)
     return con
- 
- 
+
+
 def init_db():
     con = conn()
     cur = con.cursor()
@@ -25,6 +28,9 @@ def init_db():
         name TEXT,
         email TEXT UNIQUE,
         password TEXT,
+        reg_no TEXT,
+        department TEXT,
+        class TEXT,
         interests TEXT,
         role TEXT DEFAULT 'student'
       );
@@ -49,8 +55,12 @@ def init_db():
         UNIQUE(user_id, event_id)
       );
     ''')
+    
+    cur.execute('ALTER TABLE users ADD COLUMN IF NOT EXISTS reg_no TEXT')
+    cur.execute('ALTER TABLE users ADD COLUMN IF NOT EXISTS department TEXT')
+    cur.execute('ALTER TABLE users ADD COLUMN IF NOT EXISTS class TEXT')
     con.commit()
- 
+
     cur.execute('SELECT COUNT(*) AS c FROM events')
     if cur.fetchone()['c'] == 0:
         events = [
@@ -65,26 +75,22 @@ def init_db():
             'VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)',
             events,
         )
-        cur.execute(
-            "INSERT INTO users (name,email,password,interests,role) VALUES "
-            "('Aarav Mehta','aarav@campus.edu','demo123','Technical, Design, Data','student')"
-        )
-        cur.execute(
-            "INSERT INTO users (name,email,password,interests,role) VALUES "
-            "('Event Office','admin@campus.edu','admin123','', 'admin')"
-        )
         con.commit()
- 
+
+    cur.execute(
+        "INSERT INTO users (name,email,password,interests,role) VALUES "
+        "('Event Office','admin@campus.edu','admin123','', 'admin') "
+        "ON CONFLICT (email) DO NOTHING"
+    )
+    con.commit()
     cur.close()
     con.close()
- 
- 
-# Runs once per cold start, at import time - not only when this file is run
-# directly. Vercel imports this module as a WSGI app and never hits
-# `if __name__ == "__main__"`, so this has to live here to actually run.
+
+
+
 init_db()
- 
- 
+
+
 def event_dict(row, user_id=None):
     d = dict(row)
     con = conn()
@@ -102,8 +108,8 @@ def event_dict(row, user_id=None):
     cur.close()
     con.close()
     return d
- 
- 
+
+
 @app.get('/api/events')
 def events():
     uid = request.args.get('user_id', type=int)
@@ -114,16 +120,17 @@ def events():
     cur.close()
     con.close()
     return jsonify([event_dict(r, uid) for r in rows])
- 
- 
+
+
 @app.post('/api/login')
 def login():
     data = request.json
+    email = (data.get('email') or '').strip().lower()
     con = conn()
     cur = con.cursor()
     cur.execute(
-        'SELECT id,name,email,interests,role FROM users WHERE email=%s AND password=%s',
-        (data.get('email', ''), data.get('password', '')),
+        f'SELECT {USER_FIELDS} FROM users WHERE email=%s AND password=%s',
+        (email, data.get('password', '')),
     )
     user = cur.fetchone()
     cur.close()
@@ -131,23 +138,34 @@ def login():
     if not user:
         return jsonify({'error': 'Email or password is incorrect.'}), 401
     return jsonify(dict(user))
- 
- 
+
+
 @app.post('/api/register-user')
 def register_user():
     data = request.json
+    name = (data.get('name') or '').strip()
+    email = (data.get('email') or '').strip().lower()
+    password = data.get('password') or ''
+    reg_no = (data.get('reg_no') or '').strip()
+    department = (data.get('department') or '').strip()
+    class_name = (data.get('class') or '').strip()
+
+    if not name or not email or not password:
+        return jsonify({'error': 'Name, email and password are required.'}), 400
+    if not reg_no or not department or not class_name:
+        return jsonify({'error': 'Registration number, department and class are required.'}), 400
+
     con = conn()
     cur = con.cursor()
     try:
         cur.execute(
-            'INSERT INTO users (name,email,password,interests) VALUES (%s,%s,%s,%s) RETURNING id',
-            (data['name'], data['email'], data['password'], data.get('interests', '')),
+            'INSERT INTO users (name,email,password,reg_no,department,class,interests) '
+            'VALUES (%s,%s,%s,%s,%s,%s,%s) RETURNING id',
+            (name, email, password, reg_no, department, class_name, data.get('interests', '')),
         )
         new_id = cur.fetchone()['id']
         con.commit()
-        cur.execute(
-            'SELECT id,name,email,interests,role FROM users WHERE id=%s', (new_id,)
-        )
+        cur.execute(f'SELECT {USER_FIELDS} FROM users WHERE id=%s', (new_id,))
         user = cur.fetchone()
         return jsonify(dict(user)), 201
     except psycopg2.errors.UniqueViolation:
@@ -156,8 +174,21 @@ def register_user():
     finally:
         cur.close()
         con.close()
- 
- 
+
+
+@app.get('/api/me/<int:user_id>')
+def me(user_id):
+    con = conn()
+    cur = con.cursor()
+    cur.execute(f'SELECT {USER_FIELDS} FROM users WHERE id=%s', (user_id,))
+    user = cur.fetchone()
+    cur.close()
+    con.close()
+    if not user:
+        return jsonify({'error': 'User not found.'}), 404
+    return jsonify(dict(user))
+
+
 @app.post('/api/events/<int:event_id>/register')
 def register_event(event_id):
     uid = request.json.get('user_id')
@@ -175,8 +206,8 @@ def register_event(event_id):
     finally:
         cur.close()
         con.close()
- 
- 
+
+
 @app.get('/api/recommendations/<int:user_id>')
 def recommendations(user_id):
     con = conn()
@@ -187,7 +218,7 @@ def recommendations(user_id):
     rows = cur.fetchall()
     cur.close()
     con.close()
- 
+
     interests = (user['interests'] or '').lower() if user else ''
     scored = sorted(
         rows,
@@ -198,8 +229,8 @@ def recommendations(user_id):
         reverse=True,
     )
     return jsonify([event_dict(r, user_id) for r in scored[:3]])
- 
- 
+
+
 @app.post('/api/events')
 def create_event():
     d = request.json
@@ -220,8 +251,8 @@ def create_event():
     cur.close()
     con.close()
     return jsonify(event_dict(row)), 201
- 
- 
+
+
 @app.get('/api/admin/stats')
 def stats():
     con = conn()
@@ -239,8 +270,8 @@ def stats():
         'registrations': registration_count,
         'students': student_count,
     })
- 
- 
+
+
 @app.get('/api/registrations/<int:user_id>')
 def registrations(user_id):
     con = conn()
@@ -254,7 +285,7 @@ def registrations(user_id):
     cur.close()
     con.close()
     return jsonify([dict(r) for r in rows])
- 
- 
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
