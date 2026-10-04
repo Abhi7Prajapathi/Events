@@ -97,6 +97,18 @@ function App() {
               My events
             </button>
           )}
+          {user && (
+            <button
+              className={`text-sm py-[25px] border-b-2 font-medium transition-colors ${
+                view === 'profile'
+                  ? 'border-ink text-ink font-semibold'
+                  : 'border-transparent text-muted hover:text-ink'
+              }`}
+              onClick={() => setView('profile')}
+            >
+              Profile
+            </button>
+          )}
           {user?.role === 'admin' && (
             <button
               className={`text-sm py-[25px] border-b-2 font-medium transition-colors ${
@@ -113,9 +125,13 @@ function App() {
         <div className="flex items-center gap-3 text-sm">
           {user ? (
             <>
-              <span className="bg-lime text-ink w-8 h-8 rounded-full grid place-items-center font-bold text-xs shadow-inner">
+              <button
+                className="bg-lime text-ink w-8 h-8 rounded-full grid place-items-center font-bold text-xs shadow-inner"
+                onClick={() => setView('profile')}
+                title="View profile"
+              >
                 {user.name[0]}
-              </span>
+              </button>
               <button
                 className="text-xs px-3 py-1.5 border border-line rounded-sm hover:bg-ink hover:text-white transition-colors"
                 onClick={() => {
@@ -153,6 +169,7 @@ function App() {
           <Discover events={events} user={user} enroll={enroll} />
         )}
         {view === 'my-events' && <MyEvents user={user} />}
+        {view === 'profile' && <Profile user={user} />}
         {view === 'admin' && <Admin refresh={refresh} />}
       </main>
     </>
@@ -378,6 +395,51 @@ function MyEvents({ user }) {
   );
 }
 
+function Profile({ user }) {
+  // Re-fetches from the backend (Neon) on every visit, rather than trusting
+  // whatever was cached in localStorage at login time - so if admin changes
+  // something, or the student's record was updated, this page reflects it.
+  const [data, setData] = useState(user);
+  const [err, setErr] = useState('');
+
+  useEffect(() => {
+    api('/me/' + user.id)
+      .then(setData)
+      .catch((e) => setErr(e.message));
+  }, [user.id]);
+
+  const rows = [
+    ['Full name', data.name],
+    ['Email', data.email],
+    ['Registration number', data.reg_no],
+    ['Department', data.department],
+    ['Class', data.class],
+    ['Role', data.role],
+  ];
+
+  return (
+    <section className="max-w-[1180px] mx-auto px-6 py-16 min-h-[75vh]">
+      <p className="font-mono tracking-widest text-[#76817b] text-xs uppercase mb-2">
+        YOUR ACCOUNT
+      </p>
+      <h1 className="font-serif text-4xl md:text-5xl tracking-tight mb-8">Profile</h1>
+
+      {err && <p className="text-[#ad3f33] text-sm mb-4">{err}</p>}
+
+      <div className="max-w-md bg-paper border border-line rounded-sm shadow-sm divide-y divide-line">
+        {rows.map(([label, value]) => (
+          <div key={label} className="flex items-center justify-between px-6 py-4">
+            <span className="text-xs font-semibold text-[#4e5a54] uppercase tracking-wide">
+              {label}
+            </span>
+            <span className="text-sm font-medium text-ink">{value || '—'}</span>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function Admin({ refresh }) {
   const [stats, setStats] = useState({});
   const [form, setForm] = useState({
@@ -476,11 +538,12 @@ function Admin({ refresh }) {
 
 function Auth({ onDone, close }) {
   const [newUser, setNewUser] = useState(false);
-  const [d, setD] = useState({ email: 'aarav@campus.edu', password: 'demo123' });
+  const [d, setD] = useState({});
   const [err, setErr] = useState('');
 
   const go = async (e) => {
     e.preventDefault();
+    setErr('');
     try {
       onDone(
         await api(newUser ? '/register-user' : '/login', {
@@ -497,7 +560,7 @@ function Auth({ onDone, close }) {
     <div className="fixed inset-0 bg-[#19201d]/50 backdrop-blur-xs z-50 grid place-items-center p-4">
       <form
         onSubmit={go}
-        className="bg-[#fffefa] w-full max-w-[410px] p-8 md:p-9 relative shadow-[12px_12px_0_#cfe870] border border-line rounded-sm"
+        className="bg-[#fffefa] w-full max-w-[410px] p-8 md:p-9 relative shadow-[12px_12px_0_#cfe870] border border-line rounded-sm max-h-[90vh] overflow-y-auto"
       >
         <button
           type="button"
@@ -519,19 +582,54 @@ function Auth({ onDone, close }) {
         </h1>
         <p className="text-muted text-sm mb-6">
           {newUser
-            ? 'Create an account to discover your campus.'
+            ? 'Create an account with your official details to discover your campus.'
             : 'Sign in to manage your event plans.'}
         </p>
         <div className="space-y-4">
           {newUser && (
-            <label className="block text-xs font-semibold text-[#4e5a54]">
-              Name
-              <input
-                required
-                onChange={(e) => setD({ ...d, name: e.target.value })}
-                className="w-full border border-[#d5d8d0] p-2.5 mt-1 bg-white rounded-xs text-sm font-normal focus:ring-1 focus:ring-ink focus:outline-none"
-              />
-            </label>
+            <>
+              <label className="block text-xs font-semibold text-[#4e5a54]">
+                Full name
+                <input
+                  required
+                  value={d.name || ''}
+                  onChange={(e) => setD({ ...d, name: e.target.value })}
+                  className="w-full border border-[#d5d8d0] p-2.5 mt-1 bg-white rounded-xs text-sm font-normal focus:ring-1 focus:ring-ink focus:outline-none"
+                />
+              </label>
+              <label className="block text-xs font-semibold text-[#4e5a54]">
+                Registration number
+                <input
+                  required
+                  placeholder="610825BIT001"
+                  value={d.reg_no || ''}
+                  onChange={(e) => setD({ ...d, reg_no: e.target.value })}
+                  className="w-full border border-[#d5d8d0] p-2.5 mt-1 bg-white rounded-xs text-sm font-normal focus:ring-1 focus:ring-ink focus:outline-none"
+                />
+              </label>
+              <div className="grid grid-cols-2 gap-3">
+                <label className="block text-xs font-semibold text-[#4e5a54]">
+                  Department
+                  <input
+                    required
+                    placeholder="IT"
+                    value={d.department || ''}
+                    onChange={(e) => setD({ ...d, department: e.target.value })}
+                    className="w-full border border-[#d5d8d0] p-2.5 mt-1 bg-white rounded-xs text-sm font-normal focus:ring-1 focus:ring-ink focus:outline-none"
+                  />
+                </label>
+                <label className="block text-xs font-semibold text-[#4e5a54]">
+                  Class
+                  <input
+                    required
+                    placeholder="II IT A"
+                    value={d.class || ''}
+                    onChange={(e) => setD({ ...d, class: e.target.value })}
+                    className="w-full border border-[#d5d8d0] p-2.5 mt-1 bg-white rounded-xs text-sm font-normal focus:ring-1 focus:ring-ink focus:outline-none"
+                  />
+                </label>
+              </div>
+            </>
           )}
           <label className="block text-xs font-semibold text-[#4e5a54]">
             Email
@@ -548,6 +646,7 @@ function Auth({ onDone, close }) {
             <input
               required
               type="password"
+              minLength={newUser ? 6 : undefined}
               value={d.password || ''}
               onChange={(e) => setD({ ...d, password: e.target.value })}
               className="w-full border border-[#d5d8d0] p-2.5 mt-1 bg-white rounded-xs text-sm font-normal focus:ring-1 focus:ring-ink focus:outline-none"
@@ -558,6 +657,7 @@ function Auth({ onDone, close }) {
               Interests{' '}
               <small className="font-normal text-muted">(e.g. Technical, Design, Data)</small>
               <input
+                value={d.interests || ''}
                 onChange={(e) => setD({ ...d, interests: e.target.value })}
                 className="w-full border border-[#d5d8d0] p-2.5 mt-1 bg-white rounded-xs text-sm font-normal focus:ring-1 focus:ring-ink focus:outline-none"
               />
@@ -571,13 +671,14 @@ function Auth({ onDone, close }) {
         <button
           type="button"
           className="w-full text-center text-[#527063] hover:underline text-xs mt-4 block"
-          onClick={() => setNewUser(!newUser)}
+          onClick={() => {
+            setNewUser(!newUser);
+            setErr('');
+          }}
         >
           {newUser ? 'Already registered? Sign in' : 'New here? Create an account'}
         </button>
         <small className="block text-center text-[#888] text-[10px] mt-4 leading-relaxed border-t border-line/40 pt-3">
-          Demo: aarav@campus.edu / demo123
-          <br />
           Admin: admin@campus.edu / admin123
         </small>
       </form>
