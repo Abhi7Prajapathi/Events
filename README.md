@@ -30,3 +30,5 @@ The Flask API uses a persistent SQLite volume; delete the `event_data` Docker vo
 - **Rate Limit Resilience:** Added a robust multi-model fallback retry loop for AI generation (e.g., automatically switching between `gemini-3.5-flash` and `gemini-flash-latest`) to gracefully handle free-tier API quotas and 429 errors.
 - **Vite Proxy Configuration:** Created a `vite.config.js` to correctly proxy frontend `/api` requests to the Flask backend running on port 5000 during local development.
 - **Admin Features:** Added the ability for administrators to delete events (and their associated registrations) directly from the event cards on the Discover page.
+- **Printable Certificates:** Built a custom, beautifully styled certificate modal that displays the student's name, event details, and automatically generated dates.
+- **Digital Signatures:** Integrated an uploaded physical signature image into the certificate layout using CSS blending (`mix-blend-multiply`) for an authentic, print-ready document.
