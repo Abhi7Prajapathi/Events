@@ -354,10 +354,55 @@ function EventCard({ e, enroll, user, deleteEvent }) {
 
 function MyEvents({ user }) {
   const [rows, setRows] = useState([]);
+  const [cert, setCert] = useState(null);
 
   useEffect(() => {
     api('/registrations/' + user.id).then(setRows);
   }, [user]);
+
+  if (cert) {
+    return (
+      <div className="fixed inset-0 z-[100] bg-[#e7eddf] md:p-12 flex flex-col items-center justify-center plain overflow-auto h-screen print:p-0 print:bg-white">
+        <div className="absolute top-6 right-8 flex gap-4 print:hidden print-keep z-50">
+          <button className="bg-white border border-line px-5 py-2.5 rounded-sm shadow-sm hover:bg-black/5 text-sm font-semibold transition-colors" onClick={() => setCert(null)}>
+            Close
+          </button>
+          <button className="bg-ink text-white px-5 py-2.5 rounded-sm shadow-md hover:opacity-90 text-sm font-semibold transition-opacity flex items-center gap-2" onClick={() => window.print()}>
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" /></svg>
+            Print
+          </button>
+        </div>
+        
+        {/* Certificate Paper */}
+        <div className="w-full max-w-[1050px] aspect-[1.414/1] bg-[#fffefa] border-[16px] border-[#243b31] p-12 md:p-24 relative shadow-2xl flex flex-col justify-center text-center overflow-hidden print:shadow-none print:border-0 print:w-full print:h-[99vh] print:max-w-none print:m-0 print:aspect-auto">
+           {/* Decorative Background */}
+           <div className="absolute top-0 left-0 w-full h-full opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(#243b31 2px, transparent 2px)', backgroundSize: '30px 30px' }}></div>
+           
+           <div className="relative z-10 flex flex-col h-full items-center justify-center">
+             <h1 className="font-serif text-5xl md:text-7xl text-[#243b31] mb-6 tracking-tight">Certificate of Participation</h1>
+             <p className="text-xl md:text-2xl text-muted font-medium mb-10">This is to certify that</p>
+             <h2 className="text-4xl md:text-5xl font-bold font-serif text-ink border-b-2 border-lime inline-block pb-3 mb-10 px-8">{user.name}</h2>
+             <p className="text-xl md:text-2xl text-muted font-medium mb-10">has successfully participated in</p>
+             <h3 className="text-3xl md:text-4xl font-bold text-ink mb-24">{cert.title}</h3>
+             
+             <div className="flex justify-between items-end w-full px-4 md:px-16 mt-auto">
+                <div className="text-center">
+                   <div className="w-40 md:w-56 border-b-2 border-ink/80 mb-3"></div>
+                   <p className="font-bold text-xs tracking-widest uppercase text-muted">Date: {cert.date}</p>
+                </div>
+                <div className="w-24 h-24 md:w-32 md:h-32 bg-lime rounded-full flex items-center justify-center border-[6px] border-[#243b31] shadow-lg shrink-0 mx-4 relative top-4">
+                   <span className="font-serif text-4xl md:text-5xl text-ink font-bold italic">c.</span>
+                </div>
+                <div className="text-center">
+                   <div className="w-40 md:w-56 border-b-2 border-ink/80 mb-3"></div>
+                   <p className="font-bold text-xs tracking-widest uppercase text-muted">Campus Circle</p>
+                </div>
+             </div>
+           </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <section className="max-w-[1180px] mx-auto px-6 py-16 min-h-[75vh]">
@@ -398,8 +443,8 @@ function MyEvents({ user }) {
                   <span className="text-[10px]">●</span> {r.status}
                 </span>
                 <button
-                  onClick={() => window.print()}
-                  className="print-keep text-xs border border-line px-3 py-2 rounded-sm hover:bg-ink hover:text-white transition-colors"
+                  onClick={() => setCert(r)}
+                  className="text-xs border border-line px-3 py-2 rounded-sm hover:bg-ink hover:text-white transition-colors"
                 >
                   Certificate
                 </button>
