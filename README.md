@@ -22,3 +22,11 @@ The Flask API uses a persistent SQLite volume; delete the `event_data` Docker vo
 - React + Vite frontend served by Nginx
 - Flask REST API with SQLite
 - Docker Compose for local development & deployment
+
+## Recent Updates
+
+- **Database Migration:** Migrated the backend from local SQLite to a remote Neon PostgreSQL database (`psycopg2`), managing configuration via `python-dotenv` and `.env` files.
+- **AI Integration (Gemini):** Integrated the new `google-genai` SDK to add an **AI Auto-Fill** feature for the admin dashboard. This allows event coordinators to generate polished event listings from a single prompt.
+- **Rate Limit Resilience:** Added a robust multi-model fallback retry loop for AI generation (e.g., automatically switching between `gemini-3.5-flash` and `gemini-flash-latest`) to gracefully handle free-tier API quotas and 429 errors.
+- **Vite Proxy Configuration:** Created a `vite.config.js` to correctly proxy frontend `/api` requests to the Flask backend running on port 5000 during local development.
+- **Admin Features:** Added the ability for administrators to delete events (and their associated registrations) directly from the event cards on the Discover page.

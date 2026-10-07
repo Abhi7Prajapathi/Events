@@ -1,9 +1,26 @@
+import base64
+import io
+import json
 import os
+import re
+import time
+
+from dotenv import load_dotenv
+load_dotenv()
 
 import psycopg2
 import psycopg2.extras
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_file
 from flask_cors import CORS
+
+try:
+    from google import genai
+    GEMINI_KEY = os.environ.get('GEMINI_API_KEY', '')
+    if GEMINI_KEY:
+        gemini_client = genai.Client(api_key=GEMINI_KEY)
+    HAS_GEMINI = bool(GEMINI_KEY)
+except ImportError:
+    HAS_GEMINI = False
 
 app = Flask(__name__)
 CORS(app)
@@ -285,6 +302,78 @@ def registrations(user_id):
     cur.close()
     con.close()
     return jsonify([dict(r) for r in rows])
+
+
+# --------------- AI FEATURES ---------------
+
+@app.post('/api/ai/generate-event')
+def ai_generate_event():
+    """Takes a short prompt and returns a fully fleshed-out event JSON."""
+    if not HAS_GEMINI:
+        return jsonify({'error': 'AI is not configured. Set the GEMINI_API_KEY environment variable.'}), 503
+
+    prompt_text = (request.json or {}).get('prompt', '').strip()
+    if not prompt_text:
+        return jsonify({'error': 'Please provide a short description of your event.'}), 400
+
+    system_prompt = (
+        "You are an expert campus event copywriter. "
+        "Given a rough idea from a college event organizer, produce a polished event listing. "
+        "Return ONLY a valid JSON object (no markdown fences) with these exact keys: "
+        "\"title\" (catchy, max 50 chars), "
+        "\"category\" (exactly one of: Workshop, Technical, Cultural, Placement, Seminar), "
+        "\"description\" (engaging, 2-3 paragraphs, plain text), "
+        "\"time\" (e.g. \"10:00 AM\"), "
+        "\"venue\" (a realistic campus venue name). "
+        "Do NOT include any explanation outside the JSON."
+    )
+
+    TEXT_MODELS = ['gemini-3.5-flash', 'gemini-3.7-flash', 'gemini-3.8-flash', 'gemini-3.5-flash-lite', 'gemini-flash-latest']
+    last_error = None
+
+    for model_name in TEXT_MODELS:
+        try:
+            response = gemini_client.models.generate_content(
+                model=model_name,
+                contents=f"{system_prompt}\n\nOrganizer's rough idea: {prompt_text}",
+            )
+            text = response.text.strip()
+            # Strip markdown code fences if present
+            text = re.sub(r'^```(?:json)?\s*', '', text)
+            text = re.sub(r'\s*```$', '', text)
+            data = json.loads(text)
+            return jsonify(data)
+        except json.JSONDecodeError:
+            return jsonify({'error': 'AI returned an invalid response. Please try again.'}), 502
+        except Exception as e:
+            last_error = str(e)
+            if "429" in last_error or "RESOURCE_EXHAUSTED" in last_error:
+                return jsonify({'error': 'Free API quota exceeded. Please wait 1 minute before trying again.'}), 429
+            time.sleep(1) # Wait 1 second before retrying to avoid burst limits
+            continue  # Try next model
+
+    return jsonify({'error': f'All AI models are busy. Please try again in a minute. Last error: {last_error}'}), 503
+
+
+@app.delete('/api/events/<int:event_id>')
+def delete_event(event_id):
+    con = conn()
+    cur = con.cursor()
+    try:
+        cur.execute('DELETE FROM registrations WHERE event_id=%s', (event_id,))
+        cur.execute('DELETE FROM events WHERE id=%s RETURNING id', (event_id,))
+        deleted = cur.fetchone()
+        con.commit()
+        if deleted:
+            return jsonify({'message': 'Event deleted successfully.'})
+        else:
+            return jsonify({'error': 'Event not found.'}), 404
+    except Exception as e:
+        con.rollback()
+        return jsonify({'error': str(e)}), 500
+    finally:
+        cur.close()
+        con.close()
 
 
 if __name__ == '__main__':

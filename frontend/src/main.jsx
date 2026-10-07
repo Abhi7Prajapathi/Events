@@ -36,6 +36,17 @@ function App() {
     refresh();
   }, [user]);
 
+  const deleteEvent = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this event?')) return;
+    try {
+      await api(`/events/${id}`, { method: 'DELETE' });
+      setNotice('Event deleted successfully.');
+      refresh();
+    } catch (e) {
+      setNotice(e.message);
+    }
+  };
+
   const signed = (u) => {
     setUser(u);
     localStorage.setItem('campus-user', JSON.stringify(u));
@@ -166,7 +177,7 @@ function App() {
       )}
       <main>
         {view === 'discover' && (
-          <Discover events={events} user={user} enroll={enroll} />
+          <Discover events={events} user={user} enroll={enroll} deleteEvent={deleteEvent} />
         )}
         {view === 'my-events' && <MyEvents user={user} />}
         {view === 'profile' && <Profile user={user} />}
@@ -176,7 +187,7 @@ function App() {
   );
 }
 
-function Discover({ events, user, enroll }) {
+function Discover({ events, user, enroll, deleteEvent }) {
   const [filter, setFilter] = useState('All');
   const [rec, setRec] = useState([]);
 
@@ -279,7 +290,7 @@ function Discover({ events, user, enroll }) {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {list.map((e) => (
-            <EventCard key={e.id} e={e} enroll={enroll} />
+            <EventCard key={e.id} e={e} enroll={enroll} user={user} deleteEvent={deleteEvent} />
           ))}
         </div>
       </section>
@@ -287,7 +298,7 @@ function Discover({ events, user, enroll }) {
   );
 }
 
-function EventCard({ e, enroll }) {
+function EventCard({ e, enroll, user, deleteEvent }) {
   const bgClasses = {
     Technical: 'bg-[#263f53]',
     Cultural: 'bg-[#894f41]',
@@ -319,13 +330,23 @@ function EventCard({ e, enroll }) {
         <p className="text-xs text-[#dbe2dc] pb-2">
           {e.time} · {e.venue}
         </p>
-        <button
-          disabled={e.is_registered}
-          onClick={() => enroll(e.id)}
-          className="text-xs border-b border-lime pb-0.5 text-white font-medium hover:text-lime disabled:border-[#aab7b1] disabled:text-[#c6d0ca] transition-colors disabled:cursor-not-allowed"
-        >
-          {e.is_registered ? 'Registered ✓' : 'View & register →'}
-        </button>
+        <div className="flex justify-between items-center mt-2">
+          <button
+            disabled={e.is_registered}
+            onClick={() => enroll(e.id)}
+            className="text-xs border-b border-lime pb-0.5 text-white font-medium hover:text-lime disabled:border-[#aab7b1] disabled:text-[#c6d0ca] transition-colors disabled:cursor-not-allowed"
+          >
+            {e.is_registered ? 'Registered ✓' : 'View & register →'}
+          </button>
+          {user?.role === 'admin' && (
+            <button
+              onClick={() => deleteEvent(e.id)}
+              className="text-xs text-[#ff9b8e] hover:text-white transition-colors border border-[#ff9b8e]/30 px-2 py-1 rounded-xs"
+            >
+              Delete
+            </button>
+          )}
+        </div>
       </div>
     </article>
   );
@@ -447,6 +468,9 @@ function Admin({ refresh }) {
     seats: 50,
     image: 'general',
   });
+  const [aiPrompt, setAiPrompt] = useState('');
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiError, setAiError] = useState('');
 
   useEffect(() => {
     api('/admin/stats').then(setStats);
@@ -457,8 +481,35 @@ function Admin({ refresh }) {
     await api('/events', { method: 'POST', body: JSON.stringify(form) });
     refresh();
     setForm({ category: 'Workshop', seats: 50, image: 'general' });
+    setAiPrompt('');
     alert('Event published.');
   };
+
+  const aiAutoFill = async () => {
+    if (!aiPrompt.trim()) return;
+    setAiLoading(true);
+    setAiError('');
+    try {
+      const result = await api('/ai/generate-event', {
+        method: 'POST',
+        body: JSON.stringify({ prompt: aiPrompt }),
+      });
+      setForm((prev) => ({
+        ...prev,
+        title: result.title || prev.title,
+        category: result.category || prev.category,
+        description: result.description || prev.description,
+        time: result.time || prev.time,
+        venue: result.venue || prev.venue,
+      }));
+    } catch (e) {
+      setAiError(e.message);
+    } finally {
+      setAiLoading(false);
+    }
+  };
+
+
 
   return (
     <section className="max-w-[1180px] mx-auto px-6 py-16 min-h-[75vh]">
@@ -488,50 +539,93 @@ function Admin({ refresh }) {
           <span className="text-xs text-muted font-medium mt-1 block">Students</span>
         </div>
       </div>
-      <form
-        className="max-w-2xl grid grid-cols-1 md:grid-cols-2 gap-5 bg-paper p-8 border border-line rounded-sm shadow-sm"
-        onSubmit={submit}
-      >
-        <h2 className="md:col-span-2 font-serif text-2xl font-bold tracking-tight mb-2">
-          Publish an event
-        </h2>
-        {[
-          ['title', 'Event title'],
-          ['date', 'Date'],
-          ['time', 'Time'],
-          ['venue', 'Venue'],
-          ['deadline', 'Registration deadline'],
-          ['description', 'Short description'],
-        ].map(([k, l]) => (
-          <label key={k} className="text-xs font-semibold text-[#4e5a54] flex flex-col gap-1.5">
-            {l}
-            <input
-              required
-              type={k === 'date' || k === 'deadline' ? 'date' : 'text'}
-              value={form[k] || ''}
-              onChange={(e) => setForm({ ...form, [k]: e.target.value })}
-              className="w-full border border-[#d5d8d0] p-2.5 bg-white rounded-xs focus:ring-1 focus:ring-ink focus:outline-none text-sm font-normal"
-            />
-          </label>
-        ))}
-        <label className="text-xs font-semibold text-[#4e5a54] flex flex-col gap-1.5">
-          Category
-          <select
-            value={form.category}
-            onChange={(e) => setForm({ ...form, category: e.target.value })}
-            className="w-full border border-[#d5d8d0] p-2.5 bg-white rounded-xs focus:ring-1 focus:ring-ink focus:outline-none text-sm font-normal"
+
+      {/* ───── AI Auto-Fill Panel ───── */}
+      <div className="max-w-2xl mb-8 bg-gradient-to-br from-[#263a33] to-[#1a2e26] p-6 rounded-sm shadow-md border border-[#3a5548]">
+        <div className="flex items-center gap-2 mb-3">
+          <span className="text-xl">✨</span>
+          <h3 className="text-white font-bold text-sm tracking-wide">AI AUTO-FILL</h3>
+          <span className="text-[#aab8ae] text-xs ml-1">— Describe your event in a few words</span>
+        </div>
+        <div className="flex gap-2">
+          <input
+            type="text"
+            placeholder="e.g. hackathon on friday with free pizza and mentors"
+            value={aiPrompt}
+            onChange={(e) => setAiPrompt(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && aiAutoFill()}
+            className="flex-1 bg-white/10 border border-white/20 text-white placeholder:text-[#7a9485] px-4 py-3 rounded-sm text-sm focus:outline-none focus:ring-1 focus:ring-lime"
+          />
+          <button
+            type="button"
+            onClick={aiAutoFill}
+            disabled={aiLoading || !aiPrompt.trim()}
+            className="bg-lime text-ink px-5 py-3 rounded-sm text-sm font-bold hover:bg-[#d9f07a] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-sm whitespace-nowrap"
           >
-            {['Workshop', 'Technical', 'Cultural', 'Placement', 'Seminar'].map((x) => (
-              <option key={x}>{x}</option>
-            ))}
-          </select>
-        </label>
-        <div className="md:col-span-2 pt-2">
-          <button className="bg-ink text-white px-6 py-3 rounded-sm text-sm font-medium hover:bg-opacity-90 transition-colors shadow-sm">
-            Publish event →
+            {aiLoading ? (
+              <>
+                <span className="inline-block w-4 h-4 border-2 border-ink/30 border-t-ink rounded-full animate-spin"></span>
+                Generating…
+              </>
+            ) : (
+              <>✨ Generate</>
+            )}
           </button>
         </div>
-      </form>
+        {aiError && (
+          <p className="text-[#ff9b8e] text-xs mt-2">{aiError}</p>
+        )}
+      </div>
+
+      {/* ───── Event Form ───── */}
+      <div className="flex flex-col lg:flex-row gap-8">
+        <form
+          className="flex-1 max-w-2xl grid grid-cols-1 md:grid-cols-2 gap-5 bg-paper p-8 border border-line rounded-sm shadow-sm"
+          onSubmit={submit}
+        >
+          <h2 className="md:col-span-2 font-serif text-2xl font-bold tracking-tight mb-2">
+            Publish an event
+          </h2>
+          {[
+            ['title', 'Event title'],
+            ['date', 'Date'],
+            ['time', 'Time'],
+            ['venue', 'Venue'],
+            ['deadline', 'Registration deadline'],
+            ['description', 'Short description'],
+          ].map(([k, l]) => (
+            <label key={k} className="text-xs font-semibold text-[#4e5a54] flex flex-col gap-1.5">
+              {l}
+              <input
+                required
+                type={k === 'date' || k === 'deadline' ? 'date' : 'text'}
+                value={form[k] || ''}
+                onChange={(e) => setForm({ ...form, [k]: e.target.value })}
+                className="w-full border border-[#d5d8d0] p-2.5 bg-white rounded-xs focus:ring-1 focus:ring-ink focus:outline-none text-sm font-normal"
+              />
+            </label>
+          ))}
+          <label className="text-xs font-semibold text-[#4e5a54] flex flex-col gap-1.5">
+            Category
+            <select
+              value={form.category}
+              onChange={(e) => setForm({ ...form, category: e.target.value })}
+              className="w-full border border-[#d5d8d0] p-2.5 bg-white rounded-xs focus:ring-1 focus:ring-ink focus:outline-none text-sm font-normal"
+            >
+              {['Workshop', 'Technical', 'Cultural', 'Placement', 'Seminar'].map((x) => (
+                <option key={x}>{x}</option>
+              ))}
+            </select>
+          </label>
+          <div className="md:col-span-2 flex flex-wrap items-center gap-3 pt-2">
+            <button className="bg-ink text-white px-6 py-3 rounded-sm text-sm font-medium hover:bg-opacity-90 transition-colors shadow-sm">
+              Publish event →
+            </button>
+          </div>
+        </form>
+
+
+      </div>
     </section>
   );
 }
