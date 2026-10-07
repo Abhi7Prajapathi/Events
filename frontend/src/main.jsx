@@ -387,13 +387,19 @@ function MyEvents({ user }) {
              
              <div className="flex justify-between items-end w-full px-4 md:px-16 mt-auto">
                 <div className="text-center">
+                   <div className="h-20 flex items-end justify-center pb-2">
+                       <span className="font-serif font-bold text-2xl text-ink">{cert.date}</span>
+                   </div>
                    <div className="w-40 md:w-56 border-b-2 border-ink/80 mb-3"></div>
-                   <p className="font-bold text-xs tracking-widest uppercase text-muted">Date: {cert.date}</p>
+                   <p className="font-bold text-xs tracking-widest uppercase text-muted">Date</p>
                 </div>
                 <div className="w-24 h-24 md:w-32 md:h-32 bg-lime rounded-full flex items-center justify-center border-[6px] border-[#243b31] shadow-lg shrink-0 mx-4 relative top-4">
                    <span className="font-serif text-4xl md:text-5xl text-ink font-bold italic">c.</span>
                 </div>
                 <div className="text-center">
+                   <div className="h-20 flex items-end justify-center">
+                       <img src="/signature.jpg" alt="Signature" className="h-24 object-contain -mb-2 mix-blend-multiply" />
+                   </div>
                    <div className="w-40 md:w-56 border-b-2 border-ink/80 mb-3"></div>
                    <p className="font-bold text-xs tracking-widest uppercase text-muted">Campus Circle</p>
                 </div>
