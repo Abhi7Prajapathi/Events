@@ -385,23 +385,30 @@ function MyEvents({ user }) {
              <p className="text-xl md:text-2xl text-muted font-medium mb-10">has successfully participated in</p>
              <h3 className="text-3xl md:text-4xl font-bold text-ink mb-24">{cert.title}</h3>
              
-             <div className="flex justify-between items-end w-full px-4 md:px-16 mt-auto">
-                <div className="text-center">
-                   <div className="h-20 flex items-end justify-center pb-2">
-                       <span className="font-serif font-bold text-2xl text-ink">{cert.date}</span>
+             <div className="flex justify-between items-end w-full px-4 md:px-12 mt-auto">
+                <div className="text-center relative">
+                   <div className="pb-2">
+                       <span className="font-serif italic text-2xl text-ink">{cert.date}</span>
                    </div>
-                   <div className="w-40 md:w-56 border-b-2 border-ink/80 mb-3"></div>
-                   <p className="font-bold text-xs tracking-widest uppercase text-muted">Date</p>
+                   <div className="w-36 md:w-48 border-b-2 border-ink/40 mb-3"></div>
+                   <p className="font-bold text-[10px] tracking-widest uppercase text-muted">Date</p>
                 </div>
-                <div className="w-24 h-24 md:w-32 md:h-32 bg-lime rounded-full flex items-center justify-center border-[6px] border-[#243b31] shadow-lg shrink-0 mx-4 relative top-4">
-                   <span className="font-serif text-4xl md:text-5xl text-ink font-bold italic">c.</span>
+                
+                <div className="w-24 h-24 md:w-28 md:h-28 bg-lime rounded-full flex items-center justify-center border-[4px] border-[#243b31] shadow-lg shrink-0 mx-4 relative top-6">
+                   <span className="font-serif text-3xl md:text-5xl text-ink font-bold italic">C</span>
                 </div>
-                <div className="text-center">
-                   <div className="h-20 flex items-end justify-center">
-                       <img src="/signature.jpg" alt="Signature" className="h-24 object-contain -mb-2 mix-blend-multiply" />
+                
+                <div className="text-center relative">
+                   <div className="pb-2 flex justify-center h-12 relative">
+                       {/* The signature image is positioned absolutely so it overlaps the line like a real signature. Contrast and brightness are bumped to remove any gray background. */}
+                       <img 
+                          src="/signature.jpg" 
+                          alt="Signature" 
+                          className="absolute bottom-[-15px] w-48 md:w-56 h-auto mix-blend-multiply contrast-125 brightness-105" 
+                       />
                    </div>
-                   <div className="w-40 md:w-56 border-b-2 border-ink/80 mb-3"></div>
-                   <p className="font-bold text-xs tracking-widest uppercase text-muted">Campus Circle</p>
+                   <div className="w-36 md:w-48 border-b-2 border-ink/40 mb-3 relative z-10"></div>
+                   <p className="font-bold text-[10px] tracking-widest uppercase text-muted">Authorized Signature</p>
                 </div>
              </div>
            </div>
