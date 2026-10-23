@@ -32,3 +32,9 @@ The Flask API uses a persistent SQLite volume; delete the `event_data` Docker vo
 - **Admin Features:** Added the ability for administrators to delete events (and their associated registrations) directly from the event cards on the Discover page.
 - **Printable Certificates:** Built a custom, beautifully styled certificate modal that displays the student's name, event details, and automatically generated dates.
 - **Digital Signatures:** Integrated an uploaded physical signature image into the certificate layout using CSS blending (`mix-blend-multiply`) for an authentic, print-ready document.
+- **Mobile Responsiveness:** Made the application fully mobile-responsive across phones and tablets with collapsible hamburger navigation, flexible event grids, responsive registration forms, and mobile-friendly certificate modal.
+- **Brevo Email Notifications:** Integrated Brevo (Sendinblue) transactional email API:
+  - **Welcome Email:** Automatically dispatches a branded welcome email with student profile information upon account registration.
+  - **Event Confirmation Email:** Sends a confirmation email with full event details (title, date, time, venue, category, description, and certificate instructions) upon event registration.
+  - **Asynchronous Dispatch:** Emails are sent in background daemon threads so registration requests respond instantly.
+  - **Diagnostic Endpoint:** Added `POST /api/test-email` to verify Brevo API credentials with a single test.

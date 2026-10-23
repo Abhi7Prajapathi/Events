@@ -13,6 +13,14 @@ import psycopg2.extras
 from flask import Flask, jsonify, request, send_file
 from flask_cors import CORS
 
+from brevo_service import (
+    send_welcome_email,
+    send_event_confirmation_email,
+    send_brevo_email,
+    get_brevo_config,
+    build_welcome_html,
+)
+
 try:
     from google import genai
     GEMINI_KEY = os.environ.get('GEMINI_API_KEY', '')
@@ -184,7 +192,13 @@ def register_user():
         con.commit()
         cur.execute(f'SELECT {USER_FIELDS} FROM users WHERE id=%s', (new_id,))
         user = cur.fetchone()
-        return jsonify(dict(user)), 201
+        user_dict = dict(user) if user else {}
+        if user_dict:
+            try:
+                send_welcome_email(user_dict)
+            except Exception as mail_err:
+                print(f"[Brevo Welcome Email Error] {mail_err}")
+        return jsonify(user_dict), 201
     except psycopg2.errors.UniqueViolation:
         con.rollback()
         return jsonify({'error': 'This email is already registered.'}), 409
@@ -216,6 +230,18 @@ def register_event(event_id):
             'INSERT INTO registrations (user_id,event_id) VALUES (%s,%s)', (uid, event_id)
         )
         con.commit()
+
+        # Send event confirmation email with event details via Brevo
+        try:
+            cur.execute(f'SELECT {USER_FIELDS} FROM users WHERE id=%s', (uid,))
+            user_row = cur.fetchone()
+            cur.execute('SELECT * FROM events WHERE id=%s', (event_id,))
+            event_row = cur.fetchone()
+            if user_row and event_row:
+                send_event_confirmation_email(dict(user_row), dict(event_row))
+        except Exception as mail_err:
+            print(f"[Brevo Event Confirmation Email Error] {mail_err}")
+
         return jsonify({'message': 'Your place is confirmed.'}), 201
     except psycopg2.errors.UniqueViolation:
         con.rollback()
@@ -374,6 +400,41 @@ def delete_event(event_id):
     finally:
         cur.close()
         con.close()
+
+
+@app.post('/api/test-email')
+def test_email():
+    """Diagnostic route to verify Brevo configuration and send a test email."""
+    data = request.json or {}
+    to_email = (data.get('email') or '').strip()
+    if not to_email:
+        return jsonify({'error': 'Recipient email is required.'}), 400
+
+    api_key, sender_email, sender_name = get_brevo_config()
+    if not api_key:
+        return jsonify({
+            'error': 'BREVO_API_KEY is not configured in backend/.env',
+            'configured': False
+        }), 400
+    if not sender_email:
+        return jsonify({
+            'error': 'BREVO_SENDER_EMAIL is not configured in backend/.env',
+            'configured': False
+        }), 400
+
+    test_user = {
+        'name': data.get('name', 'Campus Circle Student'),
+        'email': to_email,
+        'reg_no': 'TEST-2026',
+        'department': 'Information Technology',
+        'class': 'IV Year',
+    }
+    html = build_welcome_html(test_user)
+    success, result = send_brevo_email(to_email, test_user['name'], 'Campus Circle - Brevo Test Email 🚀', html)
+    if success:
+        return jsonify({'message': f'Test email sent successfully to {to_email}!', 'messageId': result}), 200
+    else:
+        return jsonify({'error': result}), 500
 
 
 if __name__ == '__main__':
