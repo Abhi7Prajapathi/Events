@@ -57,7 +57,7 @@ function App() {
         method: 'POST',
         body: JSON.stringify({ user_id: user.id }),
       });
-      setNotice('You're registered — see you there.');
+      setNotice("You're registered — see you there.");
       refresh();
     } catch (e) { setNotice(e.message); }
   };
