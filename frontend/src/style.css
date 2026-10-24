@@ -2,6 +2,10 @@
 
 /* Additional print stylesheet rules for Certificates */
 @media print {
+  @page {
+    size: landscape;
+    margin: 10mm;
+  }
   header, nav, button:not(.print-keep), .toast, section:not(.plain) {
     display: none !important;
   }

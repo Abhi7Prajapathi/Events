@@ -316,6 +316,87 @@ function EventCard({ e, enroll, user, deleteEvent, openAttendees }) {
   );
 }
 
+
+function GoldMedallionBadge({ className = "w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20" }) {
+  return (
+    <svg viewBox="0 0 120 120" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="goldShine" cx="50%" cy="40%" r="60%">
+          <stop offset="0%" stopColor="#fff6b8" />
+          <stop offset="35%" stopColor="#dfb746" />
+          <stop offset="70%" stopColor="#b88b20" />
+          <stop offset="100%" stopColor="#876008" />
+        </radialGradient>
+        <linearGradient id="goldEdge" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#ffd875" />
+          <stop offset="50%" stopColor="#b3871d" />
+          <stop offset="100%" stopColor="#ffe699" />
+        </linearGradient>
+      </defs>
+      {/* Laurel wreath dashed ring */}
+      <circle cx="60" cy="60" r="56" stroke="url(#goldEdge)" strokeWidth="3" strokeDasharray="4,2.5" />
+      <circle cx="60" cy="60" r="49" fill="url(#goldShine)" stroke="#6b4c05" strokeWidth="1" />
+      <circle cx="60" cy="60" r="42" fill="none" stroke="#fae498" strokeWidth="1" strokeDasharray="3,1.5" />
+      <text x="60" y="42" textAnchor="middle" fill="#3a2503" fontSize="12" fontWeight="800" fontFamily="sans-serif">[2026]</text>
+      <text x="60" y="55" textAnchor="middle" fill="#3a2503" fontSize="6.5" fontWeight="700" letterSpacing="0.8" fontFamily="sans-serif">AUTHORIZED</text>
+      <text x="60" y="65" textAnchor="middle" fill="#3a2503" fontSize="6.5" fontWeight="700" letterSpacing="0.8" fontFamily="sans-serif">DISTRIBUTOR</text>
+      <text x="60" y="78" textAnchor="middle" fill="#4d3204" fontSize="10">★★★</text>
+      <path d="M 34 82 Q 60 98 86 82" stroke="#4d3204" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function GreenQRCode({ className = "w-10 h-10 sm:w-14 sm:h-14 md:w-16 md:h-16" }) {
+  return (
+    <svg viewBox="0 0 100 100" className={className} fill="#183d28" xmlns="http://www.w3.org/2000/svg">
+      {/* Corner Square Top-Left */}
+      <rect x="5" y="5" width="28" height="28" rx="2" fill="#183d28" />
+      <rect x="10" y="10" width="18" height="18" rx="1.5" fill="#ffffff" />
+      <rect x="14" y="14" width="10" height="10" rx="1" fill="#183d28" />
+
+      {/* Corner Square Top-Right */}
+      <rect x="67" y="5" width="28" height="28" rx="2" fill="#183d28" />
+      <rect x="72" y="10" width="18" height="18" rx="1.5" fill="#ffffff" />
+      <rect x="76" y="14" width="10" height="10" rx="1" fill="#183d28" />
+
+      {/* Corner Square Bottom-Left */}
+      <rect x="5" y="67" width="28" height="28" rx="2" fill="#183d28" />
+      <rect x="10" y="72" width="18" height="18" rx="1.5" fill="#ffffff" />
+      <rect x="14" y="76" width="10" height="10" rx="1" fill="#183d28" />
+
+      {/* Data pattern blocks */}
+      <rect x="38" y="8" width="6" height="6" />
+      <rect x="48" y="8" width="6" height="6" />
+      <rect x="56" y="8" width="6" height="6" />
+      <rect x="38" y="18" width="6" height="6" />
+      <rect x="48" y="22" width="6" height="6" />
+      <rect x="8" y="38" width="6" height="6" />
+      <rect x="18" y="44" width="6" height="6" />
+      <rect x="26" y="38" width="6" height="6" />
+      <rect x="38" y="38" width="8" height="8" />
+      <rect x="50" y="42" width="6" height="6" />
+      <rect x="60" y="38" width="6" height="6" />
+      <rect x="72" y="40" width="6" height="6" />
+      <rect x="84" y="38" width="8" height="8" />
+      <rect x="40" y="52" width="6" height="6" />
+      <rect x="50" y="54" width="8" height="8" />
+      <rect x="62" y="50" width="6" height="6" />
+      <rect x="76" y="54" width="6" height="6" />
+      <rect x="86" y="50" width="6" height="6" />
+      <rect x="38" y="68" width="6" height="6" />
+      <rect x="48" y="68" width="8" height="8" />
+      <rect x="60" y="72" width="6" height="6" />
+      <rect x="70" y="68" width="6" height="6" />
+      <rect x="82" y="74" width="8" height="8" />
+      <rect x="40" y="84" width="8" height="8" />
+      <rect x="56" y="84" width="6" height="6" />
+      <rect x="68" y="82" width="6" height="6" />
+      <rect x="80" y="86" width="6" height="6" />
+    </svg>
+  );
+}
+
+
 function MyEvents({ user }) {
   const [rows, setRows] = useState([]);
   const [cert, setCert] = useState(null);
@@ -324,44 +405,118 @@ function MyEvents({ user }) {
 
   if (cert) {
     return (
-      <div className="fixed inset-0 z-[100] bg-[#e7eddf] p-3 sm:p-8 md:p-12 flex flex-col items-center justify-center plain overflow-auto print:p-0 print:bg-white">
-        {/* Toolbar */}
-        <div className="w-full max-w-[1050px] flex justify-end gap-3 mb-4 print:hidden">
-          <button className="bg-white border border-line px-4 py-2 rounded-sm shadow-sm hover:bg-black/5 text-sm font-semibold transition-colors" onClick={() => setCert(null)}>Close</button>
-          <button className="bg-ink text-white px-4 py-2 rounded-sm shadow-md hover:opacity-90 text-sm font-semibold transition-opacity flex items-center gap-2" onClick={() => window.print()}>
-            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" /></svg>
-            Print
-          </button>
+      <div className="fixed inset-0 z-[100] bg-[#14231b]/85 backdrop-blur-xs p-2 sm:p-5 md:p-8 flex flex-col items-center justify-start sm:justify-center overflow-y-auto print:p-0 print:bg-white print:static">
+        {/* Floating Toolbar */}
+        <div className="w-full max-w-[960px] flex items-center justify-between gap-3 mb-2 sm:mb-3 print:hidden">
+          <span className="text-xs font-mono text-white/80 bg-white/10 px-3 py-1.5 rounded-xs hidden sm:inline-block">
+            Verified Event Credential · Official Certificate
+          </span>
+          <div className="flex items-center gap-2 ml-auto">
+            <button
+              onClick={() => setCert(null)}
+              className="bg-white/90 hover:bg-white text-ink text-xs sm:text-sm font-semibold px-3 sm:px-4 py-2 rounded-xs shadow-sm transition-colors cursor-pointer"
+            >
+              ← Back
+            </button>
+            <button
+              onClick={() => window.print()}
+              className="bg-lime hover:bg-[#d9f07a] text-ink text-xs sm:text-sm font-bold px-3 sm:px-4 py-2 rounded-xs shadow-md transition-colors flex items-center gap-1.5 cursor-pointer"
+            >
+              <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" /></svg>
+              Print / Save PDF
+            </button>
+          </div>
         </div>
 
-        {/* Certificate */}
-        <div className="w-full max-w-[1050px] bg-[#fffefa] border-[10px] sm:border-[16px] border-[#243b31] p-6 sm:p-12 md:p-16 relative shadow-2xl flex flex-col justify-between text-center overflow-hidden print:shadow-none print:border-0 print:w-full print:max-w-none print:p-16">
-          <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(#243b31 2px, transparent 2px)', backgroundSize: '28px 28px' }} />
+        {/* Certificate Container: matches user reference template with exact proportions */}
+        <div className="w-full max-w-[960px] bg-white border border-[#cfd6d1] shadow-2xl relative flex flex-row overflow-hidden rounded-xs print:shadow-none print:border-0 print:w-full print:max-w-none print:rounded-none">
+          
+          {/* Left Vertical Dark Green Pillar */}
+          <div className="w-3.5 sm:w-7 md:w-9 bg-[#183d28] shrink-0" />
 
-          <div className="relative z-10">
-            <h1 className="font-serif text-3xl sm:text-5xl md:text-6xl text-[#243b31] mb-3 sm:mb-5 tracking-tight">Certificate of Participation</h1>
-            <p className="text-base sm:text-xl text-muted font-medium mb-4 sm:mb-7">This is to certify that</p>
-            <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold font-serif text-ink border-b-2 border-lime inline-block pb-2 mb-4 sm:mb-7 px-4 sm:px-8">{user.name}</h2>
-            <p className="text-base sm:text-xl text-muted font-medium mb-4 sm:mb-7">has successfully participated in</p>
-            <h3 className="text-xl sm:text-3xl md:text-4xl font-bold text-ink mb-8 sm:mb-16">{cert.title}</h3>
-          </div>
+          {/* Main Content Area */}
+          <div className="flex-1 flex flex-col justify-between pl-3.5 pr-3.5 sm:pl-7 sm:pr-7 md:pl-9 md:pr-9 pt-4 sm:pt-6 md:pt-8 pb-0 relative bg-white">
 
-          <div className="relative z-10 flex justify-between items-end gap-2 mt-4">
-            <div className="text-center">
-              <span className="font-serif italic text-lg sm:text-2xl text-ink block pb-2">{cert.date}</span>
-              <div className="w-24 sm:w-40 md:w-48 border-b-2 border-ink/40 mb-2 mx-auto" />
-              <p className="font-bold text-[9px] sm:text-[10px] tracking-widest uppercase text-muted">Date</p>
-            </div>
-            <div className="w-14 h-14 sm:w-24 sm:h-24 md:w-28 md:h-28 bg-lime rounded-full flex items-center justify-center border-[3px] sm:border-[4px] border-[#243b31] shadow-lg shrink-0 relative top-3 sm:top-5">
-              <span className="font-serif text-2xl sm:text-3xl md:text-5xl text-ink font-bold italic">C</span>
-            </div>
-            <div className="text-center relative">
-              <div className="h-10 sm:h-14 flex justify-center items-end relative">
-                <img src="/signature.jpg" alt="Signature" className="absolute bottom-[-8px] sm:bottom-[-15px] w-28 sm:w-40 md:w-52 h-auto mix-blend-multiply contrast-125 brightness-105" />
+            {/* Header: Title left, Gold Badge + QR right */}
+            <div className="flex items-start justify-between gap-2 sm:gap-4">
+              <div className="flex items-start gap-2 sm:gap-3">
+                {/* Sage Indicator Bar */}
+                <div className="w-1.5 sm:w-2 h-9 sm:h-12 md:h-14 bg-[#9fb88d] rounded-full shrink-0 mt-0.5" />
+                <div>
+                  <span className="font-sans text-[10px] sm:text-xs md:text-sm font-bold tracking-[0.18em] text-[#33463b] block uppercase leading-tight">
+                    AUTHORIZED
+                  </span>
+                  <h1 className="font-sans text-base sm:text-2xl md:text-3xl font-extrabold tracking-tight text-[#172b20] leading-tight uppercase mt-0.5 sm:mt-1">
+                    DISTRIBUTOR CERTIFICATE
+                  </h1>
+                </div>
               </div>
-              <div className="w-24 sm:w-40 md:w-48 border-b-2 border-ink/40 mb-2 mx-auto relative z-10" />
-              <p className="font-bold text-[9px] sm:text-[10px] tracking-widest uppercase text-muted">Authorized Signature</p>
+
+              {/* Top-Right Badges: Gold Badge + Green QR Code */}
+              <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
+                <GoldMedallionBadge className="w-11 h-11 sm:w-16 sm:h-16 md:w-20 md:h-20 shrink-0" />
+                <GreenQRCode className="w-9 h-9 sm:w-14 sm:h-14 md:w-16 md:h-16 shrink-0" />
+              </div>
             </div>
+
+            {/* Recipient Section */}
+            <div className="mt-3 sm:mt-5 md:mt-7">
+              <p className="text-[11px] sm:text-xs md:text-sm text-[#5b6e62] font-medium mb-0.5 sm:mb-1">
+                This certifies that
+              </p>
+              <h2 className="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-bold font-sans text-[#183d28] tracking-tight leading-tight">
+                [{user.name}]
+              </h2>
+            </div>
+
+            {/* Blue-Bordered Content Box matching reference template */}
+            <div className="mt-2.5 sm:mt-4 md:mt-5 p-2.5 sm:p-4 md:p-5 border border-[#3b82f6] bg-[#fcfdff] rounded-xs text-[10.5px] sm:text-xs md:text-sm text-[#1e2d25] leading-relaxed space-y-1.5 sm:space-y-2">
+              <p>
+                is an Authorized Participant for <strong>[{cert.title}]</strong> under the <strong>[Campus Circle]</strong> event catalog.
+              </p>
+              <p>
+                This authorization applies exclusively to the attendance, technical workshops, and collaboration sessions of <strong>[{cert.title}]</strong> in <strong>[{cert.venue || 'Campus Auditorium'}]</strong> held on <strong>{cert.date}</strong> and does not extend to any other events from <strong>[Er. Perumal Manimekalai College of Engineering]</strong>.
+              </p>
+              <p className="text-[#59695f] text-[9.5px] sm:text-xs">
+                All participation rights and responsibilities are outlined in the official event registry. Any unauthorized duplication of credentials under [Campus Circle] is strictly prohibited.
+              </p>
+            </div>
+
+            {/* Signature Section on bottom right */}
+            <div className="flex justify-end mt-3 sm:mt-4 md:mt-6 mb-3 sm:mb-4">
+              <div className="text-center w-32 sm:w-44 md:w-48">
+                <div className="h-8 sm:h-12 flex items-center justify-center relative">
+                  <img
+                    src="/signature.jpg"
+                    alt="Signature"
+                    className="h-8 sm:h-12 w-auto mix-blend-multiply contrast-125 brightness-105"
+                  />
+                </div>
+                <div className="border-t border-[#183d28]/30 pt-1 mt-1">
+                  <p className="text-[11px] sm:text-xs md:text-sm font-bold font-sans text-[#183d28] tracking-wider uppercase">
+                    [Abhilash R]
+                  </p>
+                  <p className="text-[9px] sm:text-[10px] text-[#5b6e62] uppercase tracking-wider font-medium">
+                    [AUTHORIZED SIGNATORY]
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom Sage Green Bar with Dark Green Accent Block */}
+            <div className="-mx-3.5 sm:-mx-7 md:-mx-9 bg-[#9fb88d] py-2 sm:py-2.5 px-3.5 sm:px-7 md:px-9 flex items-center justify-between relative mt-auto">
+              <span className="text-[9px] sm:text-[11px] font-mono text-[#183d28] font-bold tracking-wider">
+                ID #{cert.id || '2026'} · DEPT OF IT
+              </span>
+              <div className="flex items-center gap-3">
+                <span className="text-[10px] sm:text-xs md:text-sm font-mono font-bold text-[#183d28] mr-8 sm:mr-16">
+                  [certificate.issued_on: {cert.date}]
+                </span>
+                {/* Dark green block accent at far bottom right corner */}
+                <div className="w-7 sm:w-14 h-full bg-[#183d28] absolute right-0 top-0 bottom-0" />
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
