@@ -487,9 +487,9 @@ function MyEvents({ user }) {
               <div className="text-center w-36 sm:w-52 md:w-56">
                 <div className="h-14 sm:h-20 md:h-24 flex items-end justify-center pb-1 relative">
                   <img
-                    src="/signature.jpg"
+                    src="/signature.png"
                     alt="Signature"
-                    className="h-12 sm:h-18 md:h-22 w-auto max-w-full mix-blend-multiply contrast-125 brightness-105 object-contain pointer-events-none select-none"
+                    className="h-12 sm:h-18 md:h-22 w-auto max-w-full object-contain pointer-events-none select-none"
                   />
                 </div>
                 <div className="border-t border-[#183d28]/35 pt-1 mt-0">
