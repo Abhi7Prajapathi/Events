@@ -36,7 +36,7 @@ CORS(app)
 DATABASE_URL = os.environ["DATABASE_URL"]
 
 
-USER_FIELDS = 'id,name,email,reg_no,department,class,interests,role'
+USER_FIELDS = 'id,name,email,reg_no,department,class,phone,interests,role'
 
 
 def conn():
@@ -56,6 +56,7 @@ def init_db():
         reg_no TEXT,
         department TEXT,
         class TEXT,
+        phone TEXT,
         interests TEXT,
         role TEXT DEFAULT 'student'
       );
@@ -84,6 +85,7 @@ def init_db():
     cur.execute('ALTER TABLE users ADD COLUMN IF NOT EXISTS reg_no TEXT')
     cur.execute('ALTER TABLE users ADD COLUMN IF NOT EXISTS department TEXT')
     cur.execute('ALTER TABLE users ADD COLUMN IF NOT EXISTS class TEXT')
+    cur.execute('ALTER TABLE users ADD COLUMN IF NOT EXISTS phone TEXT')
     con.commit()
 
     cur.execute('SELECT COUNT(*) AS c FROM events')
@@ -174,6 +176,7 @@ def register_user():
     reg_no = (data.get('reg_no') or '').strip()
     department = (data.get('department') or '').strip()
     class_name = (data.get('class') or '').strip()
+    phone = (data.get('phone') or '').strip()
 
     if not name or not email or not password:
         return jsonify({'error': 'Name, email and password are required.'}), 400
@@ -184,9 +187,9 @@ def register_user():
     cur = con.cursor()
     try:
         cur.execute(
-            'INSERT INTO users (name,email,password,reg_no,department,class,interests) '
-            'VALUES (%s,%s,%s,%s,%s,%s,%s) RETURNING id',
-            (name, email, password, reg_no, department, class_name, data.get('interests', '')),
+            'INSERT INTO users (name,email,password,reg_no,department,class,phone,interests) '
+            'VALUES (%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id',
+            (name, email, password, reg_no, department, class_name, phone, data.get('interests', '')),
         )
         new_id = cur.fetchone()['id']
         con.commit()
@@ -218,6 +221,43 @@ def me(user_id):
     if not user:
         return jsonify({'error': 'User not found.'}), 404
     return jsonify(dict(user))
+
+
+@app.put('/api/me/<int:user_id>')
+def update_profile(user_id):
+    d = request.json or {}
+    name = (d.get('name') or '').strip()
+    reg_no = (d.get('reg_no') or '').strip()
+    department = (d.get('department') or '').strip()
+    class_name = (d.get('class') or '').strip()
+    phone = (d.get('phone') or '').strip()
+    interests = (d.get('interests') or '').strip()
+
+    if not name:
+        return jsonify({'error': 'Name is required.'}), 400
+
+    con = conn()
+    cur = con.cursor()
+    try:
+        cur.execute(
+            '''
+            UPDATE users
+            SET name=%s, reg_no=%s, department=%s, class=%s, phone=%s, interests=%s
+            WHERE id=%s RETURNING id,name,email,reg_no,department,class,phone,interests,role
+            ''',
+            (name, reg_no, department, class_name, phone, interests, user_id)
+        )
+        updated = cur.fetchone()
+        con.commit()
+        if not updated:
+            return jsonify({'error': 'User not found.'}), 404
+        return jsonify(dict(updated))
+    except Exception as e:
+        con.rollback()
+        return jsonify({'error': str(e)}), 500
+    finally:
+        cur.close()
+        con.close()
 
 
 @app.post('/api/events/<int:event_id>/register')
@@ -306,12 +346,20 @@ def stats():
     registration_count = cur.fetchone()['c']
     cur.execute("SELECT COUNT(*) AS c FROM users WHERE role='student'")
     student_count = cur.fetchone()['c']
+    cur.execute("SELECT COUNT(*) AS c FROM registrations WHERE status='Attended'")
+    attended_count = cur.fetchone()['c']
+
+    cur.execute("SELECT category, COUNT(*) as count FROM events GROUP BY category")
+    category_counts = {row['category']: row['count'] for row in cur.fetchall()}
+
     cur.close()
     con.close()
     return jsonify({
         'events': event_count,
         'registrations': registration_count,
         'students': student_count,
+        'attended': attended_count,
+        'categories': category_counts,
     })
 
 
@@ -343,7 +391,8 @@ def event_registrations(event_id):
             u.email, 
             COALESCE(u.reg_no, 'N/A') AS reg_no, 
             COALESCE(u.department, 'N/A') AS department, 
-            COALESCE(u.class, 'N/A') AS class, 
+            COALESCE(u.class, 'N/A') AS class,
+            COALESCE(u.phone, '') AS phone,
             r.status, 
             TO_CHAR(r.created_at, 'YYYY-MM-DD HH24:MI') AS registered_at
         FROM registrations r
@@ -369,6 +418,154 @@ def event_registrations(event_id):
         'students': [dict(r) for r in rows],
         'total': len(rows),
     })
+
+
+@app.get('/api/admin/users')
+def admin_users():
+    """List all registered students with full details and enrollment count."""
+    con = conn()
+    cur = con.cursor()
+    cur.execute(
+        '''
+        SELECT 
+            u.id, 
+            u.name, 
+            u.email, 
+            COALESCE(u.reg_no, 'N/A') AS reg_no, 
+            COALESCE(u.department, 'N/A') AS department, 
+            COALESCE(u.class, 'N/A') AS class,
+            COALESCE(u.phone, '') AS phone,
+            COALESCE(u.interests, '') AS interests,
+            u.role,
+            COUNT(r.id) AS registrations_count
+        FROM users u
+        LEFT JOIN registrations r ON r.user_id = u.id
+        WHERE u.role = 'student'
+        GROUP BY u.id
+        ORDER BY u.id DESC
+        '''
+    )
+    rows = cur.fetchall()
+    cur.close()
+    con.close()
+    return jsonify([dict(r) for r in rows])
+
+
+@app.delete('/api/admin/users/<int:user_id>')
+def delete_user(user_id):
+    """Admin deletes an individual registered student."""
+    con = conn()
+    cur = con.cursor()
+    try:
+        cur.execute("SELECT id, role, name FROM users WHERE id=%s", (user_id,))
+        user = cur.fetchone()
+        if not user:
+            return jsonify({'error': 'User not found.'}), 404
+        if user['role'] == 'admin':
+            return jsonify({'error': 'Cannot delete administrator account.'}), 403
+
+        cur.execute('DELETE FROM registrations WHERE user_id=%s', (user_id,))
+        cur.execute('DELETE FROM users WHERE id=%s', (user_id,))
+        con.commit()
+        return jsonify({'message': f"Student '{user['name']}' has been removed successfully."})
+    except Exception as e:
+        con.rollback()
+        return jsonify({'error': str(e)}), 500
+    finally:
+        cur.close()
+        con.close()
+
+
+@app.delete('/api/admin/users')
+def delete_all_users():
+    """Admin deletes ALL registered students and their registrations."""
+    con = conn()
+    cur = con.cursor()
+    try:
+        cur.execute("DELETE FROM registrations WHERE user_id IN (SELECT id FROM users WHERE role='student')")
+        cur.execute("DELETE FROM users WHERE role='student'")
+        count = cur.rowcount
+        con.commit()
+        return jsonify({'message': f'Successfully removed all {count} registered student accounts.', 'count': count})
+    except Exception as e:
+        con.rollback()
+        return jsonify({'error': str(e)}), 500
+    finally:
+        cur.close()
+        con.close()
+
+
+@app.put('/api/events/<int:event_id>')
+def update_event(event_id):
+    """Admin updates an event."""
+    d = request.json
+    con = conn()
+    cur = con.cursor()
+    try:
+        cur.execute(
+            '''
+            UPDATE events
+            SET title=%s, category=%s, date=%s, time=%s, venue=%s,
+                deadline=%s, description=%s, seats=%s
+            WHERE id=%s RETURNING *
+            ''',
+            (
+                d['title'], d['category'], d['date'], d['time'], d['venue'],
+                d['deadline'], d['description'], d['seats'], event_id
+            )
+        )
+        updated = cur.fetchone()
+        con.commit()
+        if not updated:
+            return jsonify({'error': 'Event not found.'}), 404
+        return jsonify(event_dict(updated))
+    except Exception as e:
+        con.rollback()
+        return jsonify({'error': str(e)}), 500
+    finally:
+        cur.close()
+        con.close()
+
+
+@app.delete('/api/events/<int:event_id>/registrations/<int:user_id>')
+def unregister_event(event_id, user_id):
+    """Allows student to cancel their registration or admin to remove an attendee."""
+    con = conn()
+    cur = con.cursor()
+    try:
+        cur.execute('DELETE FROM registrations WHERE event_id=%s AND user_id=%s', (event_id, user_id))
+        con.commit()
+        return jsonify({'message': 'Registration cancelled successfully.'})
+    except Exception as e:
+        con.rollback()
+        return jsonify({'error': str(e)}), 500
+    finally:
+        cur.close()
+        con.close()
+
+
+@app.patch('/api/events/<int:event_id>/registrations/<int:user_id>')
+def update_registration_status(event_id, user_id):
+    """Admin toggles attendee status: 'Confirmed', 'Attended', 'Absent'."""
+    status = (request.json or {}).get('status', 'Attended')
+    con = conn()
+    cur = con.cursor()
+    try:
+        cur.execute(
+            'UPDATE registrations SET status=%s WHERE event_id=%s AND user_id=%s RETURNING status',
+            (status, event_id, user_id)
+        )
+        row = cur.fetchone()
+        con.commit()
+        if not row:
+            return jsonify({'error': 'Registration not found.'}), 404
+        return jsonify({'message': f'Attendance updated to {status}.', 'status': status})
+    except Exception as e:
+        con.rollback()
+        return jsonify({'error': str(e)}), 500
+    finally:
+        cur.close()
+        con.close()
 
 
 # --------------- AI FEATURES ---------------
