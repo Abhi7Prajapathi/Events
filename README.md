@@ -38,3 +38,4 @@ The Flask API uses a persistent SQLite volume; delete the `event_data` Docker vo
   - **Event Confirmation Email:** Sends a confirmation email with full event details (title, date, time, venue, category, description, and certificate instructions) upon event registration.
   - **Asynchronous Dispatch:** Emails are sent in background daemon threads so registration requests respond instantly.
   - **Diagnostic Endpoint:** Added `POST /api/test-email` to verify Brevo API credentials with a single test.
+- **Admin Attendee Roster & Export:** Administrators can now view the complete roster of registered students for any event directly from the Discover event cards or the Admin Dashboard. Features include real-time attendee search (name, reg no, department), detailed student info, enrollment progress bars, and 1-click CSV attendance export.

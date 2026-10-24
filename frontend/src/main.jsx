@@ -29,6 +29,7 @@ function App() {
   const [notice, setNotice] = useState('');
   const [modal, setModal] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [attendeeEvent, setAttendeeEvent] = useState(null);
 
   const refresh = () =>
     api('/events?user_id=' + (user?.id || '')).then(setEvents);
@@ -160,16 +161,20 @@ function App() {
       )}
 
       <main>
-        {view === 'discover' && <Discover events={events} user={user} enroll={enroll} deleteEvent={deleteEvent} />}
+        {view === 'discover' && <Discover events={events} user={user} enroll={enroll} deleteEvent={deleteEvent} openAttendees={setAttendeeEvent} />}
         {view === 'my-events' && <MyEvents user={user} />}
         {view === 'profile' && <Profile user={user} />}
-        {view === 'admin' && <Admin refresh={refresh} />}
+        {view === 'admin' && <Admin refresh={refresh} events={events} openAttendees={setAttendeeEvent} deleteEvent={deleteEvent} />}
       </main>
+
+      {attendeeEvent && (
+        <AttendeeModal eventId={attendeeEvent} onClose={() => setAttendeeEvent(null)} />
+      )}
     </>
   );
 }
 
-function Discover({ events, user, enroll, deleteEvent }) {
+function Discover({ events, user, enroll, deleteEvent, openAttendees }) {
   const [filter, setFilter] = useState('All');
   const [rec, setRec] = useState([]);
 
@@ -248,7 +253,7 @@ function Discover({ events, user, enroll, deleteEvent }) {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {list.map((e) => (
-            <EventCard key={e.id} e={e} enroll={enroll} user={user} deleteEvent={deleteEvent} />
+            <EventCard key={e.id} e={e} enroll={enroll} user={user} deleteEvent={deleteEvent} openAttendees={openAttendees} />
           ))}
         </div>
       </section>
@@ -256,7 +261,7 @@ function Discover({ events, user, enroll, deleteEvent }) {
   );
 }
 
-function EventCard({ e, enroll, user, deleteEvent }) {
+function EventCard({ e, enroll, user, deleteEvent, openAttendees }) {
   const bgClasses = {
     Technical: 'bg-[#263f53]',
     Cultural:  'bg-[#894f41]',
@@ -289,10 +294,21 @@ function EventCard({ e, enroll, user, deleteEvent }) {
             {e.is_registered ? 'Registered ✓' : 'View & register →'}
           </button>
           {user?.role === 'admin' && (
-            <button
-              onClick={() => deleteEvent(e.id)}
-              className="text-xs text-[#ff9b8e] hover:text-white transition-colors border border-[#ff9b8e]/30 px-2 py-1 rounded-xs"
-            >Delete</button>
+            <div className="flex items-center gap-1.5">
+              <button
+                type="button"
+                onClick={() => openAttendees(e.id)}
+                className="text-xs bg-lime text-ink font-bold px-2 py-1 rounded-xs hover:bg-white transition-colors flex items-center gap-1 shadow-xs"
+                title="View registered student roster"
+              >
+                👥 {e.registered || 0}
+              </button>
+              <button
+                type="button"
+                onClick={() => deleteEvent(e.id)}
+                className="text-xs text-[#ff9b8e] hover:text-white transition-colors border border-[#ff9b8e]/30 px-2 py-1 rounded-xs"
+              >Delete</button>
+            </div>
           )}
         </div>
       </div>
@@ -427,7 +443,7 @@ function Profile({ user }) {
   );
 }
 
-function Admin({ refresh }) {
+function Admin({ refresh, events, openAttendees, deleteEvent }) {
   const [stats, setStats] = useState({});
   const [form, setForm] = useState({ category: 'Workshop', seats: 50, image: 'general' });
   const [aiPrompt, setAiPrompt] = useState('');
@@ -476,6 +492,60 @@ function Admin({ refresh }) {
             <span className="text-xs text-muted font-medium mt-1 block leading-tight">{label}</span>
           </div>
         ))}
+      </div>
+
+      {/* Event Rosters & Registrations */}
+      <div className="mb-8 bg-paper p-5 sm:p-7 border border-line rounded-sm shadow-xs">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 pb-3 border-b border-line">
+          <div>
+            <h2 className="font-serif text-xl sm:text-2xl font-bold tracking-tight">Active Events & Attendee Rosters</h2>
+            <p className="text-xs text-muted mt-0.5">Click any event's roster button to see registered students, student details, and export attendance.</p>
+          </div>
+          <span className="text-xs font-mono bg-[#e8ede1] text-ink px-2.5 py-1 rounded-xs font-semibold self-start sm:self-auto">
+            {events?.length || 0} events
+          </span>
+        </div>
+        {(!events || events.length === 0) ? (
+          <p className="text-xs text-muted py-4">No events created yet.</p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+            {events.map((ev) => (
+              <div key={ev.id} className="p-4 border border-[#e2e7dc] bg-[#fcfbf7] rounded-xs flex flex-col justify-between gap-3 hover:border-ink/30 transition-colors">
+                <div>
+                  <div className="flex items-center justify-between gap-2 mb-1">
+                    <span className="text-[10px] font-mono uppercase bg-[#243b31] text-[#cfe870] px-2 py-0.5 rounded-xs font-semibold">
+                      {ev.category}
+                    </span>
+                    <span className="text-xs text-muted font-mono">{ev.date}</span>
+                  </div>
+                  <h4 className="font-bold text-sm text-ink leading-snug">{ev.title}</h4>
+                  <p className="text-xs text-muted mt-1">{ev.time} · {ev.venue}</p>
+                </div>
+                <div className="flex items-center justify-between pt-2 border-t border-line/50">
+                  <span className="text-xs font-medium text-[#4e5a54]">
+                    Enrolled: <strong className="text-ink">{ev.registered || 0}</strong> / {ev.seats || 50}
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => openAttendees(ev.id)}
+                      className="bg-lime text-ink hover:bg-[#d9f07a] text-xs font-bold px-3 py-1.5 rounded-xs transition-colors flex items-center gap-1 shadow-xs cursor-pointer"
+                    >
+                      👥 View Students ({ev.registered || 0})
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => deleteEvent(ev.id)}
+                      className="text-xs text-[#ad3f33] hover:text-[#d32f2f] transition-colors border border-[#ad3f33]/30 px-2 py-1.5 rounded-xs cursor-pointer"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* AI Auto-Fill */}
@@ -645,3 +715,182 @@ function Auth({ onDone, close }) {
 }
 
 createRoot(document.getElementById('root')).render(<App />);
+
+function AttendeeModal({ eventId, onClose }) {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    setLoading(true);
+    api('/events/' + eventId + '/registrations')
+      .then((d) => { setData(d); setLoading(false); })
+      .catch((e) => { setError(e.message); setLoading(false); });
+  }, [eventId]);
+
+  const exportCSV = () => {
+    if (!data?.students?.length) return;
+    const headers = ['#', 'Name', 'Registration No', 'Department', 'Class', 'Email', 'Status', 'Registered At'];
+    const rows = data.students.map((s, idx) => [
+      idx + 1,
+      `"${(s.name || '').replace(/"/g, '""')}"`,
+      `"${s.reg_no || ''}"`,
+      `"${s.department || ''}"`,
+      `"${s.class || ''}"`,
+      `"${s.email || ''}"`,
+      `"${s.status || ''}"`,
+      `"${s.registered_at || ''}"`,
+    ]);
+    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map((e) => e.join(','))].join('\n');
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', `attendees_${(data.event?.title || 'event').replace(/\s+/g, '_')}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const filtered = (data?.students || []).filter((s) => {
+    const q = search.toLowerCase();
+    return (
+      (s.name || '').toLowerCase().includes(q) ||
+      (s.email || '').toLowerCase().includes(q) ||
+      (s.reg_no || '').toLowerCase().includes(q) ||
+      (s.department || '').toLowerCase().includes(q)
+    );
+  });
+
+  return (
+    <div className="fixed inset-0 bg-[#19201d]/60 backdrop-blur-xs z-50 grid place-items-center p-3 sm:p-5">
+      <div className="bg-[#fffefa] w-full max-w-4xl p-5 sm:p-7 relative shadow-[10px_10px_0_#cfe870] border border-line rounded-sm max-h-[92vh] flex flex-col">
+        {/* Header */}
+        <div className="flex items-start justify-between border-b border-line pb-4 mb-4">
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <span className="bg-ink text-lime text-[11px] font-mono px-2 py-0.5 rounded-xs font-semibold uppercase">
+                {data?.event?.category || 'Event'}
+              </span>
+              <span className="text-xs text-muted font-mono">Event #{eventId}</span>
+            </div>
+            <h2 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-ink">
+              {data?.event?.title || 'Registered Students'}
+            </h2>
+            {data?.event && (
+              <p className="text-xs text-muted mt-1">
+                📅 {data.event.date} · ⏰ {data.event.time} · 📍 {data.event.venue} · 💺 {data.total} / {data.event.seats || 50} enrolled
+              </p>
+            )}
+          </div>
+          <button
+            onClick={onClose}
+            className="text-muted hover:text-ink text-3xl leading-none font-bold p-1 cursor-pointer"
+          >
+            ×
+          </button>
+        </div>
+
+        {/* Toolbar: Search + Actions */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 mb-4">
+          <div className="relative flex-1 max-w-md">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted text-xs">🔍</span>
+            <input
+              type="text"
+              placeholder="Search by name, reg no, department..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full pl-8 pr-3 py-2 border border-[#d5d8d0] rounded-xs text-xs bg-white focus:outline-none focus:ring-1 focus:ring-ink"
+            />
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-mono bg-[#e8ede1] text-ink px-3 py-2 rounded-xs font-semibold whitespace-nowrap">
+              Enrolled: {filtered.length} {filtered.length === 1 ? 'student' : 'students'}
+            </span>
+            <button
+              onClick={exportCSV}
+              disabled={!data?.students?.length}
+              className="bg-ink text-white hover:bg-opacity-90 disabled:opacity-40 text-xs px-3 py-2 rounded-xs font-medium transition-colors flex items-center gap-1.5 cursor-pointer disabled:cursor-not-allowed whitespace-nowrap shadow-xs"
+              title="Download CSV for attendance"
+            >
+              📥 Export CSV
+            </button>
+            <button
+              onClick={() => window.print()}
+              className="border border-line hover:bg-black/5 text-ink text-xs px-3 py-2 rounded-xs font-medium transition-colors cursor-pointer hidden sm:inline-flex"
+            >
+              🖨️ Print
+            </button>
+          </div>
+        </div>
+
+        {/* Content list / table */}
+        <div className="flex-1 overflow-y-auto border border-line rounded-xs">
+          {loading ? (
+            <div className="py-16 text-center text-muted text-sm flex flex-col items-center gap-3">
+              <span className="inline-block w-6 h-6 border-2 border-ink/30 border-t-ink rounded-full animate-spin" />
+              Loading student roster…
+            </div>
+          ) : error ? (
+            <div className="py-12 text-center text-[#c62828] text-sm px-4">
+              Error: {error}
+            </div>
+          ) : filtered.length === 0 ? (
+            <div className="py-16 text-center text-muted text-sm px-4">
+              {search ? 'No registered students match your search.' : 'No students have registered for this event yet.'}
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs border-collapse min-w-[620px]">
+                <thead className="bg-[#f0f3eb] text-ink font-semibold sticky top-0 border-b border-line font-mono text-[11px] uppercase tracking-wider">
+                  <tr>
+                    <th className="p-3 w-12 text-center">#</th>
+                    <th className="p-3">Student Name</th>
+                    <th className="p-3">Reg No</th>
+                    <th className="p-3">Dept & Class</th>
+                    <th className="p-3">Email</th>
+                    <th className="p-3">Registered At</th>
+                    <th className="p-3 text-center">Status</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-line/60">
+                  {filtered.map((s, idx) => (
+                    <tr key={s.user_id + '-' + idx} className="hover:bg-black/[0.02] transition-colors">
+                      <td className="p-3 text-center text-muted font-mono">{idx + 1}</td>
+                      <td className="p-3 font-semibold text-ink flex items-center gap-2">
+                        <span className="w-7 h-7 rounded-full bg-ink text-lime text-xs font-bold inline-grid place-items-center flex-shrink-0">
+                          {(s.name || 'S').charAt(0).toUpperCase()}
+                        </span>
+                        <span>{s.name}</span>
+                      </td>
+                      <td className="p-3 font-mono font-medium text-[#3b4640]">{s.reg_no}</td>
+                      <td className="p-3 text-muted">{s.department} · {s.class}</td>
+                      <td className="p-3 font-mono text-[#4a5568]">{s.email}</td>
+                      <td className="p-3 text-muted whitespace-nowrap">{s.registered_at}</td>
+                      <td className="p-3 text-center">
+                        <span className="inline-block bg-[#e8ede1] text-[#243b31] font-bold text-[10px] px-2 py-0.5 rounded-full uppercase tracking-wider">
+                          {s.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+
+        {/* Modal Footer */}
+        <div className="pt-4 mt-2 flex items-center justify-between text-xs text-muted border-t border-line">
+          <span>Campus Circle · Event Office Attendance Roster</span>
+          <button
+            onClick={onClose}
+            className="bg-[#243b31] text-white px-4 py-1.5 rounded-xs hover:bg-opacity-90 font-medium cursor-pointer"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}

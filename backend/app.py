@@ -330,6 +330,47 @@ def registrations(user_id):
     return jsonify([dict(r) for r in rows])
 
 
+@app.get('/api/events/<int:event_id>/registrations')
+def event_registrations(event_id):
+    """List all registered students for a specific event (Admin view)."""
+    con = conn()
+    cur = con.cursor()
+    cur.execute(
+        '''
+        SELECT 
+            u.id AS user_id, 
+            u.name, 
+            u.email, 
+            COALESCE(u.reg_no, 'N/A') AS reg_no, 
+            COALESCE(u.department, 'N/A') AS department, 
+            COALESCE(u.class, 'N/A') AS class, 
+            r.status, 
+            TO_CHAR(r.created_at, 'YYYY-MM-DD HH24:MI') AS registered_at
+        FROM registrations r
+        JOIN users u ON u.id = r.user_id
+        WHERE r.event_id = %s
+        ORDER BY r.created_at DESC
+        ''',
+        (event_id,)
+    )
+    rows = cur.fetchall()
+
+    cur.execute('SELECT id, title, category, date, time, venue, seats FROM events WHERE id = %s', (event_id,))
+    event = cur.fetchone()
+
+    cur.close()
+    con.close()
+
+    if not event:
+        return jsonify({'error': 'Event not found.'}), 404
+
+    return jsonify({
+        'event': dict(event),
+        'students': [dict(r) for r in rows],
+        'total': len(rows),
+    })
+
+
 # --------------- AI FEATURES ---------------
 
 @app.post('/api/ai/generate-event')
