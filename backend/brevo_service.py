@@ -176,7 +176,7 @@ def build_welcome_html(user):
 
               <!-- Call To Action -->
               <div style="text-align: center; margin: 32px 0 10px 0;">
-                <a href="https://events-iota-five.vercel.app" style="display: inline-block; background-color: #243b31; color: #ffffff; text-decoration: none; font-weight: 600; font-size: 15px; padding: 13px 32px; border-radius: 8px; box-shadow: 0 2px 6px rgba(36, 59, 49, 0.25);">
+                <a href="https://campuscirclepmc.vercel.app" style="display: inline-block; background-color: #243b31; color: #ffffff; text-decoration: none; font-weight: 600; font-size: 15px; padding: 13px 32px; border-radius: 8px; box-shadow: 0 2px 6px rgba(36, 59, 49, 0.25);">
                   Explore Campus Events →
                 </a>
               </div>
@@ -190,7 +190,7 @@ def build_welcome_html(user):
                 Campus Circle — Department of Information Technology
               </p>
               <p style="margin: 0;">
-                Er. Perumal Manimekalai College of Engineering, Hosur • Powered by Brevo
+                Er. Perumal Manimekalai College of Engineering, Hosur
               </p>
             </td>
           </tr>
@@ -305,7 +305,7 @@ def build_event_confirmation_html(user, event):
 
               <!-- Call To Action -->
               <div style="text-align: center; margin: 28px 0 10px 0;">
-                <a href="https://events-iota-five.vercel.app" style="display: inline-block; background-color: #243b31; color: #ffffff; text-decoration: none; font-weight: 600; font-size: 14.5px; padding: 12px 28px; border-radius: 8px; box-shadow: 0 2px 6px rgba(36, 59, 49, 0.25);">
+                <a href="https://campuscirclepmc.vercel.app" style="display: inline-block; background-color: #243b31; color: #ffffff; text-decoration: none; font-weight: 600; font-size: 14.5px; padding: 12px 28px; border-radius: 8px; box-shadow: 0 2px 6px rgba(36, 59, 49, 0.25);">
                   View Registered Events →
                 </a>
               </div>
@@ -319,7 +319,7 @@ def build_event_confirmation_html(user, event):
                 Campus Circle — Department of Information Technology
               </p>
               <p style="margin: 0;">
-                Er. Perumal Manimekalai College of Engineering, Hosur • Powered by Brevo
+                Er. Perumal Manimekalai College of Engineering, Hosur
               </p>
             </td>
           </tr>
