@@ -337,7 +337,7 @@ function GoldMedallionBadge({ className = "w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:
       <circle cx="60" cy="60" r="56" stroke="url(#goldEdge)" strokeWidth="3" strokeDasharray="4,2.5" />
       <circle cx="60" cy="60" r="49" fill="url(#goldShine)" stroke="#6b4c05" strokeWidth="1" />
       <circle cx="60" cy="60" r="42" fill="none" stroke="#fae498" strokeWidth="1" strokeDasharray="3,1.5" />
-      <text x="60" y="42" textAnchor="middle" fill="#3a2503" fontSize="12" fontWeight="800" fontFamily="sans-serif">[2026]</text>
+      <text x="60" y="42" textAnchor="middle" fill="#3a2503" fontSize="12" fontWeight="800" fontFamily="sans-serif">2026</text>
       <text x="60" y="55" textAnchor="middle" fill="#3a2503" fontSize="6.5" fontWeight="700" letterSpacing="0.8" fontFamily="sans-serif">AUTHORIZED</text>
       <text x="60" y="65" textAnchor="middle" fill="#3a2503" fontSize="6.5" fontWeight="700" letterSpacing="0.8" fontFamily="sans-serif">DISTRIBUTOR</text>
       <text x="60" y="78" textAnchor="middle" fill="#4d3204" fontSize="10">★★★</text>
@@ -465,39 +465,39 @@ function MyEvents({ user }) {
                 This certifies that
               </p>
               <h2 className="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-bold font-sans text-[#183d28] tracking-tight leading-tight">
-                [{user.name}]
+                {user.name}
               </h2>
             </div>
 
             {/* Blue-Bordered Content Box matching reference template */}
             <div className="mt-2.5 sm:mt-4 md:mt-5 p-2.5 sm:p-4 md:p-5 border border-[#3b82f6] bg-[#fcfdff] rounded-xs text-[10.5px] sm:text-xs md:text-sm text-[#1e2d25] leading-relaxed space-y-1.5 sm:space-y-2">
               <p>
-                is an Authorized Participant for <strong>[{cert.title}]</strong> under the <strong>[Campus Circle]</strong> event catalog.
+                is an Authorized Participant for <strong>{cert.title}</strong> under the <strong>Campus Circle</strong> event catalog.
               </p>
               <p>
-                This authorization applies exclusively to the attendance, technical workshops, and collaboration sessions of <strong>[{cert.title}]</strong> in <strong>[{cert.venue || 'Campus Auditorium'}]</strong> held on <strong>{cert.date}</strong> and does not extend to any other events from <strong>[Er. Perumal Manimekalai College of Engineering]</strong>.
+                This authorization applies exclusively to the attendance, technical workshops, and collaboration sessions of <strong>{cert.title}</strong> in <strong>{cert.venue || 'Campus Auditorium'}</strong> held on <strong>{cert.date}</strong> and does not extend to any other events from <strong>Er. Perumal Manimekalai College of Engineering</strong>.
               </p>
               <p className="text-[#59695f] text-[9.5px] sm:text-xs">
-                All participation rights and responsibilities are outlined in the official event registry. Any unauthorized duplication of credentials under [Campus Circle] is strictly prohibited.
+                All participation rights and responsibilities are outlined in the official event registry. Any unauthorized duplication of credentials under Campus Circle is strictly prohibited.
               </p>
             </div>
 
             {/* Signature Section on bottom right */}
-            <div className="flex justify-end mt-3 sm:mt-4 md:mt-6 mb-3 sm:mb-4">
-              <div className="text-center w-32 sm:w-44 md:w-48">
-                <div className="h-8 sm:h-12 flex items-center justify-center relative">
+            <div className="flex justify-end mt-2 sm:mt-4 md:mt-6 mb-3 sm:mb-4">
+              <div className="text-center w-36 sm:w-52 md:w-56">
+                <div className="h-14 sm:h-20 md:h-24 flex items-end justify-center pb-1 relative">
                   <img
                     src="/signature.jpg"
                     alt="Signature"
-                    className="h-8 sm:h-12 w-auto mix-blend-multiply contrast-125 brightness-105"
+                    className="h-12 sm:h-18 md:h-22 w-auto max-w-full mix-blend-multiply contrast-125 brightness-105 object-contain pointer-events-none select-none"
                   />
                 </div>
-                <div className="border-t border-[#183d28]/30 pt-1 mt-1">
+                <div className="border-t border-[#183d28]/35 pt-1 mt-0">
                   <p className="text-[11px] sm:text-xs md:text-sm font-bold font-sans text-[#183d28] tracking-wider uppercase">
-                    [Abhilash R]
+                    Abhilash R
                   </p>
                   <p className="text-[9px] sm:text-[10px] text-[#5b6e62] uppercase tracking-wider font-medium">
-                    [AUTHORIZED SIGNATORY]
+                    Authorized Signatory
                   </p>
                 </div>
               </div>
@@ -510,7 +510,7 @@ function MyEvents({ user }) {
               </span>
               <div className="flex items-center gap-3">
                 <span className="text-[10px] sm:text-xs md:text-sm font-mono font-bold text-[#183d28] mr-8 sm:mr-16">
-                  [certificate.issued_on: {cert.date}]
+                  Issued on: {cert.date}
                 </span>
                 {/* Dark green block accent at far bottom right corner */}
                 <div className="w-7 sm:w-14 h-full bg-[#183d28] absolute right-0 top-0 bottom-0" />
