@@ -1,10 +1,68 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Outfit:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+/* Smooth Scrolling & Custom Scrollbar */
+html {
+  scroll-behavior: smooth;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f4f6f2;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cdd4c8;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #9fb097;
+}
+
+/* Glassmorphism Navigation */
+.glass-nav {
+  background: rgba(251, 250, 246, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Glass Card */
+.glass-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(222, 227, 219, 0.8);
+}
+
+/* Premium Gradient Borders */
+.gradient-border-emerald {
+  border: 1px solid transparent;
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  background-image: linear-gradient(to right, #0f291e, #1a3c2d), linear-gradient(to right, #cfe870, #10b981);
+}
+
+/* Subtle Shimmer for High-Priority Elements */
+@keyframes subtle-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.shimmer-badge {
+  background: linear-gradient(90deg, rgba(207,232,112,0.15) 0%, rgba(207,232,112,0.45) 50%, rgba(207,232,112,0.15) 100%);
+  background-size: 200% 100%;
+  animation: subtle-shimmer 3s infinite linear;
+}
 
 /* Additional print stylesheet rules for Certificates */
 @media print {
   @page {
     size: landscape;
-    margin: 10mm;
+    margin: 8mm;
   }
   header, nav, button:not(.print-keep), .toast, section:not(.plain) {
     display: none !important;

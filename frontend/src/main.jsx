@@ -20,28 +20,63 @@ const icons = {
   Seminar: '◎',
 };
 
-// ── Floating Toast Notification ─────────────────────────────────────────────
+const categoryTheme = {
+  Workshop: {
+    bg: 'from-[#143d2c] via-[#1b4e39] to-[#0f2c1f]',
+    badgeBg: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30',
+    accent: '#cfe870',
+    tag: 'Workshop',
+  },
+  Technical: {
+    bg: 'from-[#173347] via-[#1d425c] to-[#0f2331]',
+    badgeBg: 'bg-sky-500/15 text-sky-300 border-sky-500/30',
+    accent: '#7dd3fc',
+    tag: 'Technical',
+  },
+  Cultural: {
+    bg: 'from-[#4d251d] via-[#612f25] to-[#361913]',
+    badgeBg: 'bg-rose-500/15 text-rose-300 border-rose-500/30',
+    accent: '#fca5a5',
+    tag: 'Cultural',
+  },
+  Placement: {
+    bg: 'from-[#423617] via-[#57471d] to-[#2e250f]',
+    badgeBg: 'bg-amber-500/15 text-amber-300 border-amber-500/30',
+    accent: '#fde047',
+    tag: 'Placement',
+  },
+  Seminar: {
+    bg: 'from-[#2c3d3a] via-[#374e4a] to-[#1f2b29]',
+    badgeBg: 'bg-teal-500/15 text-teal-300 border-teal-500/30',
+    accent: '#a7f3d0',
+    tag: 'Seminar',
+  },
+};
+
+// ── Floating Animated Toast Notification ────────────────────────────────────
 function Toast({ toast, onClose }) {
   if (!toast) return null;
   const isError = toast.type === 'error';
   const isSuccess = toast.type === 'success';
 
   return (
-    <div className="fixed bottom-5 right-5 z-[150] max-w-sm w-full bg-[#1e2e26] text-white p-4 rounded-sm shadow-2xl border-l-4 border-lime flex items-start justify-between gap-3 animate-bounce-short">
-      <div className="flex items-start gap-2.5">
-        <span className="text-lg leading-none mt-0.5">
-          {isError ? '⚠️' : isSuccess ? '✓' : 'ℹ️'}
+    <div className="fixed bottom-6 right-6 z-[150] max-w-sm w-full bg-[#121c17] text-white p-4 rounded-xl shadow-elevated border border-white/10 flex items-start justify-between gap-3 animate-scale-in">
+      <div className="flex items-start gap-3">
+        <span className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold shrink-0 ${
+          isError ? 'bg-rose-500/20 text-rose-300' : isSuccess ? 'bg-lime text-forest' : 'bg-white/10 text-white'
+        }`}>
+          {isError ? '✕' : isSuccess ? '✓' : 'ℹ'}
         </span>
         <div>
-          <p className="text-xs font-semibold uppercase tracking-wider text-[#cfe870] font-mono">
-            {isError ? 'Notice' : isSuccess ? 'Success' : 'Information'}
+          <p className="text-xs font-bold uppercase tracking-wider text-lime font-mono">
+            {isError ? 'Action Failed' : isSuccess ? 'Success' : 'Notification'}
           </p>
-          <p className="text-xs text-[#e1e9e3] mt-0.5 leading-relaxed">{toast.message}</p>
+          <p className="text-xs text-[#dbe5df] mt-0.5 leading-relaxed font-medium">{toast.message}</p>
         </div>
       </div>
       <button
         onClick={onClose}
-        className="text-[#9bb1a3] hover:text-white text-base leading-none font-bold p-0.5"
+        className="text-muted-light hover:text-white text-base leading-none font-bold p-1 transition-colors cursor-pointer"
       >
         ×
       </button>
@@ -49,7 +84,7 @@ function Toast({ toast, onClose }) {
   );
 }
 
-// ── Custom In-App Confirmation Modal ─────────────────────────────────────────
+// ── In-App Confirmation Modal ───────────────────────────────────────────────
 function ConfirmModal({ isOpen, title, message, confirmText = 'Confirm', danger = false, requireWord, onConfirm, onCancel }) {
   const [typed, setTyped] = useState('');
   if (!isOpen) return null;
@@ -57,34 +92,40 @@ function ConfirmModal({ isOpen, title, message, confirmText = 'Confirm', danger 
   const canConfirm = requireWord ? typed.trim().toUpperCase() === requireWord.toUpperCase() : true;
 
   return (
-    <div className="fixed inset-0 bg-[#14231b]/75 backdrop-blur-xs z-[160] grid place-items-center p-4">
-      <div className="bg-[#fffefa] w-full max-w-md p-6 rounded-sm shadow-[10px_10px_0_#cfe870] border border-line animate-fade-in">
-        <div className="flex items-center gap-2 mb-2 text-[#ad3f33]">
-          <span className="text-xl">⚠️</span>
-          <h3 className="font-serif text-xl font-bold tracking-tight text-ink">{title}</h3>
+    <div className="fixed inset-0 bg-[#0c1813]/70 backdrop-blur-md z-[160] grid place-items-center p-4 animate-fade-in">
+      <div className="bg-white w-full max-w-md p-6 sm:p-7 rounded-2xl shadow-elevated border border-line animate-scale-in">
+        <div className="flex items-center gap-3 mb-3">
+          <div className={`w-10 h-10 rounded-xl grid place-items-center text-lg ${danger ? 'bg-rose-50 text-rose-600' : 'bg-lime/20 text-forest'}`}>
+            {danger ? '⚠️' : 'ℹ️'}
+          </div>
+          <div>
+            <h3 className="font-display text-lg sm:text-xl font-bold tracking-tight text-ink">{title}</h3>
+            <span className="text-[11px] font-mono text-muted uppercase">Confirmation Required</span>
+          </div>
         </div>
-        <p className="text-xs sm:text-sm text-[#4e5a54] leading-relaxed mb-4">{message}</p>
+
+        <p className="text-xs sm:text-sm text-muted leading-relaxed mb-5">{message}</p>
 
         {requireWord && (
-          <div className="mb-4 bg-[#fbf5f4] p-3 border border-[#f0c2bc] rounded-xs">
-            <p className="text-xs text-[#ad3f33] font-semibold mb-1">
-              Type <span className="font-mono bg-white px-1.5 py-0.5 border border-[#ad3f33]/40 rounded-xs">{requireWord}</span> to confirm:
+          <div className="mb-5 bg-rose-50/70 p-3.5 border border-rose-200 rounded-xl">
+            <p className="text-xs text-rose-800 font-semibold mb-1.5">
+              Type <span className="font-mono bg-white px-2 py-0.5 border border-rose-300 rounded font-bold">{requireWord}</span> to authorize:
             </p>
             <input
               type="text"
               value={typed}
               onChange={(e) => setTyped(e.target.value)}
               placeholder={`Type "${requireWord}"`}
-              className="w-full text-xs p-2 border border-[#d5d8d0] rounded-xs font-mono uppercase focus:ring-1 focus:ring-[#ad3f33] focus:outline-none bg-white"
+              className="w-full text-xs p-2.5 border border-rose-300 rounded-lg font-mono uppercase focus:ring-2 focus:ring-rose-500 focus:outline-none bg-white text-ink"
             />
           </div>
         )}
 
-        <div className="flex items-center justify-end gap-2 pt-2 border-t border-line/60">
+        <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-line">
           <button
             type="button"
             onClick={onCancel}
-            className="px-4 py-2 border border-line text-xs font-medium rounded-xs hover:bg-black/5 transition-colors cursor-pointer"
+            className="px-4 py-2.5 border border-line text-xs font-semibold rounded-lg hover:bg-black/[0.04] text-muted hover:text-ink transition-colors cursor-pointer"
           >
             Cancel
           </button>
@@ -92,10 +133,10 @@ function ConfirmModal({ isOpen, title, message, confirmText = 'Confirm', danger 
             type="button"
             disabled={!canConfirm}
             onClick={() => { onConfirm(); setTyped(''); }}
-            className={`px-4 py-2 text-xs font-bold rounded-xs transition-colors shadow-xs cursor-pointer ${
+            className={`px-5 py-2.5 text-xs font-bold rounded-lg transition-all shadow-xs cursor-pointer ${
               danger
-                ? 'bg-[#ad3f33] text-white hover:bg-[#c62828] disabled:opacity-40 disabled:cursor-not-allowed'
-                : 'bg-ink text-white hover:bg-opacity-90'
+                ? 'bg-rose-600 hover:bg-rose-700 text-white disabled:opacity-40 disabled:cursor-not-allowed shadow-sm'
+                : 'bg-forest hover:bg-[#163a2b] text-white shadow-sm'
             }`}
           >
             {confirmText}
@@ -106,7 +147,7 @@ function ConfirmModal({ isOpen, title, message, confirmText = 'Confirm', danger 
   );
 }
 
-// ── Medallion Badge SVG ───────────────────────────────────────────────────────
+// ── Gold Medallion Badge (Exact Approved SVG) ────────────────────────────────
 function GoldMedallionBadge({ className = "w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20" }) {
   return (
     <svg viewBox="0 0 120 120" className={className} xmlns="http://www.w3.org/2000/svg">
@@ -183,21 +224,24 @@ function CertificateModal({ cert, user, onClose }) {
   if (!cert) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] bg-[#14231b]/85 backdrop-blur-xs p-2 sm:p-5 md:p-8 flex flex-col items-center justify-start sm:justify-center overflow-y-auto print:p-0 print:bg-white print:static">
-      <div className="w-full max-w-[960px] flex items-center justify-between gap-3 mb-2 sm:mb-3 print:hidden">
-        <span className="text-xs font-mono text-white/80 bg-white/10 px-3 py-1.5 rounded-xs hidden sm:inline-block">
-          Verified Event Credential · Official Certificate
-        </span>
-        <div className="flex items-center gap-2 ml-auto">
+    <div className="fixed inset-0 z-[100] bg-[#0c1813]/85 backdrop-blur-md p-3 sm:p-6 md:p-8 flex flex-col items-center justify-start sm:justify-center overflow-y-auto print:p-0 print:bg-white print:static animate-fade-in">
+      <div className="w-full max-w-[960px] flex items-center justify-between gap-3 mb-3 print:hidden">
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-mono font-semibold text-lime bg-lime/10 border border-lime/30 px-3 py-1.5 rounded-full flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-lime animate-pulse" />
+            Verified Credential · Official Certificate
+          </span>
+        </div>
+        <div className="flex items-center gap-2.5 ml-auto">
           <button
             onClick={onClose}
-            className="bg-white/90 hover:bg-white text-ink text-xs sm:text-sm font-semibold px-3 sm:px-4 py-2 rounded-xs shadow-sm transition-colors cursor-pointer"
+            className="bg-white/95 hover:bg-white text-ink text-xs sm:text-sm font-semibold px-4 py-2 rounded-lg shadow-sm transition-all cursor-pointer hover:scale-105 active:scale-95"
           >
             ← Back
           </button>
           <button
             onClick={() => window.print()}
-            className="bg-lime hover:bg-[#d9f07a] text-ink text-xs sm:text-sm font-bold px-3 sm:px-4 py-2 rounded-xs shadow-md transition-colors flex items-center gap-1.5 cursor-pointer"
+            className="bg-lime hover:bg-lime-hover text-forest text-xs sm:text-sm font-bold px-4 py-2 rounded-lg shadow-glow-lime transition-all flex items-center gap-1.5 cursor-pointer hover:scale-105 active:scale-95"
           >
             <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
               <path strokeLinecap="round" strokeLinejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
@@ -207,7 +251,7 @@ function CertificateModal({ cert, user, onClose }) {
         </div>
       </div>
 
-      <div className="w-full max-w-[960px] bg-white border border-[#cfd6d1] shadow-2xl relative flex flex-row overflow-hidden rounded-xs print:shadow-none print:border-0 print:w-full print:max-w-none print:rounded-none">
+      <div className="w-full max-w-[960px] bg-white border border-[#cfd6d1] shadow-2xl relative flex flex-row overflow-hidden rounded-sm print:shadow-none print:border-0 print:w-full print:max-w-none print:rounded-none">
         <div className="w-3.5 sm:w-7 md:w-9 bg-[#183d28] shrink-0" />
 
         <div className="flex-1 flex flex-col justify-between pl-3.5 pr-3.5 sm:pl-7 sm:pr-7 md:pl-9 md:pr-9 pt-4 sm:pt-6 md:pt-8 pb-0 relative bg-white">
@@ -288,7 +332,7 @@ function CertificateModal({ cert, user, onClose }) {
   );
 }
 
-// ── Event Detail Drawer / Modal ─────────────────────────────────────────────
+// ── Event Detail Drawer / Showcase Modal ────────────────────────────────────
 function EventDetailModal({ event, user, onEnroll, onCancelEnroll, onClose, openCertificate }) {
   if (!event) return null;
 
@@ -296,100 +340,115 @@ function EventDetailModal({ event, user, onEnroll, onCancelEnroll, onClose, open
   const registeredCount = event.registered || 0;
   const seatsLeft = Math.max(0, totalSeats - registeredCount);
   const percentFilled = Math.min(100, Math.round((registeredCount / totalSeats) * 100));
+  const t = categoryTheme[event.category] || categoryTheme.Workshop;
 
   return (
-    <div className="fixed inset-0 bg-[#14231b]/65 backdrop-blur-xs z-50 grid place-items-center p-3 sm:p-5">
-      <div className="bg-[#fffefa] w-full max-w-2xl p-6 sm:p-8 rounded-sm shadow-[10px_10px_0_#cfe870] border border-line max-h-[92vh] overflow-y-auto relative animate-fade-in">
-        <button
-          onClick={onClose}
-          className="absolute right-4 top-3 text-muted hover:text-ink text-2xl font-bold cursor-pointer"
-        >
-          ×
-        </button>
-
-        <div className="flex items-center gap-2 mb-2">
-          <span className="font-mono text-xs uppercase bg-[#243b31] text-[#cfe870] px-2.5 py-0.5 rounded-xs font-semibold">
-            {event.category}
-          </span>
-          <span className="text-xs text-muted font-mono">Event #{event.id}</span>
-          {event.is_registered && (
-            <span className="bg-[#d4edda] text-[#155724] text-xs px-2 py-0.5 rounded-full font-bold">
-              ✓ Registered
-            </span>
-          )}
-        </div>
-
-        <h2 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-ink mb-2">
-          {event.title}
-        </h2>
-
-        {/* Schedule grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 my-4 p-3.5 bg-[#f5f7f3] border border-line/60 rounded-xs text-xs">
-          <div>
-            <span className="text-muted block text-[10px] font-mono uppercase">Date</span>
-            <strong className="text-ink text-xs">{event.date}</strong>
-          </div>
-          <div>
-            <span className="text-muted block text-[10px] font-mono uppercase">Time</span>
-            <strong className="text-ink text-xs">{event.time}</strong>
-          </div>
-          <div>
-            <span className="text-muted block text-[10px] font-mono uppercase">Venue</span>
-            <strong className="text-ink text-xs">{event.venue}</strong>
-          </div>
-          <div>
-            <span className="text-muted block text-[10px] font-mono uppercase">Deadline</span>
-            <strong className="text-ink text-xs">{event.deadline || 'Same day'}</strong>
-          </div>
-        </div>
-
-        {/* Capacity Indicator */}
-        <div className="mb-5 bg-paper p-3.5 border border-line/70 rounded-xs">
-          <div className="flex items-center justify-between text-xs font-medium mb-1.5">
-            <span className="text-[#3a4941]">
-              Capacity: <strong>{registeredCount}</strong> / {totalSeats} seats filled
-            </span>
-            <span className={seatsLeft <= 5 ? 'text-[#ad3f33] font-bold' : 'text-[#4d7958] font-bold'}>
-              {seatsLeft === 0 ? 'Fully Booked' : `${seatsLeft} spots remaining`}
-            </span>
-          </div>
-          <div className="w-full bg-[#dbe2dc] h-2 rounded-full overflow-hidden">
-            <div
-              className={`h-full transition-all duration-500 rounded-full ${
-                percentFilled > 90 ? 'bg-[#ad3f33]' : percentFilled > 60 ? 'bg-[#e5a93b]' : 'bg-[#243b31]'
-              }`}
-              style={{ width: `${percentFilled}%` }}
-            />
-          </div>
-        </div>
-
-        {/* Description */}
-        <div className="space-y-3 mb-6 text-sm text-[#38433e] leading-relaxed">
-          <h4 className="font-bold text-xs font-mono uppercase tracking-wider text-muted">About this event</h4>
-          <p className="whitespace-pre-line">{event.description || 'No detailed description provided.'}</p>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="pt-4 border-t border-line flex flex-wrap items-center justify-between gap-3">
+    <div className="fixed inset-0 bg-[#0c1813]/70 backdrop-blur-md z-50 grid place-items-center p-3 sm:p-5 animate-fade-in">
+      <div className="bg-white w-full max-w-2xl rounded-2xl shadow-elevated border border-line max-h-[92vh] overflow-y-auto relative animate-scale-in flex flex-col">
+        {/* Banner with Category Gradient */}
+        <div className={`p-6 sm:p-8 bg-gradient-to-br ${t.bg} text-white relative overflow-hidden rounded-t-2xl`}>
+          <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl pointer-events-none" />
           <button
             onClick={onClose}
-            className="text-xs px-4 py-2 border border-line rounded-xs hover:bg-black/5 font-medium transition-colors cursor-pointer"
+            className="absolute right-4 top-4 w-9 h-9 rounded-full bg-black/20 hover:bg-black/40 text-white/90 hover:text-white grid place-items-center text-xl font-bold transition-all cursor-pointer"
+          >
+            ×
+          </button>
+
+          <div className="flex items-center gap-2 mb-3">
+            <span className={`text-xs font-mono font-bold px-3 py-1 rounded-full uppercase tracking-wider border ${t.badgeBg}`}>
+              {icons[event.category]} {event.category}
+            </span>
+            <span className="text-xs text-white/70 font-mono">ID #{event.id}</span>
+            {event.is_registered && (
+              <span className="bg-lime text-forest text-xs px-2.5 py-0.5 rounded-full font-bold flex items-center gap-1 shadow-sm">
+                ✓ Registered
+              </span>
+            )}
+          </div>
+
+          <h2 className="font-display text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white mb-2 leading-tight">
+            {event.title}
+          </h2>
+          <p className="text-xs sm:text-sm text-white/80 flex items-center gap-2">
+            <span>📍 {event.venue}</span>
+            <span>·</span>
+            <span>⏰ {event.time}</span>
+          </p>
+        </div>
+
+        {/* Content Body */}
+        <div className="p-6 sm:p-8 space-y-6">
+          {/* Schedule Chips Grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {[
+              ['Event Date', event.date, '📅'],
+              ['Time', event.time, '⏰'],
+              ['Location', event.venue, '📍'],
+              ['Deadline', event.deadline || 'Same day', '⏳'],
+            ].map(([lbl, val, ic]) => (
+              <div key={lbl} className="bg-[#f7f9f6] border border-line/80 p-3.5 rounded-xl">
+                <span className="text-[10px] font-mono text-muted uppercase tracking-wider block mb-1">
+                  {ic} {lbl}
+                </span>
+                <span className="font-bold text-xs sm:text-sm text-ink block truncate">{val}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Seat Capacity Meter */}
+          <div className="bg-[#fcfdfa] border border-line p-4 rounded-xl">
+            <div className="flex items-center justify-between text-xs font-semibold mb-2">
+              <span className="text-ink flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                Capacity Utilization: <strong>{registeredCount} / {totalSeats} seats</strong>
+              </span>
+              <span className={seatsLeft <= 5 ? 'text-rose-600 font-bold' : 'text-emerald-700 font-bold'}>
+                {seatsLeft === 0 ? 'Fully Booked' : `${seatsLeft} seats remaining`}
+              </span>
+            </div>
+            <div className="w-full bg-[#e8eee4] h-2.5 rounded-full overflow-hidden p-0.5">
+              <div
+                className={`h-full rounded-full transition-all duration-700 ${
+                  percentFilled >= 95 ? 'bg-rose-500' : percentFilled >= 70 ? 'bg-amber-500' : 'bg-emerald-600'
+                }`}
+                style={{ width: `${percentFilled}%` }}
+              />
+            </div>
+          </div>
+
+          {/* Description */}
+          <div>
+            <h4 className="font-display text-sm font-bold uppercase tracking-wider text-muted mb-2 flex items-center gap-1.5">
+              <span>✦</span> Event Details & Overview
+            </h4>
+            <div className="text-sm text-[#313f38] leading-relaxed whitespace-pre-line bg-[#fbfcf9] p-4 rounded-xl border border-line/60">
+              {event.description || 'No detailed syllabus or prerequisites provided for this event.'}
+            </div>
+          </div>
+        </div>
+
+        {/* Modal Footer Actions */}
+        <div className="p-4 sm:p-6 bg-[#f7f9f6] border-t border-line rounded-b-2xl flex flex-wrap items-center justify-between gap-3 mt-auto">
+          <button
+            onClick={onClose}
+            className="text-xs px-4 py-2.5 border border-line rounded-xl font-semibold text-muted hover:text-ink hover:bg-white transition-all cursor-pointer"
           >
             Close
           </button>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2.5">
             {event.is_registered ? (
               <>
                 <button
                   onClick={() => openCertificate(event)}
-                  className="bg-lime text-ink text-xs font-bold px-4 py-2.5 rounded-xs hover:bg-[#d9f07a] transition-colors shadow-xs flex items-center gap-1.5 cursor-pointer"
+                  className="bg-lime hover:bg-lime-hover text-forest text-xs font-bold px-4 py-2.5 rounded-xl shadow-glow-lime transition-all flex items-center gap-1.5 cursor-pointer hover:scale-105 active:scale-95"
                 >
-                  🎖️ Certificate
+                  🎖️ View Certificate
                 </button>
                 <button
                   onClick={() => onCancelEnroll(event.id)}
-                  className="text-xs text-[#ad3f33] hover:text-white hover:bg-[#ad3f33] border border-[#ad3f33]/40 px-3 py-2 rounded-xs font-medium transition-colors cursor-pointer"
+                  className="text-xs text-rose-600 hover:text-white hover:bg-rose-600 border border-rose-300 px-3.5 py-2.5 rounded-xl font-semibold transition-all cursor-pointer active:scale-95"
                 >
                   Cancel Registration
                 </button>
@@ -398,9 +457,9 @@ function EventDetailModal({ event, user, onEnroll, onCancelEnroll, onClose, open
               <button
                 disabled={seatsLeft === 0}
                 onClick={() => onEnroll(event.id)}
-                className="bg-ink text-white text-xs font-bold px-5 py-2.5 rounded-xs hover:bg-opacity-90 disabled:opacity-40 transition-colors shadow-sm disabled:cursor-not-allowed cursor-pointer"
+                className="bg-forest hover:bg-[#163a2b] text-white text-xs font-bold px-6 py-2.5 rounded-xl transition-all shadow-md hover:shadow-lg disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer hover:scale-105 active:scale-95 flex items-center gap-1.5"
               >
-                {seatsLeft === 0 ? 'Full' : 'Reserve Your Seat →'}
+                {seatsLeft === 0 ? 'Full' : 'Reserve Your Spot →'}
               </button>
             )}
           </div>
@@ -436,121 +495,121 @@ function EditEventModal({ event, onClose, onSaved }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-[#14231b]/65 backdrop-blur-xs z-50 grid place-items-center p-3 sm:p-5">
+    <div className="fixed inset-0 bg-[#0c1813]/70 backdrop-blur-md z-50 grid place-items-center p-3 sm:p-5 animate-fade-in">
       <form
         onSubmit={handleSubmit}
-        className="bg-[#fffefa] w-full max-w-xl p-6 sm:p-8 rounded-sm shadow-[10px_10px_0_#cfe870] border border-line max-h-[92vh] overflow-y-auto animate-fade-in"
+        className="bg-white w-full max-w-xl p-6 sm:p-8 rounded-2xl shadow-elevated border border-line max-h-[92vh] overflow-y-auto animate-scale-in"
       >
-        <div className="flex items-center justify-between border-b border-line pb-3 mb-4">
+        <div className="flex items-center justify-between border-b border-line pb-4 mb-5">
           <div>
-            <span className="font-mono text-xs uppercase bg-[#243b31] text-[#cfe870] px-2 py-0.5 rounded-xs font-semibold">
+            <span className="font-mono text-xs uppercase bg-forest text-lime px-2.5 py-0.5 rounded-full font-bold">
               Event #{event.id}
             </span>
-            <h3 className="font-serif text-xl sm:text-2xl font-bold tracking-tight text-ink mt-1">
+            <h3 className="font-display text-xl sm:text-2xl font-bold tracking-tight text-ink mt-1.5">
               Edit Event Listing
             </h3>
           </div>
-          <button type="button" onClick={onClose} className="text-2xl text-muted hover:text-ink font-bold cursor-pointer">
+          <button type="button" onClick={onClose} className="w-8 h-8 rounded-full bg-black/5 hover:bg-black/10 text-muted hover:text-ink font-bold grid place-items-center cursor-pointer">
             ×
           </button>
         </div>
 
-        {err && <p className="text-xs text-[#ad3f33] mb-3 bg-[#fbf5f4] p-2 border border-[#f0c2bc] rounded-xs">{err}</p>}
+        {err && <p className="text-xs text-rose-600 mb-4 bg-rose-50 p-3 border border-rose-200 rounded-xl">{err}</p>}
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-4">
-          <label className="sm:col-span-2 text-xs font-semibold text-[#4e5a54] flex flex-col gap-1">
-            Event title
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
+          <label className="sm:col-span-2 text-xs font-bold text-muted flex flex-col gap-1.5">
+            Event Title
             <input
               required
               value={form.title || ''}
               onChange={(e) => setForm({ ...form, title: e.target.value })}
-              className="border border-[#d5d8d0] p-2 bg-white rounded-xs text-sm font-normal focus:ring-1 focus:ring-ink focus:outline-none"
+              className="border border-line p-3 bg-white rounded-xl text-sm font-medium focus:ring-2 focus:ring-forest focus:outline-none transition-all"
             />
           </label>
-          <label className="text-xs font-semibold text-[#4e5a54] flex flex-col gap-1">
+          <label className="text-xs font-bold text-muted flex flex-col gap-1.5">
             Category
             <select
               value={form.category || 'Workshop'}
               onChange={(e) => setForm({ ...form, category: e.target.value })}
-              className="border border-[#d5d8d0] p-2 bg-white rounded-xs text-sm font-normal focus:ring-1 focus:ring-ink focus:outline-none"
+              className="border border-line p-3 bg-white rounded-xl text-sm font-medium focus:ring-2 focus:ring-forest focus:outline-none transition-all"
             >
               {['Workshop', 'Technical', 'Cultural', 'Placement', 'Seminar'].map((x) => (
                 <option key={x}>{x}</option>
               ))}
             </select>
           </label>
-          <label className="text-xs font-semibold text-[#4e5a54] flex flex-col gap-1">
-            Total capacity (Seats)
+          <label className="text-xs font-bold text-muted flex flex-col gap-1.5">
+            Total Capacity (Seats)
             <input
               required
               type="number"
               min="1"
               value={form.seats || 50}
               onChange={(e) => setForm({ ...form, seats: parseInt(e.target.value, 10) || 50 })}
-              className="border border-[#d5d8d0] p-2 bg-white rounded-xs text-sm font-normal focus:ring-1 focus:ring-ink focus:outline-none"
+              className="border border-line p-3 bg-white rounded-xl text-sm font-medium focus:ring-2 focus:ring-forest focus:outline-none transition-all"
             />
           </label>
-          <label className="text-xs font-semibold text-[#4e5a54] flex flex-col gap-1">
+          <label className="text-xs font-bold text-muted flex flex-col gap-1.5">
             Date
             <input
               required
               type="date"
               value={form.date || ''}
               onChange={(e) => setForm({ ...form, date: e.target.value })}
-              className="border border-[#d5d8d0] p-2 bg-white rounded-xs text-sm font-normal focus:ring-1 focus:ring-ink focus:outline-none"
+              className="border border-line p-3 bg-white rounded-xl text-sm font-medium focus:ring-2 focus:ring-forest focus:outline-none transition-all"
             />
           </label>
-          <label className="text-xs font-semibold text-[#4e5a54] flex flex-col gap-1">
+          <label className="text-xs font-bold text-muted flex flex-col gap-1.5">
             Time
             <input
               required
               value={form.time || ''}
               onChange={(e) => setForm({ ...form, time: e.target.value })}
-              className="border border-[#d5d8d0] p-2 bg-white rounded-xs text-sm font-normal focus:ring-1 focus:ring-ink focus:outline-none"
+              className="border border-line p-3 bg-white rounded-xl text-sm font-medium focus:ring-2 focus:ring-forest focus:outline-none transition-all"
             />
           </label>
-          <label className="text-xs font-semibold text-[#4e5a54] flex flex-col gap-1">
+          <label className="text-xs font-bold text-muted flex flex-col gap-1.5">
             Venue
             <input
               required
               value={form.venue || ''}
               onChange={(e) => setForm({ ...form, venue: e.target.value })}
-              className="border border-[#d5d8d0] p-2 bg-white rounded-xs text-sm font-normal focus:ring-1 focus:ring-ink focus:outline-none"
+              className="border border-line p-3 bg-white rounded-xl text-sm font-medium focus:ring-2 focus:ring-forest focus:outline-none transition-all"
             />
           </label>
-          <label className="text-xs font-semibold text-[#4e5a54] flex flex-col gap-1">
-            Registration deadline
+          <label className="text-xs font-bold text-muted flex flex-col gap-1.5">
+            Registration Deadline
             <input
               required
               type="date"
               value={form.deadline || ''}
               onChange={(e) => setForm({ ...form, deadline: e.target.value })}
-              className="border border-[#d5d8d0] p-2 bg-white rounded-xs text-sm font-normal focus:ring-1 focus:ring-ink focus:outline-none"
+              className="border border-line p-3 bg-white rounded-xl text-sm font-medium focus:ring-2 focus:ring-forest focus:outline-none transition-all"
             />
           </label>
-          <label className="sm:col-span-2 text-xs font-semibold text-[#4e5a54] flex flex-col gap-1">
+          <label className="sm:col-span-2 text-xs font-bold text-muted flex flex-col gap-1.5">
             Description
             <textarea
               rows="3"
               value={form.description || ''}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
-              className="border border-[#d5d8d0] p-2 bg-white rounded-xs text-sm font-normal focus:ring-1 focus:ring-ink focus:outline-none"
+              className="border border-line p-3 bg-white rounded-xl text-sm font-medium focus:ring-2 focus:ring-forest focus:outline-none transition-all"
             />
           </label>
         </div>
 
-        <div className="flex items-center justify-end gap-2 pt-3 border-t border-line">
+        <div className="flex items-center justify-end gap-2.5 pt-4 border-t border-line">
           <button
             type="button"
             onClick={onClose}
-            className="text-xs px-4 py-2 border border-line rounded-xs hover:bg-black/5 font-medium transition-colors cursor-pointer"
+            className="text-xs px-4 py-2.5 border border-line rounded-xl hover:bg-black/[0.04] font-semibold text-muted transition-colors cursor-pointer"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={saving}
-            className="bg-ink text-white text-xs font-bold px-5 py-2 rounded-xs hover:bg-opacity-90 transition-colors shadow-xs cursor-pointer"
+            className="bg-forest hover:bg-[#163a2b] text-white text-xs font-bold px-6 py-2.5 rounded-xl transition-all shadow-sm cursor-pointer hover:scale-105 active:scale-95"
           >
             {saving ? 'Saving changes…' : 'Save Changes →'}
           </button>
@@ -636,17 +695,18 @@ function AttendeeModal({ eventId, onClose, notify }) {
   });
 
   return (
-    <div className="fixed inset-0 bg-[#19201d]/60 backdrop-blur-xs z-50 grid place-items-center p-3 sm:p-5">
-      <div className="bg-[#fffefa] w-full max-w-4xl p-5 sm:p-7 relative shadow-[10px_10px_0_#cfe870] border border-line rounded-sm max-h-[92vh] flex flex-col animate-fade-in">
+    <div className="fixed inset-0 bg-[#0c1813]/70 backdrop-blur-md z-50 grid place-items-center p-3 sm:p-5 animate-fade-in">
+      <div className="bg-white w-full max-w-4xl p-6 sm:p-8 relative shadow-elevated border border-line rounded-2xl max-h-[92vh] flex flex-col animate-scale-in">
+        {/* Header */}
         <div className="flex items-start justify-between border-b border-line pb-4 mb-4">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="bg-ink text-lime text-[11px] font-mono px-2 py-0.5 rounded-xs font-semibold uppercase">
+              <span className="bg-forest text-lime text-xs font-mono px-2.5 py-0.5 rounded-full font-bold uppercase">
                 {data?.event?.category || 'Event'}
               </span>
               <span className="text-xs text-muted font-mono">Event #{eventId}</span>
             </div>
-            <h2 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-ink">
+            <h2 className="font-display text-2xl sm:text-3xl font-extrabold tracking-tight text-ink">
               {data?.event?.title || 'Registered Students'}
             </h2>
             {data?.event && (
@@ -657,52 +717,47 @@ function AttendeeModal({ eventId, onClose, notify }) {
           </div>
           <button
             onClick={onClose}
-            className="text-muted hover:text-ink text-3xl leading-none font-bold p-1 cursor-pointer"
+            className="w-9 h-9 rounded-full bg-black/5 hover:bg-black/10 text-muted hover:text-ink text-xl font-bold grid place-items-center transition-colors cursor-pointer"
           >
             ×
           </button>
         </div>
 
+        {/* Toolbar */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 mb-4">
           <div className="relative flex-1 max-w-md">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted text-xs">🔍</span>
+            <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted text-xs">🔍</span>
             <input
               type="text"
-              placeholder="Search by name, reg no, department..."
+              placeholder="Search by student name, reg no, dept..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-8 pr-3 py-2 border border-[#d5d8d0] rounded-xs text-xs bg-white focus:outline-none focus:ring-1 focus:ring-ink"
+              className="w-full pl-9 pr-3.5 py-2.5 border border-line rounded-xl text-xs bg-white focus:outline-none focus:ring-2 focus:ring-forest transition-all"
             />
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-xs font-mono bg-[#e8ede1] text-ink px-3 py-2 rounded-xs font-semibold whitespace-nowrap">
+            <span className="text-xs font-mono bg-cream text-forest px-3 py-2 rounded-lg font-bold border border-line">
               Enrolled: {filtered.length} {filtered.length === 1 ? 'student' : 'students'}
             </span>
             <button
               onClick={exportCSV}
               disabled={!data?.students?.length}
-              className="bg-ink text-white hover:bg-opacity-90 disabled:opacity-40 text-xs px-3 py-2 rounded-xs font-medium transition-colors flex items-center gap-1.5 cursor-pointer disabled:cursor-not-allowed whitespace-nowrap shadow-xs"
-              title="Download CSV for attendance"
+              className="bg-forest hover:bg-[#163a2b] text-white disabled:opacity-40 text-xs px-4 py-2.5 rounded-xl font-semibold transition-all flex items-center gap-1.5 cursor-pointer shadow-sm hover:scale-105 active:scale-95"
             >
               📥 Export CSV
-            </button>
-            <button
-              onClick={() => window.print()}
-              className="border border-line hover:bg-black/5 text-ink text-xs px-3 py-2 rounded-xs font-medium transition-colors cursor-pointer hidden sm:inline-flex"
-            >
-              🖨️ Print
             </button>
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto border border-line rounded-xs">
+        {/* Table Container */}
+        <div className="flex-1 overflow-y-auto border border-line rounded-xl">
           {loading ? (
             <div className="py-16 text-center text-muted text-sm flex flex-col items-center gap-3">
-              <span className="inline-block w-6 h-6 border-2 border-ink/30 border-t-ink rounded-full animate-spin" />
+              <span className="inline-block w-6 h-6 border-2 border-forest/30 border-t-forest rounded-full animate-spin" />
               Loading student roster…
             </div>
           ) : error ? (
-            <div className="py-12 text-center text-[#c62828] text-sm px-4">Error: {error}</div>
+            <div className="py-12 text-center text-rose-600 text-sm px-4">Error: {error}</div>
           ) : filtered.length === 0 ? (
             <div className="py-16 text-center text-muted text-sm px-4">
               {search ? 'No registered students match your search.' : 'No students have registered for this event yet.'}
@@ -710,53 +765,52 @@ function AttendeeModal({ eventId, onClose, notify }) {
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs border-collapse min-w-[680px]">
-                <thead className="bg-[#f0f3eb] text-ink font-semibold sticky top-0 border-b border-line font-mono text-[11px] uppercase tracking-wider">
+                <thead className="bg-[#f2f5ef] text-forest font-bold sticky top-0 border-b border-line font-mono text-[11px] uppercase tracking-wider">
                   <tr>
-                    <th className="p-3 w-10 text-center">#</th>
-                    <th className="p-3">Student Name</th>
-                    <th className="p-3">Reg No</th>
-                    <th className="p-3">Dept & Class</th>
-                    <th className="p-3">Email & Phone</th>
-                    <th className="p-3">Registered At</th>
-                    <th className="p-3 text-center">Attendance Status</th>
-                    <th className="p-3 text-right">Actions</th>
+                    <th className="p-3.5 w-12 text-center">#</th>
+                    <th className="p-3.5">Student Name</th>
+                    <th className="p-3.5">Reg No</th>
+                    <th className="p-3.5">Dept & Class</th>
+                    <th className="p-3.5">Contact Info</th>
+                    <th className="p-3.5">Registered At</th>
+                    <th className="p-3.5 text-center">Attendance</th>
+                    <th className="p-3.5 text-right">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-line/60">
                   {filtered.map((s, idx) => (
                     <tr key={s.user_id + '-' + idx} className="hover:bg-black/[0.02] transition-colors">
-                      <td className="p-3 text-center text-muted font-mono">{idx + 1}</td>
-                      <td className="p-3 font-semibold text-ink flex items-center gap-2">
-                        <span className="w-7 h-7 rounded-full bg-ink text-lime text-xs font-bold inline-grid place-items-center flex-shrink-0">
+                      <td className="p-3.5 text-center text-muted font-mono">{idx + 1}</td>
+                      <td className="p-3.5 font-bold text-ink flex items-center gap-2.5">
+                        <span className="w-7 h-7 rounded-full bg-forest text-lime text-xs font-bold grid place-items-center shrink-0 shadow-xs">
                           {(s.name || 'S').charAt(0).toUpperCase()}
                         </span>
                         <span>{s.name}</span>
                       </td>
-                      <td className="p-3 font-mono font-medium text-[#3b4640]">{s.reg_no}</td>
-                      <td className="p-3 text-muted">{s.department} · {s.class}</td>
-                      <td className="p-3 font-mono text-[#4a5568]">
+                      <td className="p-3.5 font-mono font-medium text-forest">{s.reg_no}</td>
+                      <td className="p-3.5 text-muted">{s.department} · {s.class}</td>
+                      <td className="p-3.5 font-mono text-ink">
                         <div>{s.email}</div>
                         {s.phone && <div className="text-[10px] text-muted">{s.phone}</div>}
                       </td>
-                      <td className="p-3 text-muted whitespace-nowrap">{s.registered_at}</td>
-                      <td className="p-3 text-center">
+                      <td className="p-3.5 text-muted whitespace-nowrap">{s.registered_at}</td>
+                      <td className="p-3.5 text-center">
                         <button
                           onClick={() => toggleAttendance(s.user_id, s.status)}
-                          className={`inline-flex items-center gap-1 font-bold text-[10px] px-2.5 py-1 rounded-full uppercase tracking-wider transition-colors cursor-pointer ${
+                          className={`inline-flex items-center gap-1 font-bold text-[10px] px-3 py-1 rounded-full uppercase tracking-wider transition-all cursor-pointer hover:scale-105 active:scale-95 ${
                             s.status === 'Attended'
-                              ? 'bg-[#d4edda] text-[#155724] hover:bg-[#c3e6cb]'
-                              : 'bg-[#e8ede1] text-[#243b31] hover:bg-lime hover:text-ink'
+                              ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                              : 'bg-cream text-forest hover:bg-lime border border-line'
                           }`}
                           title="Click to toggle Present/Attended status"
                         >
                           {s.status === 'Attended' ? '✓ Attended' : s.status || 'Confirmed'}
                         </button>
                       </td>
-                      <td className="p-3 text-right">
+                      <td className="p-3.5 text-right">
                         <button
                           onClick={() => removeStudent(s.user_id, s.name)}
-                          className="text-[#ad3f33] hover:text-[#d32f2f] text-xs font-medium border border-[#ad3f33]/30 hover:border-[#ad3f33] px-2 py-1 rounded-xs transition-colors cursor-pointer"
-                          title="Unenroll student from this event"
+                          className="text-rose-600 hover:text-white hover:bg-rose-600 text-xs font-semibold border border-rose-300 px-2.5 py-1 rounded-lg transition-all cursor-pointer"
                         >
                           Remove
                         </button>
@@ -769,11 +823,12 @@ function AttendeeModal({ eventId, onClose, notify }) {
           )}
         </div>
 
-        <div className="pt-4 mt-2 flex items-center justify-between text-xs text-muted border-t border-line">
-          <span>Click on status pill to toggle student attendance credential.</span>
+        {/* Modal Footer */}
+        <div className="pt-4 mt-3 flex items-center justify-between text-xs text-muted border-t border-line">
+          <span>Campus Circle · Official Event Attendance Registry</span>
           <button
             onClick={onClose}
-            className="bg-[#243b31] text-white px-4 py-1.5 rounded-xs hover:bg-opacity-90 font-medium cursor-pointer"
+            className="bg-forest text-white px-5 py-2 rounded-xl hover:bg-[#163a2b] font-bold cursor-pointer transition-all hover:scale-105 active:scale-95"
           >
             Close
           </button>
@@ -815,118 +870,193 @@ function Discover({ events, user, enroll, cancelEnroll, openDetail, openAttendee
 
   return (
     <>
-      {/* Hero */}
-      <section className="max-w-[1180px] mx-auto px-4 sm:px-6 py-10 md:py-20 flex flex-col md:flex-row items-center justify-between gap-8 lg:gap-[100px]">
-        <div className="flex-1 max-w-xl text-center md:text-left">
-          <p className="font-mono tracking-widest text-[#76817b] text-xs uppercase mb-3">YOUR CAMPUS, IN ONE PLACE</p>
-          <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl tracking-tight leading-[1.05] mb-4">
-            Good things are<br />
-            <em className="text-[#6d8279] not-italic">happening</em> here.
-          </h1>
-          <p className="text-muted text-base leading-relaxed max-w-md mx-auto md:mx-0">
-            Discover college workshops, hackathons, seminars and cultural events — with instant registration and certified credentials.
-          </p>
-          <button
-            className="bg-ink text-white px-5 py-3 rounded-sm text-sm font-medium mt-5 inline-flex items-center gap-3 hover:bg-opacity-90 transition-all shadow-md group cursor-pointer"
-            onClick={() => document.querySelector('#events')?.scrollIntoView({ behavior: 'smooth' })}
-          >
-            Explore events <b className="text-lime transition-transform group-hover:translate-x-1">→</b>
-          </button>
+      {/* ── Modern Hero Section ── */}
+      <section className="relative overflow-hidden pt-8 sm:pt-14 pb-12 sm:pb-20 border-b border-line bg-gradient-to-b from-white via-cream to-cream">
+        {/* Soft Ambient Background Glows */}
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-10 right-10 w-80 h-80 bg-lime/15 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="max-w-[1180px] mx-auto px-4 sm:px-6 relative flex flex-col md:flex-row items-center justify-between gap-8 lg:gap-14">
+          <div className="flex-1 max-w-xl text-center md:text-left">
+            <div className="inline-flex items-center gap-2 bg-forest text-lime text-xs font-mono font-bold px-3.5 py-1.5 rounded-full mb-4 shadow-sm border border-forest/30">
+              <span className="w-2 h-2 rounded-full bg-lime animate-pulse" />
+              <span>ER. PERUMAL MANIMEKALAI COLLEGE OF ENGINEERING</span>
+            </div>
+
+            <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.08] text-ink mb-4">
+              Events worth leaving <br className="hidden sm:inline" />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-forest via-[#16553b] to-emerald-600">
+                your room for.
+              </span>
+            </h1>
+
+            <p className="text-muted text-sm sm:text-base leading-relaxed max-w-lg mx-auto md:mx-0 mb-6">
+              Discover official college hackathons, technical workshops, placement talks, and cultural festivals — with single-click registrations and instant verified credentials.
+            </p>
+
+            <div className="flex flex-wrap items-center justify-center md:justify-start gap-3">
+              <button
+                className="bg-forest hover:bg-[#163a2b] text-white px-6 py-3.5 rounded-xl text-sm font-bold shadow-md hover:shadow-lg transition-all inline-flex items-center gap-2.5 cursor-pointer hover:scale-105 active:scale-95 group"
+                onClick={() => document.querySelector('#events')?.scrollIntoView({ behavior: 'smooth' })}
+              >
+                Explore Campus Events
+                <span className="w-6 h-6 rounded-full bg-lime text-forest grid place-items-center font-bold text-xs group-hover:translate-x-1 transition-transform">
+                  →
+                </span>
+              </button>
+
+              <div className="flex items-center gap-4 text-xs font-mono text-muted py-2 px-3 bg-white/60 backdrop-blur-xs rounded-xl border border-line">
+                <span className="flex items-center gap-1 font-bold text-forest">⚡ Live Roster</span>
+                <span>·</span>
+                <span className="flex items-center gap-1 font-bold text-forest">🎖️ Official PDF</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Up Next Card Preview */}
+          <div className="w-full md:w-[320px] lg:w-[350px] shrink-0 bg-gradient-to-br from-[#102a1f] via-[#16382a] to-[#0c1f17] text-white p-6 sm:p-7 rounded-2xl shadow-elevated border border-white/10 hover:scale-[1.02] transition-all relative overflow-hidden group">
+            <div className="absolute top-0 right-0 w-36 h-36 bg-lime/10 rounded-full blur-2xl pointer-events-none" />
+            <div className="flex items-center justify-between font-mono text-[10px] text-lime tracking-widest uppercase mb-3">
+              <span className="font-bold flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-lime animate-ping" />
+                UPCOMING HIGHLIGHT
+              </span>
+              <span className="bg-white/10 px-2 py-0.5 rounded-full text-white/80">TECHNICAL</span>
+            </div>
+
+            <div className="my-3">
+              <strong className="text-5xl font-display font-extrabold leading-none block text-white tracking-tight">
+                11
+                <small className="text-xs tracking-widest uppercase font-mono text-lime ml-2 font-bold">OCTOBER</small>
+              </strong>
+              <h3 className="font-display font-bold text-lg text-white mt-3 leading-snug">
+                CodeCraft Hackathon 2026
+              </h3>
+              <p className="text-xs text-white/70 mt-1 flex items-center gap-1">
+                <span>📍 C Block Auditorium</span>
+                <span>·</span>
+                <span>⏰ 09:00 AM</span>
+              </p>
+            </div>
+
+            <div className="pt-4 border-t border-white/10 flex items-center justify-between text-xs">
+              <span className="text-white/70 font-mono">120 Total Capacity</span>
+              <span className="text-lime font-bold group-hover:translate-x-1 transition-transform">View Details →</span>
+            </div>
+          </div>
         </div>
 
-        <div className="hidden sm:block bg-[#263a33] text-[#f8f7f2] w-full md:w-[300px] lg:w-[335px] min-h-[240px] p-6 relative shadow-[8px_8px_0_#cfe870] rounded-sm hover:scale-[1.02] transition-transform flex-shrink-0">
-          <span className="font-mono text-[10px] text-[#aab8ae] uppercase tracking-widest block mb-2">UP NEXT</span>
-          <strong className="text-6xl leading-none block font-medium mt-3 font-sans">
-            11<br />
-            <small className="text-sm tracking-widest uppercase font-mono block mt-1">OCT</small>
-          </strong>
-          <div className="absolute bottom-5 right-5 text-right max-w-[180px]">
-            <b className="text-base font-semibold block leading-tight">CodeCraft Hackathon</b>
-            <p className="text-xs text-[#c7d2ca] mt-1">9:00 AM · C Block Auditorium</p>
-          </div>
+        {/* Live Features Strip */}
+        <div className="max-w-[1180px] mx-auto px-4 sm:px-6 mt-10 pt-6 border-t border-line/60 grid grid-cols-2 sm:grid-cols-4 gap-3 text-center sm:text-left">
+          {[
+            ['500+ Students', 'Active college participants', '🎓'],
+            ['Single-Click', 'Instant confirmation & Brevo email', '⚡'],
+            ['Official Credential', 'Signed PMC digital certificates', '🎖️'],
+            ['Admin Rosters', 'Live attendance & CSV export', '📋'],
+          ].map(([title, desc, ic]) => (
+            <div key={title} className="flex items-start gap-2.5 p-2 rounded-xl">
+              <span className="text-xl">{ic}</span>
+              <div>
+                <strong className="font-display text-xs sm:text-sm font-bold text-ink block">{title}</strong>
+                <span className="text-[11px] text-muted leading-tight block">{desc}</span>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 
-      {/* Recommendations */}
+      {/* Recommendations Banner */}
       {user?.role === 'student' && rec.length > 0 && (
-        <section className="bg-[#e7eddf] border-y border-[#d5dbcf] px-4 sm:px-[6.5vw] py-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <p className="font-mono tracking-widest text-[#76817b] text-[11px] uppercase mb-1">PICKED FOR YOU</p>
-            <h2 className="font-serif text-xl sm:text-2xl font-semibold">Based on what you're into.</h2>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {rec.map((e) => (
-              <button
-                key={e.id}
-                onClick={() => openDetail(e)}
-                className="bg-[#f7f8f2] px-3 py-2 rounded-sm text-sm font-medium shadow-xs flex items-center gap-2 hover:bg-white cursor-pointer transition-colors"
-              >
-                <span className="text-ink">{icons[e.category]}</span> {e.title}
-              </button>
-            ))}
+        <section className="bg-gradient-to-r from-[#e7eee1] via-[#ebf2e6] to-[#e4ede0] border-b border-line px-4 sm:px-[6.5vw] py-5">
+          <div className="max-w-[1180px] mx-auto flex flex-col md:flex-row md:items-center justify-between gap-3">
+            <div className="flex items-center gap-2.5">
+              <span className="w-7 h-7 rounded-lg bg-forest text-lime grid place-items-center text-xs font-bold shrink-0">✨</span>
+              <div>
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-muted block">CURATED FOR YOU</span>
+                <h3 className="font-display text-sm sm:text-base font-bold text-forest">Based on your interests:</h3>
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {rec.map((e) => (
+                <button
+                  key={e.id}
+                  onClick={() => openDetail(e)}
+                  className="bg-white hover:bg-forest hover:text-white px-3.5 py-2 rounded-xl text-xs font-bold shadow-xs flex items-center gap-2 cursor-pointer transition-all hover:scale-105 active:scale-95 border border-line"
+                >
+                  <span className="text-forest group-hover:text-lime font-mono">{icons[e.category]}</span>
+                  <span>{e.title}</span>
+                </button>
+              ))}
+            </div>
           </div>
         </section>
       )}
 
-      {/* Events section */}
-      <section id="events" className="max-w-[1180px] mx-auto px-4 sm:px-6 py-10 md:py-16">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
+      {/* Events Listing Section */}
+      <section id="events" className="max-w-[1180px] mx-auto px-4 sm:px-6 py-10 sm:py-16">
+        {/* Section Header with Search & Sort */}
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 mb-6">
           <div>
-            <p className="font-mono tracking-widest text-[#76817b] text-xs uppercase mb-1">WHAT'S ON</p>
-            <h2 className="font-serif text-3xl md:text-4xl tracking-tight">Upcoming on campus</h2>
+            <p className="font-mono tracking-widest text-muted text-xs uppercase mb-1 font-semibold">ALL UPCOMING SESSIONS</p>
+            <h2 className="font-display text-3xl sm:text-4xl font-extrabold tracking-tight text-ink">What's on campus</h2>
           </div>
 
-          {/* Search & Sort */}
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
             <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted text-xs">🔍</span>
+              <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted text-xs">🔍</span>
               <input
                 type="text"
-                placeholder="Search events, topics..."
+                placeholder="Search events, venues, keywords..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="pl-8 pr-3 py-2 border border-[#d5d8d0] rounded-xs text-xs bg-white focus:outline-none focus:ring-1 focus:ring-ink w-full sm:w-48"
+                className="pl-9 pr-4 py-2.5 border border-line rounded-xl text-xs bg-white focus:outline-none focus:ring-2 focus:ring-forest transition-all w-full sm:w-60 shadow-xs"
               />
             </div>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="py-2 px-3 border border-[#d5d8d0] rounded-xs text-xs bg-white focus:outline-none focus:ring-1 focus:ring-ink text-muted font-medium"
+              className="py-2.5 px-3.5 border border-line rounded-xl text-xs bg-white focus:outline-none focus:ring-2 focus:ring-forest text-ink font-semibold shadow-xs cursor-pointer"
             >
               <option value="date">Sort: Upcoming Date</option>
-              <option value="popular">Sort: Most Popular</option>
+              <option value="popular">Sort: Most Enrolled</option>
               <option value="seats">Sort: Seats Remaining</option>
             </select>
           </div>
         </div>
 
         {/* Category Pills */}
-        <div className="flex flex-wrap gap-1.5 mb-6">
+        <div className="flex flex-wrap gap-2 mb-8">
           {['All', 'Workshop', 'Technical', 'Cultural', 'Placement', 'Seminar'].map((x) => {
             const count = x === 'All' ? events.length : events.filter((e) => e.category === x).length;
+            const active = filter === x;
             return (
               <button
                 key={x}
                 onClick={() => setFilter(x)}
-                className={`text-xs px-3 py-1.5 rounded-sm transition-colors font-medium flex items-center gap-1.5 cursor-pointer ${
-                  filter === x
-                    ? 'bg-[#243b31] text-[#cfe870] font-semibold shadow-xs'
-                    : 'text-[#68716c] hover:bg-black/5 bg-[#f0f3eb]'
+                className={`text-xs px-4 py-2 rounded-xl transition-all font-bold flex items-center gap-2 cursor-pointer shadow-xs active:scale-95 ${
+                  active
+                    ? 'bg-forest text-lime shadow-md'
+                    : 'bg-white hover:bg-[#f0f3eb] text-[#4d5c53] border border-line'
                 }`}
               >
-                <span>{x}</span>
-                <span className="text-[10px] opacity-75 font-mono">({count})</span>
+                <span>{x !== 'All' ? icons[x] : '✦'} {x}</span>
+                <span className={`text-[10px] font-mono px-1.5 py-0.2 rounded-full ${active ? 'bg-white/20 text-white' : 'bg-black/5 text-muted'}`}>
+                  {count}
+                </span>
               </button>
             );
           })}
         </div>
 
+        {/* Event Cards Grid */}
         {list.length === 0 ? (
-          <div className="bg-[#ebeee7] p-10 text-center text-muted rounded-sm text-sm border border-line/50">
-            No events match your current search or filter.
+          <div className="bg-white p-12 text-center text-muted rounded-2xl border border-line shadow-xs">
+            <span className="text-3xl block mb-2">🔍</span>
+            <p className="font-bold text-ink text-base">No events match your criteria</p>
+            <p className="text-xs text-muted mt-1">Try clearing your search query or choosing another category filter.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
             {list.map((e) => (
               <EventCard
                 key={e.id}
@@ -947,66 +1077,99 @@ function Discover({ events, user, enroll, cancelEnroll, openDetail, openAttendee
   );
 }
 
-// ── Event Card ──────────────────────────────────────────────────────────────
+// ── Redesigned Event Card ───────────────────────────────────────────────────
 function EventCard({ e, enroll, cancelEnroll, user, deleteEvent, editEvent, openAttendees, openDetail }) {
-  const bgClasses = {
-    Technical: 'bg-[#263f53]',
-    Cultural:  'bg-[#894f41]',
-    Placement: 'bg-[#705d31]',
-    Seminar:   'bg-[#526b68]',
-    Workshop:  'bg-[#30483f]',
-  };
-  const categoryBg = bgClasses[e.category] || 'bg-[#30483f]';
+  const t = categoryTheme[e.category] || categoryTheme.Workshop;
   const totalSeats = e.seats || 50;
   const registeredCount = e.registered || 0;
   const seatsLeft = Math.max(0, totalSeats - registeredCount);
+  const pct = Math.min(100, Math.round((registeredCount / totalSeats) * 100));
 
   return (
     <article
-      className={`h-[300px] relative p-5 rounded-sm overflow-hidden text-white ${categoryBg} transition-all hover:-translate-y-1 shadow-md flex flex-col justify-between group`}
+      className="bg-white rounded-2xl overflow-hidden border border-line shadow-soft hover:shadow-elevated hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between group"
     >
-      <div className="flex justify-between items-start font-mono text-[10px] uppercase tracking-wider">
-        <span className="font-semibold opacity-90">{e.category}</span>
-        <div className="flex items-center gap-1.5">
-          <span className="bg-white/15 px-2 py-0.5 rounded-xs backdrop-blur-xs">
+      {/* Top Banner with Rich Category Theme */}
+      <div className={`p-5 bg-gradient-to-br ${t.bg} text-white relative overflow-hidden`}>
+        <div className="flex justify-between items-start relative z-10">
+          <span className={`text-[11px] font-mono font-bold px-2.5 py-1 rounded-full uppercase tracking-wider border ${t.badgeBg} shadow-xs`}>
+            {icons[e.category]} {e.category}
+          </span>
+          <div className="bg-black/30 backdrop-blur-xs px-2.5 py-1 rounded-lg text-right font-mono text-[11px] font-bold text-white border border-white/10">
             {new Date(e.date + 'T00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-          </span>
-          <span className="bg-black/25 px-1.5 py-0.5 rounded-xs font-mono text-[9px]">
-            {seatsLeft === 0 ? 'FULL' : `${seatsLeft} left`}
-          </span>
+          </div>
         </div>
-      </div>
 
-      <div
-        onClick={() => openDetail(e)}
-        className="font-serif text-6xl text-lime my-auto opacity-90 transition-transform group-hover:scale-105 cursor-pointer select-none"
-      >
-        {icons[e.category]}
-      </div>
+        {/* Category Glyph Accent */}
+        <div
+          onClick={() => openDetail(e)}
+          className="my-3 font-serif text-5xl text-lime/90 opacity-90 transition-transform group-hover:scale-110 cursor-pointer select-none"
+        >
+          {icons[e.category]}
+        </div>
 
-      <div className="space-y-1.5">
         <h3
           onClick={() => openDetail(e)}
-          className="text-lg sm:text-xl font-bold tracking-tight leading-snug cursor-pointer hover:underline"
+          className="font-display text-lg sm:text-xl font-bold tracking-tight text-white leading-snug cursor-pointer hover:underline line-clamp-2"
         >
           {e.title}
         </h3>
-        <p className="text-xs text-[#dbe2dc] pb-0.5">{e.time} · {e.venue}</p>
+      </div>
 
-        <div className="flex justify-between items-center pt-2 border-t border-white/20">
-          <button
-            onClick={() => (e.is_registered ? openDetail(e) : enroll(e.id))}
-            className="text-xs border-b border-lime pb-0.5 text-white font-medium hover:text-lime transition-colors cursor-pointer"
-          >
-            {e.is_registered ? '✓ Enrolled · View →' : 'View & register →'}
-          </button>
+      {/* Card Body & Details */}
+      <div className="p-5 flex-1 flex flex-col justify-between gap-4">
+        <div className="space-y-2.5 text-xs text-muted">
+          <div className="flex items-center gap-2">
+            <span>⏰</span>
+            <span className="font-medium text-ink">{e.time}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span>📍</span>
+            <span className="font-medium text-ink truncate">{e.venue}</span>
+          </div>
+
+          {/* Seat Capacity Progress */}
+          <div className="pt-2">
+            <div className="flex items-center justify-between text-[11px] font-semibold mb-1">
+              <span className="text-muted">Seats: {registeredCount}/{totalSeats}</span>
+              <span className={seatsLeft <= 5 ? 'text-rose-600 font-bold' : 'text-emerald-700 font-bold'}>
+                {seatsLeft === 0 ? 'Full' : `${seatsLeft} left`}
+              </span>
+            </div>
+            <div className="w-full bg-[#edf1ea] h-1.5 rounded-full overflow-hidden">
+              <div
+                className={`h-full rounded-full ${pct >= 95 ? 'bg-rose-500' : pct >= 70 ? 'bg-amber-500' : 'bg-emerald-600'}`}
+                style={{ width: `${pct}%` }}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom Actions Bar */}
+        <div className="pt-3 border-t border-line/70 flex items-center justify-between gap-2">
+          {e.is_registered ? (
+            <button
+              onClick={() => openDetail(e)}
+              className="bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-2 rounded-xl transition-all flex items-center gap-1 cursor-pointer"
+            >
+              ✓ Enrolled · View →
+            </button>
+          ) : (
+            <button
+              disabled={seatsLeft === 0}
+              onClick={() => enroll(e.id)}
+              className="bg-forest hover:bg-[#163a2b] text-white text-xs font-bold px-4 py-2 rounded-xl transition-all shadow-xs disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer hover:scale-105 active:scale-95"
+            >
+              {seatsLeft === 0 ? 'Full' : 'Enroll Now →'}
+            </button>
+          )}
 
           {user?.role === 'admin' && (
             <div className="flex items-center gap-1.5">
               <button
                 type="button"
                 onClick={() => openAttendees(e.id)}
-                className="text-xs bg-lime text-ink font-bold px-2 py-1 rounded-xs hover:bg-white transition-colors flex items-center gap-1 shadow-xs cursor-pointer"
+                className="text-xs bg-lime hover:bg-lime-hover text-forest font-bold px-2.5 py-1.5 rounded-lg transition-all flex items-center gap-1 shadow-xs cursor-pointer hover:scale-105"
                 title="View registered student roster"
               >
                 👥 {registeredCount}
@@ -1014,7 +1177,7 @@ function EventCard({ e, enroll, cancelEnroll, user, deleteEvent, editEvent, open
               <button
                 type="button"
                 onClick={() => editEvent(e)}
-                className="text-xs text-white/90 hover:text-white border border-white/30 px-2 py-1 rounded-xs transition-colors cursor-pointer"
+                className="text-xs text-muted hover:text-ink hover:bg-black/5 border border-line p-1.5 rounded-lg transition-all cursor-pointer"
                 title="Edit event"
               >
                 ✏️
@@ -1022,7 +1185,7 @@ function EventCard({ e, enroll, cancelEnroll, user, deleteEvent, editEvent, open
               <button
                 type="button"
                 onClick={() => deleteEvent(e.id)}
-                className="text-xs text-[#ff9b8e] hover:text-white border border-[#ff9b8e]/40 px-2 py-1 rounded-xs transition-colors cursor-pointer"
+                className="text-xs text-rose-600 hover:text-white hover:bg-rose-600 border border-rose-200 p-1.5 rounded-lg transition-all cursor-pointer"
                 title="Delete event"
               >
                 🗑️
@@ -1069,14 +1232,16 @@ function MyEvents({ user, cancelEnroll, notify }) {
     <>
       {cert && <CertificateModal cert={cert} user={user} onClose={() => setCert(null)} />}
 
-      <section className="max-w-[1180px] mx-auto px-4 sm:px-6 py-10 md:py-16 min-h-[75vh]">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+      <section className="max-w-[1180px] mx-auto px-4 sm:px-6 py-10 sm:py-16 min-h-[75vh]">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
           <div>
-            <p className="font-mono tracking-widest text-[#76817b] text-xs uppercase mb-1">YOUR PLANS</p>
-            <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl tracking-tight">My events</h1>
+            <p className="font-mono tracking-widest text-muted text-xs uppercase mb-1 font-semibold">PERSONAL SCHEDULE</p>
+            <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-ink">
+              My Events & Passes
+            </h1>
           </div>
 
-          <div className="flex items-center gap-1.5 bg-[#f0f3eb] p-1 rounded-sm border border-line">
+          <div className="flex items-center gap-1.5 bg-white p-1.5 rounded-xl border border-line shadow-xs">
             {[
               ['all', 'All Plans'],
               ['upcoming', 'Upcoming'],
@@ -1085,8 +1250,8 @@ function MyEvents({ user, cancelEnroll, notify }) {
               <button
                 key={k}
                 onClick={() => setTab(k)}
-                className={`text-xs px-3 py-1.5 rounded-xs font-medium transition-colors cursor-pointer ${
-                  tab === k ? 'bg-ink text-white font-semibold shadow-xs' : 'text-[#68716c] hover:text-ink'
+                className={`text-xs px-3.5 py-2 rounded-lg font-bold transition-all cursor-pointer ${
+                  tab === k ? 'bg-forest text-white shadow-sm' : 'text-muted hover:text-ink'
                 }`}
               >
                 {label}
@@ -1096,54 +1261,60 @@ function MyEvents({ user, cancelEnroll, notify }) {
         </div>
 
         {filteredRows.length ? (
-          <div className="border-t border-line max-w-4xl divide-y divide-line">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl">
             {filteredRows.map((r) => (
-              <article key={r.id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 py-5 px-2 hover:bg-black/5 transition-colors rounded-sm">
-                <div className="flex items-center gap-4 sm:gap-6">
-                  <div className="text-center w-10 sm:w-12 shrink-0">
-                    <b className="font-serif text-2xl sm:text-3xl block leading-none">{new Date(r.date + 'T00:00').getDate()}</b>
-                    <span className="font-mono text-[10px] uppercase text-muted block mt-1">
-                      {new Date(r.date + 'T00:00').toLocaleDateString('en-US', { month: 'short' }).toUpperCase()}
+              <div
+                key={r.id}
+                className="bg-white border border-line p-5 rounded-2xl shadow-soft hover:shadow-elevated transition-all flex flex-col justify-between gap-4"
+              >
+                <div className="flex items-start gap-4">
+                  <div className="w-14 h-14 rounded-xl bg-forest text-white flex flex-col items-center justify-center shrink-0 shadow-sm">
+                    <b className="font-display text-lg font-bold leading-none">{new Date(r.date + 'T00:00').getDate()}</b>
+                    <span className="font-mono text-[9px] uppercase text-lime font-bold mt-0.5">
+                      {new Date(r.date + 'T00:00').toLocaleDateString('en-US', { month: 'short' })}
                     </span>
                   </div>
-                  <div>
-                    <span className="font-mono text-[10px] text-[#6c7e67] uppercase font-semibold block mb-0.5">{r.category}</span>
-                    <h3 className="text-base sm:text-lg font-bold text-ink mb-0.5">{r.title}</h3>
-                    <p className="text-xs text-muted">{r.time} · {r.venue}</p>
+
+                  <div className="flex-1">
+                    <span className="font-mono text-[10px] uppercase font-bold text-muted bg-[#f0f3eb] px-2 py-0.5 rounded-full inline-block mb-1">
+                      {r.category}
+                    </span>
+                    <h3 className="font-display text-base font-bold text-ink leading-snug">{r.title}</h3>
+                    <p className="text-xs text-muted mt-1">{r.time} · {r.venue}</p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2.5 ml-14 sm:ml-0">
-                  <span className={`text-xs font-semibold px-2 py-0.5 rounded-full flex items-center gap-1 ${
-                    r.status === 'Attended' ? 'bg-[#d4edda] text-[#155724]' : 'bg-[#e8ede1] text-[#243b31]'
+                <div className="flex items-center justify-between pt-3 border-t border-line/70">
+                  <span className={`text-xs font-bold px-2.5 py-1 rounded-full flex items-center gap-1.5 ${
+                    r.status === 'Attended' ? 'bg-emerald-100 text-emerald-800' : 'bg-cream text-forest border border-line'
                   }`}>
-                    <span className="text-[10px]">●</span> {r.status}
+                    <span className="w-1.5 h-1.5 rounded-full bg-current" />
+                    {r.status}
                   </span>
 
-                  <button
-                    onClick={() => setCert(r)}
-                    className="text-xs bg-lime hover:bg-[#d9f07a] text-ink font-bold px-3 py-1.5 rounded-xs transition-colors shadow-xs flex items-center gap-1 cursor-pointer"
-                    title="View and print official verified certificate"
-                  >
-                    🎖️ Certificate
-                  </button>
-
-                  <button
-                    onClick={() => handleCancel(r.id, r.title)}
-                    className="text-xs text-[#ad3f33] hover:text-[#d32f2f] border border-[#ad3f33]/30 px-2.5 py-1.5 rounded-xs transition-colors cursor-pointer"
-                    title="Cancel event registration"
-                  >
-                    Cancel
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setCert(r)}
+                      className="text-xs bg-lime hover:bg-lime-hover text-forest font-bold px-3.5 py-1.5 rounded-xl transition-all shadow-xs flex items-center gap-1 cursor-pointer hover:scale-105 active:scale-95"
+                    >
+                      🎖️ Certificate
+                    </button>
+                    <button
+                      onClick={() => handleCancel(r.id, r.title)}
+                      className="text-xs text-rose-600 hover:text-white hover:bg-rose-600 border border-rose-300 px-3 py-1.5 rounded-xl font-semibold transition-all cursor-pointer"
+                    >
+                      Cancel
+                    </button>
+                  </div>
                 </div>
-              </article>
+              </div>
             ))}
           </div>
         ) : (
-          <div className="bg-[#ebeee7] max-w-xl p-6 sm:p-8 text-muted rounded-sm text-sm leading-relaxed border border-line/50">
-            {tab === 'upcoming'
-              ? 'No upcoming events booked. Explore upcoming campus events to reserve your spot.'
-              : 'Nothing found in this view. Browse upcoming events to participate.'}
+          <div className="bg-white max-w-xl p-8 rounded-2xl border border-line shadow-xs text-center">
+            <span className="text-3xl block mb-2">🎟️</span>
+            <p className="font-bold text-ink text-base">No registered events yet</p>
+            <p className="text-xs text-muted mt-1">Browse upcoming campus events to reserve your seat and unlock official certificates.</p>
           </div>
         )}
       </section>
@@ -1184,9 +1355,9 @@ function Profile({ user, onUserUpdated, notify }) {
   };
 
   const rows = [
-    ['Full name', data.name],
-    ['Email', data.email],
-    ['Registration number', data.reg_no],
+    ['Full Name', data.name],
+    ['Email Address', data.email],
+    ['Registration Number', data.reg_no],
     ['Department', data.department],
     ['Class / Year', data.class],
     ['Phone Number', data.phone || '—'],
@@ -1195,93 +1366,95 @@ function Profile({ user, onUserUpdated, notify }) {
   ];
 
   return (
-    <section className="max-w-[1180px] mx-auto px-4 sm:px-6 py-10 md:py-16 min-h-[75vh]">
-      <div className="flex items-center justify-between max-w-xl mb-6">
+    <section className="max-w-[1180px] mx-auto px-4 sm:px-6 py-10 sm:py-16 min-h-[75vh]">
+      <div className="flex items-center justify-between max-w-xl mb-8">
         <div>
-          <p className="font-mono tracking-widest text-[#76817b] text-xs uppercase mb-1">YOUR ACCOUNT</p>
-          <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl tracking-tight">Profile</h1>
+          <p className="font-mono tracking-widest text-muted text-xs uppercase mb-1 font-semibold">ACCOUNT CREDENTIALS</p>
+          <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-ink">
+            Profile & ID
+          </h1>
         </div>
         {!editing && (
           <button
             onClick={() => setEditing(true)}
-            className="text-xs bg-ink text-white px-4 py-2 rounded-xs font-medium hover:bg-opacity-90 transition-colors cursor-pointer"
+            className="text-xs bg-forest hover:bg-[#163a2b] text-white px-4 py-2.5 rounded-xl font-bold transition-all shadow-sm cursor-pointer hover:scale-105 active:scale-95"
           >
             ✏️ Edit Profile
           </button>
         )}
       </div>
 
-      {err && <p className="text-[#ad3f33] text-sm mb-4 max-w-xl">{err}</p>}
+      {err && <p className="text-rose-600 text-xs mb-4 max-w-xl bg-rose-50 p-3 rounded-xl border border-rose-200">{err}</p>}
 
       {editing ? (
-        <form onSubmit={saveProfile} className="bg-paper border border-line rounded-sm p-6 max-w-xl shadow-sm space-y-4">
-          <h3 className="font-serif text-xl font-bold text-ink pb-2 border-b border-line">Edit Profile Details</h3>
+        <form onSubmit={saveProfile} className="bg-white border border-line rounded-2xl p-6 sm:p-8 max-w-xl shadow-soft space-y-4">
+          <h3 className="font-display text-xl font-bold text-ink pb-3 border-b border-line">Edit Profile Details</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <label className="sm:col-span-2 text-xs font-semibold text-[#4e5a54]">
+            <label className="sm:col-span-2 text-xs font-bold text-muted flex flex-col gap-1.5">
               Full Name
               <input
                 required
                 value={form.name || ''}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
-                className="w-full border border-[#d5d8d0] p-2.5 mt-1 bg-white rounded-xs text-sm"
+                className="w-full border border-line p-3 bg-white rounded-xl text-sm font-medium focus:ring-2 focus:ring-forest focus:outline-none"
               />
             </label>
-            <label className="text-xs font-semibold text-[#4e5a54]">
+            <label className="text-xs font-bold text-muted flex flex-col gap-1.5">
               Registration Number
               <input
                 value={form.reg_no || ''}
                 onChange={(e) => setForm({ ...form, reg_no: e.target.value })}
-                className="w-full border border-[#d5d8d0] p-2.5 mt-1 bg-white rounded-xs text-sm font-mono"
+                className="w-full border border-line p-3 bg-white rounded-xl text-sm font-mono focus:ring-2 focus:ring-forest focus:outline-none"
               />
             </label>
-            <label className="text-xs font-semibold text-[#4e5a54]">
+            <label className="text-xs font-bold text-muted flex flex-col gap-1.5">
               Department
               <input
                 value={form.department || ''}
                 onChange={(e) => setForm({ ...form, department: e.target.value })}
-                className="w-full border border-[#d5d8d0] p-2.5 mt-1 bg-white rounded-xs text-sm"
+                className="w-full border border-line p-3 bg-white rounded-xl text-sm font-medium focus:ring-2 focus:ring-forest focus:outline-none"
               />
             </label>
-            <label className="text-xs font-semibold text-[#4e5a54]">
+            <label className="text-xs font-bold text-muted flex flex-col gap-1.5">
               Class / Section
               <input
                 value={form.class || ''}
                 onChange={(e) => setForm({ ...form, class: e.target.value })}
-                className="w-full border border-[#d5d8d0] p-2.5 mt-1 bg-white rounded-xs text-sm"
+                className="w-full border border-line p-3 bg-white rounded-xl text-sm font-medium focus:ring-2 focus:ring-forest focus:outline-none"
               />
             </label>
-            <label className="text-xs font-semibold text-[#4e5a54]">
+            <label className="text-xs font-bold text-muted flex flex-col gap-1.5">
               Phone Number
               <input
                 value={form.phone || ''}
                 onChange={(e) => setForm({ ...form, phone: e.target.value })}
                 placeholder="+91 9876543210"
-                className="w-full border border-[#d5d8d0] p-2.5 mt-1 bg-white rounded-xs text-sm font-mono"
+                className="w-full border border-line p-3 bg-white rounded-xl text-sm font-mono focus:ring-2 focus:ring-forest focus:outline-none"
               />
             </label>
-            <label className="sm:col-span-2 text-xs font-semibold text-[#4e5a54]">
+            <label className="sm:col-span-2 text-xs font-bold text-muted flex flex-col gap-1.5">
               Interests & Keywords
               <input
                 value={form.interests || ''}
                 onChange={(e) => setForm({ ...form, interests: e.target.value })}
                 placeholder="Technical, Hackathon, Cultural"
-                className="w-full border border-[#d5d8d0] p-2.5 mt-1 bg-white rounded-xs text-sm"
+                className="w-full border border-line p-3 bg-white rounded-xl text-sm font-medium focus:ring-2 focus:ring-forest focus:outline-none"
               />
             </label>
           </div>
 
-          <div className="flex items-center justify-end gap-2 pt-3 border-t border-line">
+          <div className="flex items-center justify-end gap-2.5 pt-4 border-t border-line">
             <button
               type="button"
               onClick={() => { setEditing(false); setForm(data); }}
-              className="text-xs px-4 py-2 border border-line rounded-xs hover:bg-black/5 font-medium cursor-pointer"
+              className="text-xs px-4 py-2.5 border border-line rounded-xl hover:bg-black/5 font-bold text-muted cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={saving}
-              className="bg-ink text-white text-xs font-bold px-5 py-2 rounded-xs hover:bg-opacity-90 shadow-xs cursor-pointer"
+              className="bg-forest hover:bg-[#163a2b] text-white text-xs font-bold px-6 py-2.5 rounded-xl shadow-sm cursor-pointer hover:scale-105 active:scale-95"
             >
               {saving ? 'Saving…' : 'Save Profile'}
             </button>
@@ -1290,42 +1463,42 @@ function Profile({ user, onUserUpdated, notify }) {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl">
           {/* Details Table */}
-          <div className="bg-paper border border-line rounded-sm shadow-sm divide-y divide-line">
+          <div className="bg-white border border-line rounded-2xl shadow-soft divide-y divide-line overflow-hidden">
             {rows.map(([label, value]) => (
-              <div key={label} className="flex items-center justify-between px-4 sm:px-6 py-3.5 gap-4">
-                <span className="text-xs font-semibold text-[#4e5a54] uppercase tracking-wide shrink-0">{label}</span>
-                <span className="text-sm font-medium text-ink text-right break-all">{value || '—'}</span>
+              <div key={label} className="flex items-center justify-between px-5 py-4 gap-4">
+                <span className="text-xs font-bold text-muted uppercase tracking-wider shrink-0">{label}</span>
+                <span className="text-sm font-semibold text-ink text-right break-all">{value || '—'}</span>
               </div>
             ))}
           </div>
 
           {/* Student ID Card Badge Preview */}
-          <div className="bg-[#243b31] text-white p-6 rounded-sm shadow-lg flex flex-col justify-between border-2 border-[#cfe870]/30 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-[#cfe870]/10 rounded-full blur-2xl pointer-events-none" />
+          <div className="bg-gradient-to-br from-[#0c2219] via-[#133728] to-[#0a1c14] text-white p-7 rounded-2xl shadow-elevated flex flex-col justify-between border-2 border-lime/30 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-40 h-40 bg-lime/15 rounded-full blur-3xl pointer-events-none" />
             <div>
-              <div className="flex items-center justify-between border-b border-white/20 pb-3 mb-4">
+              <div className="flex items-center justify-between border-b border-white/20 pb-4 mb-5">
                 <div>
-                  <span className="text-[10px] font-mono tracking-widest text-[#cfe870] uppercase block">OFFICIAL CREDENTIAL</span>
-                  <span className="text-xs font-bold">ER. PERUMAL MANIMEKALAI COLLEGE</span>
+                  <span className="text-[10px] font-mono tracking-widest text-lime uppercase font-bold block">COLLEGE IDENTIFIER</span>
+                  <span className="text-xs font-extrabold text-white">ER. PERUMAL MANIMEKALAI COLLEGE</span>
                 </div>
-                <i className="font-serif text-[20px] not-italic bg-lime text-ink inline-grid place-items-center w-[26px] h-[26px] rounded-full font-bold">c</i>
+                <i className="font-serif text-[22px] not-italic bg-lime text-forest inline-grid place-items-center w-8 h-8 rounded-full font-bold shadow-md">c</i>
               </div>
 
-              <div className="flex items-center gap-3.5 mb-4">
-                <div className="w-14 h-14 rounded-full bg-lime text-ink font-serif text-2xl font-bold grid place-items-center shrink-0">
+              <div className="flex items-center gap-4 mb-5">
+                <div className="w-16 h-16 rounded-2xl bg-lime text-forest font-display text-3xl font-extrabold grid place-items-center shrink-0 shadow-md">
                   {(data.name || 'S').charAt(0).toUpperCase()}
                 </div>
                 <div>
-                  <h3 className="font-bold text-lg text-white leading-tight">{data.name}</h3>
-                  <p className="text-xs text-[#cfe870] font-mono mt-0.5">{data.reg_no || 'PMC-STUDENT'}</p>
-                  <p className="text-xs text-white/70">{data.department} · {data.class}</p>
+                  <h3 className="font-display font-extrabold text-xl text-white leading-tight">{data.name}</h3>
+                  <p className="text-xs text-lime font-mono mt-1 font-bold">{data.reg_no || 'PMC-STUDENT'}</p>
+                  <p className="text-xs text-white/80">{data.department} · {data.class}</p>
                 </div>
               </div>
             </div>
 
-            <div className="pt-3 border-t border-white/15 flex items-center justify-between text-[11px] font-mono text-white/70">
-              <span>ROLE: {data.role?.toUpperCase()}</span>
-              <span>VERIFIED MEMBER ✓</span>
+            <div className="pt-4 border-t border-white/15 flex items-center justify-between text-xs font-mono text-white/80">
+              <span className="font-bold">ROLE: {data.role?.toUpperCase()}</span>
+              <span className="bg-lime/20 text-lime px-2.5 py-0.5 rounded-full font-bold border border-lime/30">VERIFIED ✓</span>
             </div>
           </div>
         </div>
@@ -1365,7 +1538,6 @@ function Admin({ refresh, events, openAttendees, deleteEvent, editEvent, notify 
     loadUsers();
   }, []);
 
-  // Submit new event
   const submitEvent = async (e) => {
     e.preventDefault();
     try {
@@ -1381,7 +1553,6 @@ function Admin({ refresh, events, openAttendees, deleteEvent, editEvent, notify 
     }
   };
 
-  // AI autofill
   const aiAutoFill = async () => {
     if (!aiPrompt.trim()) return;
     setAiLoading(true);
@@ -1404,7 +1575,6 @@ function Admin({ refresh, events, openAttendees, deleteEvent, editEvent, notify 
     }
   };
 
-  // Delete individual user
   const handleDeleteUser = (userId, userName) => {
     setConfirmModal({
       isOpen: true,
@@ -1429,7 +1599,6 @@ function Admin({ refresh, events, openAttendees, deleteEvent, editEvent, notify 
     });
   };
 
-  // Delete ALL registered users (User request!)
   const handleDeleteAllUsers = () => {
     setConfirmModal({
       isOpen: true,
@@ -1455,7 +1624,6 @@ function Admin({ refresh, events, openAttendees, deleteEvent, editEvent, notify 
     });
   };
 
-  // Export Users CSV
   const exportUsersCSV = () => {
     if (!users.length) return;
     const headers = ['#', 'Student Name', 'Reg No', 'Department', 'Class', 'Email', 'Phone', 'Events Registered'];
@@ -1494,26 +1662,28 @@ function Admin({ refresh, events, openAttendees, deleteEvent, editEvent, notify 
     <>
       <ConfirmModal {...confirmModal} />
 
-      <section className="max-w-[1180px] mx-auto px-4 sm:px-6 py-10 md:py-16 min-h-[75vh]">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+      <section className="max-w-[1180px] mx-auto px-4 sm:px-6 py-10 sm:py-16 min-h-[75vh]">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
           <div>
-            <p className="font-mono tracking-widest text-[#76817b] text-xs uppercase mb-1">EVENT OFFICE PORTAL</p>
-            <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl tracking-tight">Admin Dashboard</h1>
+            <p className="font-mono tracking-widest text-muted text-xs uppercase mb-1 font-semibold">EVENT OFFICE PORTAL</p>
+            <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-ink">
+              Admin Command Center
+            </h1>
           </div>
 
           {/* Tab Navigation */}
-          <div className="flex flex-wrap items-center gap-1.5 bg-[#f0f3eb] p-1.5 rounded-sm border border-line">
+          <div className="flex flex-wrap items-center gap-1.5 bg-white p-1.5 rounded-xl border border-line shadow-xs">
             {[
               ['rosters', '📅 Events & Rosters'],
               ['users', '👥 User Directory'],
-              ['publish', '✨ Publish / AI'],
+              ['publish', '✨ Publish & AI'],
               ['analytics', '📊 Analytics'],
             ].map(([k, label]) => (
               <button
                 key={k}
                 onClick={() => setTab(k)}
-                className={`text-xs px-3.5 py-2 rounded-xs font-semibold transition-colors cursor-pointer ${
-                  tab === k ? 'bg-ink text-white shadow-xs' : 'text-[#68716c] hover:text-ink'
+                className={`text-xs px-4 py-2 rounded-lg font-bold transition-all cursor-pointer ${
+                  tab === k ? 'bg-forest text-white shadow-sm' : 'text-muted hover:text-ink'
                 }`}
               >
                 {label}
@@ -1522,34 +1692,38 @@ function Admin({ refresh, events, openAttendees, deleteEvent, editEvent, notify 
           </div>
         </div>
 
-        {/* ── Top Metric Cards ── */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-8">
+        {/* Metric Cards Strip */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
           {[
-            ['Active Events', stats.events || 0, 'bg-[#e8ede1]'],
-            ['Total Registrations', stats.registrations || 0, 'bg-[#e8ede1]'],
-            ['Registered Students', stats.students || 0, 'bg-[#cfe870]/40'],
-            ['Verified Attendees', stats.attended || 0, 'bg-[#d4edda]'],
-          ].map(([label, val, bg]) => (
-            <div key={label} className={`${bg} p-4 rounded-sm shadow-xs border border-line/40`}>
-              <b className="font-serif text-2xl sm:text-3xl block font-semibold text-ink">{val}</b>
-              <span className="text-xs text-[#4e5a54] font-medium mt-1 block leading-tight">{label}</span>
+            ['Active Events', stats.events || 0, 'bg-white', '📅'],
+            ['Total Registrations', stats.registrations || 0, 'bg-white', '⚡'],
+            ['Registered Students', stats.students || 0, 'bg-emerald-50/70 border-emerald-200', '🎓'],
+            ['Verified Attendees', stats.attended || 0, 'bg-lime/20 border-lime/40', '🎖️'],
+          ].map(([label, val, bg, ic]) => (
+            <div key={label} className={`${bg} p-5 rounded-2xl shadow-soft border border-line flex flex-col justify-between`}>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xl">{ic}</span>
+                <span className="text-[10px] font-mono text-muted uppercase font-bold">Metrics</span>
+              </div>
+              <b className="font-display text-3xl sm:text-4xl font-extrabold text-ink">{val}</b>
+              <span className="text-xs text-muted font-bold mt-1">{label}</span>
             </div>
           ))}
         </div>
 
         {/* ── TAB 1: EVENTS & ROSTERS ── */}
         {tab === 'rosters' && (
-          <div className="bg-paper p-5 sm:p-7 border border-line rounded-sm shadow-xs animate-fade-in">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-3 border-b border-line">
+          <div className="bg-white p-6 sm:p-8 border border-line rounded-2xl shadow-soft animate-fade-in">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-4 border-b border-line">
               <div>
-                <h2 className="font-serif text-xl sm:text-2xl font-bold tracking-tight">Events & Attendee Rosters</h2>
-                <p className="text-xs text-muted mt-0.5">Manage existing events, view student attendance rosters, and toggle certificates.</p>
+                <h2 className="font-display text-xl sm:text-2xl font-bold tracking-tight text-ink">Active Events & Rosters</h2>
+                <p className="text-xs text-muted mt-0.5">Manage existing events, view registered attendees, toggle attendance credentials.</p>
               </div>
               <button
                 onClick={() => setTab('publish')}
-                className="bg-ink text-white text-xs font-semibold px-4 py-2 rounded-xs hover:bg-opacity-90 transition-colors self-start sm:self-auto cursor-pointer"
+                className="bg-forest hover:bg-[#163a2b] text-white text-xs font-bold px-4 py-2.5 rounded-xl transition-all self-start sm:self-auto cursor-pointer shadow-sm hover:scale-105 active:scale-95"
               >
-                + Add New Event
+                + Publish New Event
               </button>
             </div>
 
@@ -1563,34 +1737,33 @@ function Admin({ refresh, events, openAttendees, deleteEvent, editEvent, notify 
                   const pct = Math.min(100, Math.round((regCount / totalSeats) * 100));
 
                   return (
-                    <div key={ev.id} className="p-4 border border-[#e2e7dc] bg-[#fcfbf7] rounded-xs flex flex-col justify-between gap-3 hover:border-ink/30 transition-all shadow-xs">
+                    <div key={ev.id} className="p-5 border border-line bg-[#fcfdfa] rounded-xl flex flex-col justify-between gap-4 hover:border-forest/40 transition-all shadow-xs">
                       <div>
-                        <div className="flex items-center justify-between gap-2 mb-1.5">
-                          <span className="text-[10px] font-mono uppercase bg-[#243b31] text-[#cfe870] px-2 py-0.5 rounded-xs font-semibold">
+                        <div className="flex items-center justify-between gap-2 mb-2">
+                          <span className="text-[10px] font-mono uppercase bg-forest text-lime px-2.5 py-0.5 rounded-full font-bold">
                             {ev.category}
                           </span>
                           <span className="text-xs text-muted font-mono">{ev.date}</span>
                         </div>
-                        <h4 className="font-bold text-base text-ink leading-snug">{ev.title}</h4>
-                        <p className="text-xs text-muted mt-0.5">{ev.time} · {ev.venue}</p>
+                        <h4 className="font-display font-bold text-base text-ink leading-snug">{ev.title}</h4>
+                        <p className="text-xs text-muted mt-1">{ev.time} · {ev.venue}</p>
 
-                        {/* Capacity meter */}
-                        <div className="mt-3 bg-white p-2 border border-line/60 rounded-xs">
-                          <div className="flex justify-between text-[11px] font-medium text-[#4e5a54] mb-1">
-                            <span>Enrolled: <strong>{regCount}</strong> / {totalSeats}</span>
+                        <div className="mt-3 bg-white p-2.5 border border-line rounded-lg">
+                          <div className="flex justify-between text-[11px] font-bold text-muted mb-1">
+                            <span>Enrolled: <strong className="text-ink">{regCount}</strong> / {totalSeats}</span>
                             <span>{pct}% filled</span>
                           </div>
-                          <div className="w-full bg-[#e8ede1] h-1.5 rounded-full overflow-hidden">
-                            <div className="bg-[#243b31] h-full rounded-full" style={{ width: `${pct}%` }} />
+                          <div className="w-full bg-[#e8eee4] h-1.5 rounded-full overflow-hidden">
+                            <div className="bg-forest h-full rounded-full" style={{ width: `${pct}%` }} />
                           </div>
                         </div>
                       </div>
 
-                      <div className="flex items-center justify-between pt-2 border-t border-line/50">
+                      <div className="flex items-center justify-between pt-3 border-t border-line">
                         <button
                           type="button"
                           onClick={() => openAttendees(ev.id)}
-                          className="bg-lime text-ink hover:bg-[#d9f07a] text-xs font-bold px-3 py-1.5 rounded-xs transition-colors flex items-center gap-1 shadow-xs cursor-pointer"
+                          className="bg-lime hover:bg-lime-hover text-forest text-xs font-bold px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5 shadow-xs cursor-pointer hover:scale-105 active:scale-95"
                         >
                           👥 View Students ({regCount})
                         </button>
@@ -1598,14 +1771,14 @@ function Admin({ refresh, events, openAttendees, deleteEvent, editEvent, notify 
                           <button
                             type="button"
                             onClick={() => editEvent(ev)}
-                            className="text-xs text-ink hover:bg-black/5 border border-line px-2.5 py-1.5 rounded-xs transition-colors cursor-pointer"
+                            className="text-xs text-ink hover:bg-black/5 border border-line px-3 py-1.5 rounded-lg font-bold transition-all cursor-pointer"
                           >
                             Edit
                           </button>
                           <button
                             type="button"
                             onClick={() => deleteEvent(ev.id)}
-                            className="text-xs text-[#ad3f33] hover:text-[#d32f2f] border border-[#ad3f33]/30 px-2 py-1.5 rounded-xs transition-colors cursor-pointer"
+                            className="text-xs text-rose-600 hover:text-white hover:bg-rose-600 border border-rose-300 px-3 py-1.5 rounded-lg font-bold transition-all cursor-pointer"
                           >
                             Delete
                           </button>
@@ -1621,24 +1794,23 @@ function Admin({ refresh, events, openAttendees, deleteEvent, editEvent, notify 
 
         {/* ── TAB 2: USER DIRECTORY (User Request: Delete all users / individual users) ── */}
         {tab === 'users' && (
-          <div className="bg-paper p-5 sm:p-7 border border-line rounded-sm shadow-xs animate-fade-in">
+          <div className="bg-white p-6 sm:p-8 border border-line rounded-2xl shadow-soft animate-fade-in">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-4 border-b border-line">
               <div>
-                <h2 className="font-serif text-xl sm:text-2xl font-bold tracking-tight text-ink">
+                <h2 className="font-display text-xl sm:text-2xl font-bold tracking-tight text-ink">
                   Registered Student Directory
                 </h2>
                 <p className="text-xs text-muted mt-0.5">
-                  Manage all enrolled student accounts, view registrations, export directory, or reset user lists.
+                  Manage all enrolled student accounts, view registrations, export directory, or delete users.
                 </p>
               </div>
 
-              {/* Action Buttons */}
-              <div className="flex flex-wrap items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2.5">
                 <button
                   type="button"
                   onClick={exportUsersCSV}
                   disabled={!users.length}
-                  className="bg-ink text-white hover:bg-opacity-90 disabled:opacity-40 text-xs px-3.5 py-2 rounded-xs font-medium transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs"
+                  className="bg-forest hover:bg-[#163a2b] text-white disabled:opacity-40 text-xs px-4 py-2.5 rounded-xl font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-sm hover:scale-105 active:scale-95"
                 >
                   📥 Export Students CSV
                 </button>
@@ -1646,7 +1818,7 @@ function Admin({ refresh, events, openAttendees, deleteEvent, editEvent, notify 
                   type="button"
                   onClick={handleDeleteAllUsers}
                   disabled={!users.length}
-                  className="bg-[#ad3f33] hover:bg-[#c62828] disabled:opacity-40 text-white text-xs font-bold px-3.5 py-2 rounded-xs transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs"
+                  className="bg-rose-600 hover:bg-rose-700 disabled:opacity-40 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer shadow-sm hover:scale-105 active:scale-95"
                   title="Remove all registered students"
                 >
                   ⚠️ Delete All Registered Students
@@ -1657,70 +1829,70 @@ function Admin({ refresh, events, openAttendees, deleteEvent, editEvent, notify 
             {/* Search filter */}
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 mb-4">
               <div className="relative flex-1 max-w-md">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted text-xs">🔍</span>
+                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted text-xs">🔍</span>
                 <input
                   type="text"
-                  placeholder="Search by student name, reg no, department, class, email..."
+                  placeholder="Search by student name, reg no, department, class..."
                   value={userSearch}
                   onChange={(e) => setUserSearch(e.target.value)}
-                  className="w-full pl-8 pr-3 py-2 border border-[#d5d8d0] rounded-xs text-xs bg-white focus:outline-none focus:ring-1 focus:ring-ink"
+                  className="w-full pl-9 pr-4 py-2.5 border border-line rounded-xl text-xs bg-white focus:outline-none focus:ring-2 focus:ring-forest transition-all"
                 />
               </div>
-              <span className="text-xs font-mono bg-[#e8ede1] text-ink px-3 py-2 rounded-xs font-semibold whitespace-nowrap self-start sm:self-auto">
+              <span className="text-xs font-mono bg-[#f0f3eb] text-forest px-3 py-2 rounded-lg font-bold whitespace-nowrap self-start sm:self-auto border border-line">
                 Total Students: {filteredUsers.length}
               </span>
             </div>
 
-            {/* Student Directory Table */}
-            <div className="border border-line rounded-xs overflow-hidden">
+            {/* Table */}
+            <div className="border border-line rounded-xl overflow-hidden">
               {loadingUsers ? (
                 <div className="py-16 text-center text-muted text-sm flex flex-col items-center gap-3">
-                  <span className="inline-block w-6 h-6 border-2 border-ink/30 border-t-ink rounded-full animate-spin" />
+                  <span className="inline-block w-6 h-6 border-2 border-forest/30 border-t-forest rounded-full animate-spin" />
                   Loading student directory…
                 </div>
               ) : filteredUsers.length === 0 ? (
                 <div className="py-16 text-center text-muted text-sm px-4">
-                  {userSearch ? 'No students match your search criteria.' : 'No student accounts registered yet.'}
+                  {userSearch ? 'No students match your search query.' : 'No registered students yet.'}
                 </div>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs border-collapse min-w-[700px]">
-                    <thead className="bg-[#f0f3eb] text-ink font-semibold sticky top-0 border-b border-line font-mono text-[11px] uppercase tracking-wider">
+                    <thead className="bg-[#f2f5ef] text-forest font-bold sticky top-0 border-b border-line font-mono text-[11px] uppercase tracking-wider">
                       <tr>
-                        <th className="p-3 w-10 text-center">#</th>
-                        <th className="p-3">Student Name</th>
-                        <th className="p-3">Reg No</th>
-                        <th className="p-3">Department & Class</th>
-                        <th className="p-3">Contact (Email & Phone)</th>
-                        <th className="p-3 text-center">Registrations</th>
-                        <th className="p-3 text-right">Actions</th>
+                        <th className="p-3.5 w-12 text-center">#</th>
+                        <th className="p-3.5">Student Name</th>
+                        <th className="p-3.5">Reg No</th>
+                        <th className="p-3.5">Department & Class</th>
+                        <th className="p-3.5">Contact (Email & Phone)</th>
+                        <th className="p-3.5 text-center">Registrations</th>
+                        <th className="p-3.5 text-right">Actions</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-line/60">
                       {filteredUsers.map((u, idx) => (
                         <tr key={u.id} className="hover:bg-black/[0.02] transition-colors">
-                          <td className="p-3 text-center text-muted font-mono">{idx + 1}</td>
-                          <td className="p-3 font-semibold text-ink flex items-center gap-2">
-                            <span className="w-7 h-7 rounded-full bg-ink text-lime text-xs font-bold inline-grid place-items-center shrink-0">
+                          <td className="p-3.5 text-center text-muted font-mono">{idx + 1}</td>
+                          <td className="p-3.5 font-bold text-ink flex items-center gap-2.5">
+                            <span className="w-7 h-7 rounded-full bg-forest text-lime text-xs font-bold grid place-items-center shrink-0 shadow-xs">
                               {(u.name || 'S').charAt(0).toUpperCase()}
                             </span>
                             <span>{u.name}</span>
                           </td>
-                          <td className="p-3 font-mono font-medium text-[#3b4640]">{u.reg_no}</td>
-                          <td className="p-3 text-muted">{u.department} · {u.class}</td>
-                          <td className="p-3 font-mono text-[#4a5568]">
+                          <td className="p-3.5 font-mono font-medium text-forest">{u.reg_no}</td>
+                          <td className="p-3.5 text-muted">{u.department} · {u.class}</td>
+                          <td className="p-3.5 font-mono text-ink">
                             <div>{u.email}</div>
                             {u.phone && <div className="text-[10px] text-muted">{u.phone}</div>}
                           </td>
-                          <td className="p-3 text-center">
-                            <span className="inline-block bg-[#e8ede1] text-[#243b31] font-bold text-[11px] px-2.5 py-0.5 rounded-full">
+                          <td className="p-3.5 text-center">
+                            <span className="inline-block bg-[#f0f3eb] text-forest font-bold text-[11px] px-3 py-1 rounded-full border border-line">
                               {u.registrations_count || 0} enrolled
                             </span>
                           </td>
-                          <td className="p-3 text-right">
+                          <td className="p-3.5 text-right">
                             <button
                               onClick={() => handleDeleteUser(u.id, u.name)}
-                              className="text-[#ad3f33] hover:text-[#d32f2f] hover:bg-[#ad3f33]/10 text-xs font-semibold border border-[#ad3f33]/30 px-2.5 py-1 rounded-xs transition-colors cursor-pointer"
+                              className="text-rose-600 hover:text-white hover:bg-rose-600 text-xs font-bold border border-rose-300 px-3 py-1.5 rounded-lg transition-all cursor-pointer"
                               title="Delete this student"
                             >
                               🗑️ Delete
@@ -1740,30 +1912,32 @@ function Admin({ refresh, events, openAttendees, deleteEvent, editEvent, notify 
         {tab === 'publish' && (
           <div className="space-y-6 animate-fade-in">
             {/* AI Auto-Fill Card */}
-            <div className="bg-gradient-to-br from-[#263a33] to-[#1a2e26] p-5 sm:p-7 rounded-sm shadow-md border border-[#3a5548] max-w-2xl">
-              <div className="flex items-center gap-2 mb-3">
+            <div className="bg-gradient-to-br from-[#0c2219] via-[#133728] to-[#0a1c14] p-6 sm:p-8 rounded-2xl shadow-elevated border border-lime/20 max-w-2xl relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-48 h-48 bg-lime/10 rounded-full blur-3xl pointer-events-none" />
+              <div className="flex items-center gap-2.5 mb-3">
                 <span className="text-xl">✨</span>
-                <h3 className="text-white font-bold text-sm tracking-wide">GEMINI AI EVENT WRITER</h3>
-                <span className="text-[#aab8ae] text-xs ml-1 hidden sm:inline">— Enter raw details, AI crafts the listing</span>
+                <h3 className="text-white font-display font-bold text-base tracking-wide">GEMINI AI EVENT WRITER</h3>
+                <span className="text-[#cfe870]/80 text-xs font-mono ml-auto hidden sm:inline">Automatic Content Generation</span>
               </div>
-              <div className="flex flex-col sm:flex-row gap-2">
+              <p className="text-xs text-white/70 mb-3">Enter notes or topic ideas, and Gemini will format an engaging, formatted event listing.</p>
+              <div className="flex flex-col sm:flex-row gap-2.5">
                 <input
                   type="text"
                   placeholder="e.g. 24hr AI hackathon in C block auditorium with mentoring and prizes"
                   value={aiPrompt}
                   onChange={(e) => setAiPrompt(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && aiAutoFill()}
-                  className="flex-1 bg-white/10 border border-white/20 text-white placeholder:text-[#7a9485] px-4 py-3 rounded-sm text-sm focus:outline-none focus:ring-1 focus:ring-lime"
+                  className="flex-1 bg-white/10 border border-white/20 text-white placeholder:text-white/40 px-4 py-3 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-lime"
                 />
                 <button
                   type="button"
                   onClick={aiAutoFill}
                   disabled={aiLoading || !aiPrompt.trim()}
-                  className="bg-lime text-ink px-5 py-3 rounded-sm text-sm font-bold hover:bg-[#d9f07a] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-sm whitespace-nowrap cursor-pointer"
+                  className="bg-lime hover:bg-lime-hover text-forest px-6 py-3 rounded-xl text-sm font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-glow-lime whitespace-nowrap cursor-pointer hover:scale-105 active:scale-95"
                 >
                   {aiLoading ? (
                     <>
-                      <span className="inline-block w-4 h-4 border-2 border-ink/30 border-t-ink rounded-full animate-spin" />
+                      <span className="inline-block w-4 h-4 border-2 border-forest/30 border-t-forest rounded-full animate-spin" />
                       Generating…
                     </>
                   ) : (
@@ -1771,42 +1945,42 @@ function Admin({ refresh, events, openAttendees, deleteEvent, editEvent, notify 
                   )}
                 </button>
               </div>
-              {aiError && <p className="text-[#ff9b8e] text-xs mt-2">{aiError}</p>}
+              {aiError && <p className="text-rose-300 text-xs mt-2.5">{aiError}</p>}
             </div>
 
             {/* Event Form */}
             <form
-              className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 bg-paper p-5 sm:p-8 border border-line rounded-sm shadow-sm max-w-2xl"
+              className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 bg-white p-6 sm:p-8 border border-line rounded-2xl shadow-soft max-w-2xl"
               onSubmit={submitEvent}
             >
-              <h2 className="sm:col-span-2 font-serif text-xl sm:text-2xl font-bold tracking-tight mb-1">
-                Publish a new event
+              <h2 className="sm:col-span-2 font-display text-xl sm:text-2xl font-bold tracking-tight text-ink mb-1">
+                Publish a New Event
               </h2>
               {[
-                ['title', 'Event title'],
+                ['title', 'Event Title'],
                 ['date', 'Date'],
                 ['time', 'Time'],
                 ['venue', 'Venue'],
-                ['deadline', 'Registration deadline'],
+                ['deadline', 'Registration Deadline'],
               ].map(([k, l]) => (
-                <label key={k} className="text-xs font-semibold text-[#4e5a54] flex flex-col gap-1.5">
+                <label key={k} className="text-xs font-bold text-muted flex flex-col gap-1.5">
                   {l}
                   <input
                     required
                     type={k === 'date' || k === 'deadline' ? 'date' : 'text'}
                     value={form[k] || ''}
                     onChange={(e) => setForm({ ...form, [k]: e.target.value })}
-                    className="w-full border border-[#d5d8d0] p-2.5 bg-white rounded-xs focus:ring-1 focus:ring-ink focus:outline-none text-sm font-normal"
+                    className="w-full border border-line p-3 bg-white rounded-xl text-sm font-medium focus:ring-2 focus:ring-forest focus:outline-none transition-all"
                   />
                 </label>
               ))}
 
-              <label className="text-xs font-semibold text-[#4e5a54] flex flex-col gap-1.5">
+              <label className="text-xs font-bold text-muted flex flex-col gap-1.5">
                 Category
                 <select
                   value={form.category}
                   onChange={(e) => setForm({ ...form, category: e.target.value })}
-                  className="w-full border border-[#d5d8d0] p-2.5 bg-white rounded-xs focus:ring-1 focus:ring-ink focus:outline-none text-sm font-normal"
+                  className="w-full border border-line p-3 bg-white rounded-xl text-sm font-medium focus:ring-2 focus:ring-forest focus:outline-none transition-all"
                 >
                   {['Workshop', 'Technical', 'Cultural', 'Placement', 'Seminar'].map((x) => (
                     <option key={x}>{x}</option>
@@ -1814,7 +1988,7 @@ function Admin({ refresh, events, openAttendees, deleteEvent, editEvent, notify 
                 </select>
               </label>
 
-              <label className="text-xs font-semibold text-[#4e5a54] flex flex-col gap-1.5">
+              <label className="text-xs font-bold text-muted flex flex-col gap-1.5">
                 Max Capacity (Seats)
                 <input
                   required
@@ -1822,28 +1996,28 @@ function Admin({ refresh, events, openAttendees, deleteEvent, editEvent, notify 
                   min="1"
                   value={form.seats || 50}
                   onChange={(e) => setForm({ ...form, seats: parseInt(e.target.value, 10) || 50 })}
-                  className="w-full border border-[#d5d8d0] p-2.5 bg-white rounded-xs focus:ring-1 focus:ring-ink focus:outline-none text-sm font-normal"
+                  className="w-full border border-line p-3 bg-white rounded-xl text-sm font-medium focus:ring-2 focus:ring-forest focus:outline-none transition-all"
                 />
               </label>
 
-              <label className="sm:col-span-2 text-xs font-semibold text-[#4e5a54] flex flex-col gap-1.5">
+              <label className="sm:col-span-2 text-xs font-bold text-muted flex flex-col gap-1.5">
                 Description & Agenda
                 <textarea
                   rows="3"
                   required
                   value={form.description || ''}
                   onChange={(e) => setForm({ ...form, description: e.target.value })}
-                  placeholder="Provide outline, speaker details, and prerequisites..."
-                  className="w-full border border-[#d5d8d0] p-2.5 bg-white rounded-xs focus:ring-1 focus:ring-ink focus:outline-none text-sm font-normal"
+                  placeholder="Outline syllabus, prerequisite skills, mentors, and perks..."
+                  className="w-full border border-line p-3 bg-white rounded-xl text-sm font-medium focus:ring-2 focus:ring-forest focus:outline-none transition-all"
                 />
               </label>
 
-              <div className="sm:col-span-2 pt-2">
+              <div className="sm:col-span-2 pt-3">
                 <button
                   type="submit"
-                  className="w-full sm:w-auto bg-ink text-white px-6 py-3 rounded-sm text-sm font-medium hover:bg-opacity-90 transition-colors shadow-sm cursor-pointer"
+                  className="w-full sm:w-auto bg-forest hover:bg-[#163a2b] text-white px-8 py-3 rounded-xl text-sm font-bold shadow-md transition-all cursor-pointer hover:scale-105 active:scale-95"
                 >
-                  Publish event →
+                  Publish Event →
                 </button>
               </div>
             </form>
@@ -1852,36 +2026,36 @@ function Admin({ refresh, events, openAttendees, deleteEvent, editEvent, notify 
 
         {/* ── TAB 4: ANALYTICS & INSIGHTS ── */}
         {tab === 'analytics' && (
-          <div className="bg-paper p-5 sm:p-7 border border-line rounded-sm shadow-xs space-y-6 animate-fade-in max-w-3xl">
-            <h2 className="font-serif text-xl sm:text-2xl font-bold tracking-tight">System & Attendance Analytics</h2>
-            
+          <div className="bg-white p-6 sm:p-8 border border-line rounded-2xl shadow-soft space-y-6 animate-fade-in max-w-3xl">
+            <h2 className="font-display text-xl sm:text-2xl font-bold tracking-tight text-ink">System Analytics & Turnout</h2>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="bg-[#fcfbf7] border border-line p-4 rounded-xs">
-                <h4 className="font-bold text-xs font-mono uppercase text-muted mb-3">Event Categories</h4>
-                <div className="space-y-2">
+              <div className="bg-[#fcfdfa] border border-line p-5 rounded-xl">
+                <h4 className="font-mono text-xs uppercase font-bold text-muted mb-4">Event Categories Breakdown</h4>
+                <div className="space-y-2.5">
                   {Object.entries(stats.categories || {}).map(([cat, cnt]) => (
                     <div key={cat} className="flex items-center justify-between text-xs">
-                      <span className="font-medium text-ink">{cat}</span>
-                      <span className="font-mono bg-[#e8ede1] px-2 py-0.5 rounded-xs font-semibold">{cnt} events</span>
+                      <span className="font-bold text-ink">{icons[cat] || '✦'} {cat}</span>
+                      <span className="font-mono bg-[#f0f3eb] px-2.5 py-1 rounded-full font-bold text-forest">{cnt} events</span>
                     </div>
                   ))}
                 </div>
               </div>
 
-              <div className="bg-[#fcfbf7] border border-line p-4 rounded-xs">
-                <h4 className="font-bold text-xs font-mono uppercase text-muted mb-3">Credential Verification</h4>
-                <div className="space-y-2 text-xs">
+              <div className="bg-[#fcfdfa] border border-line p-5 rounded-xl">
+                <h4 className="font-mono text-xs uppercase font-bold text-muted mb-4">Attendance Verification</h4>
+                <div className="space-y-3 text-xs">
                   <div className="flex justify-between">
                     <span className="text-muted">Total Registrations</span>
                     <strong className="text-ink">{stats.registrations || 0}</strong>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted">Verified Attended</span>
-                    <strong className="text-[#155724]">{stats.attended || 0}</strong>
+                    <strong className="text-emerald-700 font-bold">{stats.attended || 0}</strong>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted">Turnout Rate</span>
-                    <strong className="text-ink font-mono">
+                    <span className="text-muted">Overall Turnout Rate</span>
+                    <strong className="text-forest font-mono text-sm font-bold">
                       {stats.registrations ? Math.round(((stats.attended || 0) / stats.registrations) * 100) : 0}%
                     </strong>
                   </div>
@@ -1895,7 +2069,7 @@ function Admin({ refresh, events, openAttendees, deleteEvent, editEvent, notify 
   );
 }
 
-// ── Auth Component (Login / Register with Phone) ────────────────────────────
+// ── Auth Component (Login / Register) ───────────────────────────────────────
 function Auth({ onDone, close }) {
   const [newUser, setNewUser] = useState(false);
   const [d, setD] = useState({});
@@ -1920,96 +2094,101 @@ function Auth({ onDone, close }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-[#19201d]/50 backdrop-blur-xs z-50 grid place-items-center p-4">
+    <div className="fixed inset-0 bg-[#0c1813]/70 backdrop-blur-md z-50 grid place-items-center p-4 animate-fade-in">
       <form
         onSubmit={go}
-        className="bg-[#fffefa] w-full max-w-[420px] p-6 sm:p-9 relative shadow-[10px_10px_0_#cfe870] border border-line rounded-sm max-h-[92vh] overflow-y-auto animate-fade-in"
+        className="bg-white w-full max-w-[430px] p-6 sm:p-9 relative shadow-elevated border border-line rounded-2xl max-h-[92vh] overflow-y-auto animate-scale-in"
       >
         <button
           type="button"
-          className="absolute right-4 top-3 text-muted hover:text-ink text-2xl leading-none font-bold cursor-pointer"
+          className="absolute right-4 top-4 w-8 h-8 rounded-full bg-black/5 hover:bg-black/10 text-muted hover:text-ink text-xl font-bold grid place-items-center cursor-pointer transition-colors"
           onClick={close}
         >
           ×
         </button>
-        <a className="font-bold text-lg tracking-tighter cursor-pointer flex items-center select-none mb-5">
-          <i className="font-serif text-[26px] not-italic bg-ink text-lime inline-grid place-items-center w-[28px] h-[28px] rounded-full mr-2 shadow">c</i>
-          <span>campus<span className="text-[#7b827e] font-normal">circle</span></span>
-        </a>
-        <h1 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight mb-1">
-          {newUser ? 'Join Campus Circle' : 'Welcome back'}
+
+        <div className="flex items-center gap-2 mb-4">
+          <i className="font-serif text-[22px] not-italic bg-forest text-lime inline-grid place-items-center w-8 h-8 rounded-full font-bold shadow-sm">c</i>
+          <span className="font-display font-extrabold text-lg tracking-tight text-ink">campus<span className="text-muted font-normal">circle</span></span>
+        </div>
+
+        <h1 className="font-display text-2xl sm:text-3xl font-extrabold tracking-tight text-ink mb-1">
+          {newUser ? 'Join Campus Circle' : 'Welcome Back'}
         </h1>
-        <p className="text-muted text-sm mb-5">
-          {newUser ? 'Create an account with your official details to discover your campus.' : 'Sign in to manage your event plans.'}
+        <p className="text-muted text-xs sm:text-sm mb-6 leading-relaxed">
+          {newUser ? 'Register with your college details to join events & receive certificates.' : 'Sign in to access your registered events and certificates.'}
         </p>
 
-        <div className="space-y-3 sm:space-y-4">
+        <div className="space-y-3.5">
           {newUser && (
             <>
-              <label className="block text-xs font-semibold text-[#4e5a54]">
-                Full name
+              <label className="block text-xs font-bold text-muted">
+                Full Name
                 <input
                   required
                   value={d.name || ''}
                   onChange={(e) => setD({ ...d, name: e.target.value })}
-                  className="w-full border border-[#d5d8d0] p-2.5 mt-1 bg-white rounded-xs text-sm font-normal focus:ring-1 focus:ring-ink focus:outline-none"
+                  placeholder="e.g. Abhilash R"
+                  className="w-full border border-line p-3 mt-1.5 bg-white rounded-xl text-sm font-medium focus:ring-2 focus:ring-forest focus:outline-none"
                 />
               </label>
-              <label className="block text-xs font-semibold text-[#4e5a54]">
-                Registration number
+              <label className="block text-xs font-bold text-muted">
+                Registration Number
                 <input
                   required
                   placeholder="610825BIT001"
                   value={d.reg_no || ''}
                   onChange={(e) => setD({ ...d, reg_no: e.target.value })}
-                  className="w-full border border-[#d5d8d0] p-2.5 mt-1 bg-white rounded-xs text-sm font-normal focus:ring-1 focus:ring-ink focus:outline-none font-mono"
+                  className="w-full border border-line p-3 mt-1.5 bg-white rounded-xl text-sm font-mono focus:ring-2 focus:ring-forest focus:outline-none"
                 />
               </label>
               <div className="grid grid-cols-2 gap-3">
-                <label className="block text-xs font-semibold text-[#4e5a54]">
+                <label className="block text-xs font-bold text-muted">
                   Department
                   <input
                     required
                     placeholder="IT"
                     value={d.department || ''}
                     onChange={(e) => setD({ ...d, department: e.target.value })}
-                    className="w-full border border-[#d5d8d0] p-2.5 mt-1 bg-white rounded-xs text-sm font-normal focus:ring-1 focus:ring-ink focus:outline-none"
+                    className="w-full border border-line p-3 mt-1.5 bg-white rounded-xl text-sm font-medium focus:ring-2 focus:ring-forest focus:outline-none"
                   />
                 </label>
-                <label className="block text-xs font-semibold text-[#4e5a54]">
+                <label className="block text-xs font-bold text-muted">
                   Class / Year
                   <input
                     required
-                    placeholder="II IT A"
+                    placeholder="IV IT A"
                     value={d.class || ''}
                     onChange={(e) => setD({ ...d, class: e.target.value })}
-                    className="w-full border border-[#d5d8d0] p-2.5 mt-1 bg-white rounded-xs text-sm font-normal focus:ring-1 focus:ring-ink focus:outline-none"
+                    className="w-full border border-line p-3 mt-1.5 bg-white rounded-xl text-sm font-medium focus:ring-2 focus:ring-forest focus:outline-none"
                   />
                 </label>
               </div>
-              <label className="block text-xs font-semibold text-[#4e5a54]">
+              <label className="block text-xs font-bold text-muted">
                 Phone Number (Optional)
                 <input
                   type="tel"
                   placeholder="+91 9876543210"
                   value={d.phone || ''}
                   onChange={(e) => setD({ ...d, phone: e.target.value })}
-                  className="w-full border border-[#d5d8d0] p-2.5 mt-1 bg-white rounded-xs text-sm font-normal focus:ring-1 focus:ring-ink focus:outline-none font-mono"
+                  className="w-full border border-line p-3 mt-1.5 bg-white rounded-xl text-sm font-mono focus:ring-2 focus:ring-forest focus:outline-none"
                 />
               </label>
             </>
           )}
-          <label className="block text-xs font-semibold text-[#4e5a54]">
-            Email
+
+          <label className="block text-xs font-bold text-muted">
+            Email Address
             <input
               required
               type="email"
               value={d.email || ''}
               onChange={(e) => setD({ ...d, email: e.target.value })}
-              className="w-full border border-[#d5d8d0] p-2.5 mt-1 bg-white rounded-xs text-sm font-normal focus:ring-1 focus:ring-ink focus:outline-none"
+              placeholder="student@campus.edu"
+              className="w-full border border-line p-3 mt-1.5 bg-white rounded-xl text-sm font-medium focus:ring-2 focus:ring-forest focus:outline-none"
             />
           </label>
-          <label className="block text-xs font-semibold text-[#4e5a54]">
+          <label className="block text-xs font-bold text-muted">
             Password
             <input
               required
@@ -2017,31 +2196,31 @@ function Auth({ onDone, close }) {
               minLength={newUser ? 6 : undefined}
               value={d.password || ''}
               onChange={(e) => setD({ ...d, password: e.target.value })}
-              className="w-full border border-[#d5d8d0] p-2.5 mt-1 bg-white rounded-xs text-sm font-normal focus:ring-1 focus:ring-ink focus:outline-none"
+              className="w-full border border-line p-3 mt-1.5 bg-white rounded-xl text-sm font-medium focus:ring-2 focus:ring-forest focus:outline-none"
             />
           </label>
         </div>
 
-        {err && <p className="text-[#ad3f33] text-xs font-medium mt-3">{err}</p>}
+        {err && <p className="text-rose-600 text-xs font-bold mt-3 bg-rose-50 p-2.5 rounded-lg border border-rose-200">{err}</p>}
 
         <button
           disabled={loading}
-          className="bg-ink text-white w-full py-3 rounded-sm text-sm font-medium mt-5 hover:bg-opacity-90 transition-colors shadow-sm disabled:opacity-50 cursor-pointer"
+          className="bg-forest hover:bg-[#163a2b] text-white w-full py-3.5 rounded-xl text-sm font-bold mt-5 transition-all shadow-md disabled:opacity-50 cursor-pointer hover:scale-[1.02] active:scale-98"
         >
-          {loading ? 'Please wait…' : newUser ? 'Create account' : 'Sign in'} →
+          {loading ? 'Please wait…' : newUser ? 'Create Account →' : 'Sign In →'}
         </button>
 
         <button
           type="button"
-          className="w-full text-center text-[#527063] hover:underline text-xs mt-3 block cursor-pointer"
+          className="w-full text-center text-forest hover:underline text-xs mt-3.5 block font-bold cursor-pointer"
           onClick={() => { setNewUser(!newUser); setErr(''); }}
         >
-          {newUser ? 'Already registered? Sign in' : 'New here? Create an account'}
+          {newUser ? 'Already registered? Sign in instead' : 'New here? Create student account'}
         </button>
 
-        <small className="block text-center text-[#888] text-[10px] mt-4 leading-relaxed border-t border-line/40 pt-3">
-          Admin: admin@campus.edu / admin123
-        </small>
+        <div className="mt-4 pt-3 border-t border-line text-center text-[11px] font-mono text-muted bg-[#f7f9f5] p-2 rounded-lg">
+          Admin: <strong>admin@campus.edu</strong> / <strong>admin123</strong>
+        </div>
       </form>
     </div>
   );
@@ -2125,10 +2304,10 @@ function App() {
   const navigate = (v) => { setView(v); setMenuOpen(false); };
 
   const navItems = [
-    { key: 'discover', label: 'Discover', always: true },
-    { key: 'my-events', label: 'My events', auth: true },
-    { key: 'profile', label: 'Profile', auth: true },
-    { key: 'admin', label: 'Admin', adminOnly: true },
+    { key: 'discover', label: 'Discover', icon: '✦', always: true },
+    { key: 'my-events', label: 'My Events', icon: '🎟️', auth: true },
+    { key: 'profile', label: 'Profile', icon: '👤', auth: true },
+    { key: 'admin', label: 'Admin', icon: '🛡️', adminOnly: true },
   ].filter((n) => {
     if (n.adminOnly) return user?.role === 'admin';
     if (n.auth) return !!user;
@@ -2139,61 +2318,77 @@ function App() {
     <>
       <Toast toast={toast} onClose={() => setToast(null)} />
 
-      {/* ── Header ── */}
-      <header className="h-[64px] px-4 md:px-[6.5vw] flex items-center justify-between border-b border-line bg-[#fbfaf6] sticky top-0 z-40 shadow-xs">
+      {/* ── Glassmorphism Header ── */}
+      <header className="glass-nav h-[70px] px-4 md:px-[6.5vw] flex items-center justify-between border-b border-line sticky top-0 z-40 transition-all">
         <a
-          className="font-bold text-xl tracking-tighter cursor-pointer flex items-center select-none group"
+          className="font-display font-extrabold text-xl tracking-tight cursor-pointer flex items-center select-none group"
           onClick={() => navigate('discover')}
         >
-          <i className="font-serif text-[26px] not-italic bg-ink text-lime inline-grid place-items-center w-[28px] h-[28px] rounded-full mr-2 shadow group-hover:scale-105 transition-transform">c</i>
-          <span>campus<span className="text-[#7b827e] font-normal">circle</span></span>
+          <i className="font-serif text-[24px] not-italic bg-forest text-lime inline-grid place-items-center w-8 h-8 rounded-full mr-2.5 shadow-md group-hover:scale-110 transition-transform">c</i>
+          <span className="text-ink">campus<span className="text-muted font-normal">circle</span></span>
+          <span className="ml-2.5 hidden lg:inline-block text-[10px] font-mono uppercase bg-[#e9eee5] text-forest px-2.5 py-0.5 rounded-full font-bold border border-line">
+            PMC
+          </span>
         </a>
 
-        {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-8 ml-[60px]">
-          {navItems.map((n) => (
-            <button
-              key={n.key}
-              className={`text-sm py-[20px] border-b-2 font-medium transition-colors cursor-pointer ${
-                view === n.key ? 'border-ink text-ink font-semibold' : 'border-transparent text-muted hover:text-ink'
-              }`}
-              onClick={() => navigate(n.key)}
-            >
-              {n.label}
-            </button>
-          ))}
+        {/* Desktop Navigation */}
+        <nav className="hidden md:flex items-center gap-1.5 bg-[#f0f3eb]/70 p-1 rounded-full border border-line/80">
+          {navItems.map((n) => {
+            const active = view === n.key;
+            return (
+              <button
+                key={n.key}
+                className={`text-xs px-4 py-2 rounded-full font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                  active
+                    ? 'bg-forest text-white shadow-sm'
+                    : 'text-muted hover:text-ink hover:bg-black/5'
+                }`}
+                onClick={() => navigate(n.key)}
+              >
+                <span>{n.icon}</span>
+                <span>{n.label}</span>
+              </button>
+            );
+          })}
         </nav>
 
-        {/* Right side */}
-        <div className="flex items-center gap-2 text-sm">
+        {/* Right User Bar */}
+        <div className="flex items-center gap-2.5 text-sm">
           {user ? (
-            <>
+            <div className="flex items-center gap-2">
               <button
-                className="bg-lime text-ink w-8 h-8 rounded-full grid place-items-center font-bold text-xs shadow-inner cursor-pointer"
+                className="flex items-center gap-2 bg-white hover:bg-[#f2f5ee] border border-line py-1.5 px-3 rounded-full shadow-xs transition-all cursor-pointer hover:scale-105"
                 onClick={() => navigate('profile')}
-                title="View profile"
+                title="View student profile"
               >
-                {user.name[0]}
+                <span className="w-6 h-6 rounded-full bg-forest text-lime text-xs font-bold grid place-items-center">
+                  {user.name[0]}
+                </span>
+                <span className="text-xs font-bold text-ink max-w-[100px] truncate">{user.name.split(' ')[0]}</span>
+                <span className="text-[10px] font-mono text-muted uppercase bg-cream px-1.5 py-0.5 rounded font-bold">
+                  {user.role}
+                </span>
               </button>
               <button
-                className="hidden sm:block text-xs px-3 py-1.5 border border-line rounded-sm hover:bg-ink hover:text-white transition-colors cursor-pointer"
+                className="hidden sm:inline-block text-xs px-3 py-1.5 text-muted hover:text-ink hover:bg-black/5 rounded-lg font-semibold transition-colors cursor-pointer"
                 onClick={() => { localStorage.removeItem('campus-user'); setUser(null); navigate('discover'); notify('Signed out.', 'info'); }}
               >
                 Sign out
               </button>
-            </>
+            </div>
           ) : (
             <button
-              className="border border-ink px-4 py-2 rounded-sm text-xs font-semibold hover:bg-ink hover:text-white transition-colors cursor-pointer"
+              className="bg-forest hover:bg-[#163a2b] text-white text-xs font-bold px-4 py-2 rounded-full transition-all shadow-xs cursor-pointer hover:scale-105 active:scale-95 flex items-center gap-1.5"
               onClick={() => setModal(true)}
             >
-              Sign in
+              <span>Sign in</span>
+              <span>→</span>
             </button>
           )}
 
           {/* Mobile hamburger */}
           <button
-            className="md:hidden p-2 text-ink text-lg leading-none cursor-pointer"
+            className="md:hidden w-9 h-9 rounded-lg bg-black/5 hover:bg-black/10 text-ink grid place-items-center text-lg cursor-pointer transition-colors"
             onClick={() => setMenuOpen(!menuOpen)}
             aria-label="Toggle menu"
           >
@@ -2204,21 +2399,22 @@ function App() {
 
       {/* Mobile Drawer */}
       {menuOpen && (
-        <div className="md:hidden bg-[#fbfaf6] border-b border-line px-4 py-3 flex flex-col gap-2 z-40 shadow-md">
+        <div className="md:hidden glass-nav border-b border-line px-4 py-3 flex flex-col gap-2 z-40 shadow-md animate-fade-in">
           {navItems.map((n) => (
             <button
               key={n.key}
-              className={`text-left py-2 px-2 text-sm rounded-xs font-medium cursor-pointer ${
-                view === n.key ? 'bg-[#e8ede1] text-ink font-semibold' : 'text-muted'
+              className={`text-left py-2.5 px-3 text-xs rounded-xl font-bold transition-all cursor-pointer flex items-center gap-2 ${
+                view === n.key ? 'bg-forest text-white' : 'text-muted hover:bg-black/5'
               }`}
               onClick={() => navigate(n.key)}
             >
-              {n.label}
+              <span>{n.icon}</span>
+              <span>{n.label}</span>
             </button>
           ))}
           {user && (
             <button
-              className="text-left py-2 px-2 text-xs text-[#ad3f33] border-t border-line mt-1 cursor-pointer font-medium"
+              className="text-left py-2 px-3 text-xs text-rose-600 border-t border-line mt-1 cursor-pointer font-bold"
               onClick={() => { localStorage.removeItem('campus-user'); setUser(null); navigate('discover'); setMenuOpen(false); notify('Signed out.', 'info'); }}
             >
               Sign out
@@ -2301,15 +2497,19 @@ function App() {
       )}
 
       {/* ── Footer ── */}
-      <footer className="border-t border-line mt-20 py-10 px-4 md:px-[6.5vw] flex flex-col sm:flex-row items-center justify-between text-xs text-muted gap-4 bg-[#f6f5ef]">
-        <div className="flex items-center gap-2">
-          <i className="font-serif text-[18px] not-italic bg-ink text-lime inline-grid place-items-center w-[20px] h-[20px] rounded-full">c</i>
-          <span>Campus Circle · Er. Perumal Manimekalai College of Engineering</span>
-        </div>
-        <div className="flex items-center gap-4">
-          <span>Department of Information Technology</span>
-          <span>·</span>
-          <span>Official Event Platform</span>
+      <footer className="border-t border-line mt-24 py-12 px-4 md:px-[6.5vw] bg-white text-xs text-muted">
+        <div className="max-w-[1180px] mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-2.5">
+            <i className="font-serif text-[18px] not-italic bg-forest text-lime inline-grid place-items-center w-6 h-6 rounded-full font-bold">c</i>
+            <span className="font-display font-bold text-ink">Campus Circle</span>
+            <span>·</span>
+            <span>Er. Perumal Manimekalai College of Engineering</span>
+          </div>
+          <div className="flex items-center gap-4 font-mono text-[11px]">
+            <span>Dept of Information Technology</span>
+            <span>·</span>
+            <span className="text-forest font-bold">Verified Event Registry</span>
+          </div>
         </div>
       </footer>
     </>
