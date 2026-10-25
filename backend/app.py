@@ -33,18 +33,23 @@ except ImportError:
 app = Flask(__name__)
 CORS(app)
 
-DATABASE_URL = os.environ["DATABASE_URL"]
+DATABASE_URL = os.environ.get("DATABASE_URL", "")
 
 
 USER_FIELDS = 'id,name,email,reg_no,department,class,phone,interests,role'
 
 
 def conn():
+    if not DATABASE_URL:
+        raise RuntimeError("DATABASE_URL environment variable is not configured.")
     con = psycopg2.connect(DATABASE_URL, cursor_factory=psycopg2.extras.RealDictCursor)
     return con
 
 
 def init_db():
+    if not DATABASE_URL:
+        print("[Database Warning] DATABASE_URL is not set. Skipping init_db().")
+        return
     con = conn()
     cur = con.cursor()
     cur.execute('''
@@ -115,7 +120,11 @@ def init_db():
 
 
 
-init_db()
+if DATABASE_URL:
+    try:
+        init_db()
+    except Exception as db_err:
+        print(f"[Database Init Warning] Could not connect to database on startup: {db_err}")
 
 
 def event_dict(row, user_id=None):
@@ -151,13 +160,17 @@ def events():
 
 @app.post('/api/login')
 def login():
-    data = request.json
+    data = request.json or {}
     email = (data.get('email') or '').strip().lower()
+    password = data.get('password') or ''
+    if not email or not password:
+        return jsonify({'error': 'Email and password are required.'}), 400
+
     con = conn()
     cur = con.cursor()
     cur.execute(
         f'SELECT {USER_FIELDS} FROM users WHERE email=%s AND password=%s',
-        (email, data.get('password', '')),
+        (email, password),
     )
     user = cur.fetchone()
     cur.close()

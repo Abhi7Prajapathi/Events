@@ -1,6 +1,9 @@
 # Campus Circle
 
-A small college event platform for students and event coordinators. Students can discover events, register, view their attendance status, get interest-based suggestions, and print certificates. The event office can publish events and view live totals.
+[![Campus Circle CI/CD](https://github.com/Abhi7Prajapathi/Events/actions/workflows/ci.yml/badge.svg)](https://github.com/Abhi7Prajapathi/Events/actions/workflows/ci.yml)
+[![Live Site](https://img.shields.io/badge/Live-campuscirclepmc.vercel.app-183d28?style=flat&logo=vercel)](https://campuscirclepmc.vercel.app)
+
+A modern campus event management platform for **Er. Perumal Manimekalai College of Engineering**. Students can discover events, register with one click, get interest-based suggestions, receive automated transactional emails via Brevo, and view/print verified credentials. The event office can publish events (with Gemini AI assistance), manage rosters, verify attendance, export CSVs, and manage the student directory.
 
 ## Run it
 
