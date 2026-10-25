@@ -12,71 +12,88 @@ const api = (path, opts = {}) =>
     return d;
   });
 
-const icons = {
-  Workshop: '✦',
-  Technical: '⌘',
-  Cultural: '♫',
-  Placement: '↗',
-  Seminar: '◎',
+// ── Clean SVG Icon Components (No cartoon emojis) ──────────────────────────
+const CalendarIcon = ({ className = "w-4 h-4" }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+  </svg>
+);
+
+const ClockIcon = ({ className = "w-4 h-4" }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+  </svg>
+);
+
+const MapPinIcon = ({ className = "w-4 h-4" }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+    <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+  </svg>
+);
+
+const UsersIcon = ({ className = "w-4 h-4" }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+  </svg>
+);
+
+const SearchIcon = ({ className = "w-4 h-4" }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+  </svg>
+);
+
+const CheckIcon = ({ className = "w-4 h-4" }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+  </svg>
+);
+
+const DownloadIcon = ({ className = "w-4 h-4" }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+  </svg>
+);
+
+const CertificateIcon = ({ className = "w-4 h-4" }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+  </svg>
+);
+
+const categoryBadgeStyles = {
+  Workshop: 'bg-emerald-50 text-emerald-800 border-emerald-200/80',
+  Technical: 'bg-sky-50 text-sky-800 border-sky-200/80',
+  Cultural: 'bg-amber-50 text-amber-800 border-amber-200/80',
+  Placement: 'bg-indigo-50 text-indigo-800 border-indigo-200/80',
+  Seminar: 'bg-stone-100 text-stone-800 border-stone-200/80',
 };
 
-const categoryTheme = {
-  Workshop: {
-    bg: 'from-[#143d2c] via-[#1b4e39] to-[#0f2c1f]',
-    badgeBg: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30',
-    accent: '#cfe870',
-    tag: 'Workshop',
-  },
-  Technical: {
-    bg: 'from-[#173347] via-[#1d425c] to-[#0f2331]',
-    badgeBg: 'bg-sky-500/15 text-sky-300 border-sky-500/30',
-    accent: '#7dd3fc',
-    tag: 'Technical',
-  },
-  Cultural: {
-    bg: 'from-[#4d251d] via-[#612f25] to-[#361913]',
-    badgeBg: 'bg-rose-500/15 text-rose-300 border-rose-500/30',
-    accent: '#fca5a5',
-    tag: 'Cultural',
-  },
-  Placement: {
-    bg: 'from-[#423617] via-[#57471d] to-[#2e250f]',
-    badgeBg: 'bg-amber-500/15 text-amber-300 border-amber-500/30',
-    accent: '#fde047',
-    tag: 'Placement',
-  },
-  Seminar: {
-    bg: 'from-[#2c3d3a] via-[#374e4a] to-[#1f2b29]',
-    badgeBg: 'bg-teal-500/15 text-teal-300 border-teal-500/30',
-    accent: '#a7f3d0',
-    tag: 'Seminar',
-  },
-};
-
-// ── Floating Animated Toast Notification ────────────────────────────────────
+// ── Notification Toast ──────────────────────────────────────────────────────
 function Toast({ toast, onClose }) {
   if (!toast) return null;
   const isError = toast.type === 'error';
   const isSuccess = toast.type === 'success';
 
   return (
-    <div className="fixed bottom-6 right-6 z-[150] max-w-sm w-full bg-[#121c17] text-white p-4 rounded-xl shadow-elevated border border-white/10 flex items-start justify-between gap-3 animate-scale-in">
+    <div className="fixed bottom-5 right-5 z-[150] max-w-sm w-full bg-white text-ink p-4 rounded-lg shadow-modal border border-border flex items-start justify-between gap-3 animate-fade-in">
       <div className="flex items-start gap-3">
-        <span className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold shrink-0 ${
-          isError ? 'bg-rose-500/20 text-rose-300' : isSuccess ? 'bg-lime text-forest' : 'bg-white/10 text-white'
+        <span className={`w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5 ${
+          isError ? 'bg-red-100 text-red-700' : isSuccess ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-100 text-gray-700'
         }`}>
-          {isError ? '✕' : isSuccess ? '✓' : 'ℹ'}
+          {isError ? '!' : isSuccess ? '✓' : 'i'}
         </span>
         <div>
-          <p className="text-xs font-bold uppercase tracking-wider text-lime font-mono">
-            {isError ? 'Action Failed' : isSuccess ? 'Success' : 'Notification'}
+          <p className="text-xs font-semibold text-ink leading-tight">
+            {isError ? 'Action Failed' : isSuccess ? 'Success' : 'Notice'}
           </p>
-          <p className="text-xs text-[#dbe5df] mt-0.5 leading-relaxed font-medium">{toast.message}</p>
+          <p className="text-xs text-subtle mt-0.5 leading-relaxed">{toast.message}</p>
         </div>
       </div>
       <button
         onClick={onClose}
-        className="text-muted-light hover:text-white text-base leading-none font-bold p-1 transition-colors cursor-pointer"
+        className="text-muted hover:text-ink text-base leading-none font-bold p-1 cursor-pointer"
       >
         ×
       </button>
@@ -92,40 +109,31 @@ function ConfirmModal({ isOpen, title, message, confirmText = 'Confirm', danger 
   const canConfirm = requireWord ? typed.trim().toUpperCase() === requireWord.toUpperCase() : true;
 
   return (
-    <div className="fixed inset-0 bg-[#0c1813]/70 backdrop-blur-md z-[160] grid place-items-center p-4 animate-fade-in">
-      <div className="bg-white w-full max-w-md p-6 sm:p-7 rounded-2xl shadow-elevated border border-line animate-scale-in">
-        <div className="flex items-center gap-3 mb-3">
-          <div className={`w-10 h-10 rounded-xl grid place-items-center text-lg ${danger ? 'bg-rose-50 text-rose-600' : 'bg-lime/20 text-forest'}`}>
-            {danger ? '⚠️' : 'ℹ️'}
-          </div>
-          <div>
-            <h3 className="font-display text-lg sm:text-xl font-bold tracking-tight text-ink">{title}</h3>
-            <span className="text-[11px] font-mono text-muted uppercase">Confirmation Required</span>
-          </div>
-        </div>
-
-        <p className="text-xs sm:text-sm text-muted leading-relaxed mb-5">{message}</p>
+    <div className="fixed inset-0 bg-black/40 backdrop-blur-xs z-[160] grid place-items-center p-4">
+      <div className="bg-white w-full max-w-md p-6 rounded-xl shadow-modal border border-border">
+        <h3 className="font-semibold text-base text-ink mb-1">{title}</h3>
+        <p className="text-xs text-subtle leading-relaxed mb-4">{message}</p>
 
         {requireWord && (
-          <div className="mb-5 bg-rose-50/70 p-3.5 border border-rose-200 rounded-xl">
-            <p className="text-xs text-rose-800 font-semibold mb-1.5">
-              Type <span className="font-mono bg-white px-2 py-0.5 border border-rose-300 rounded font-bold">{requireWord}</span> to authorize:
+          <div className="mb-4 bg-red-50 p-3 border border-red-200 rounded-md">
+            <p className="text-xs text-red-800 font-medium mb-1.5">
+              Type <strong className="font-mono">{requireWord}</strong> to confirm:
             </p>
             <input
               type="text"
               value={typed}
               onChange={(e) => setTyped(e.target.value)}
               placeholder={`Type "${requireWord}"`}
-              className="w-full text-xs p-2.5 border border-rose-300 rounded-lg font-mono uppercase focus:ring-2 focus:ring-rose-500 focus:outline-none bg-white text-ink"
+              className="w-full text-xs p-2 border border-red-300 rounded font-mono uppercase bg-white focus:outline-none focus:ring-1 focus:ring-red-600"
             />
           </div>
         )}
 
-        <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-line">
+        <div className="flex items-center justify-end gap-2 pt-3 border-t border-border">
           <button
             type="button"
             onClick={onCancel}
-            className="px-4 py-2.5 border border-line text-xs font-semibold rounded-lg hover:bg-black/[0.04] text-muted hover:text-ink transition-colors cursor-pointer"
+            className="px-3.5 py-1.5 border border-border text-xs font-medium rounded-md hover:bg-gray-50 text-subtle transition-colors cursor-pointer"
           >
             Cancel
           </button>
@@ -133,10 +141,10 @@ function ConfirmModal({ isOpen, title, message, confirmText = 'Confirm', danger 
             type="button"
             disabled={!canConfirm}
             onClick={() => { onConfirm(); setTyped(''); }}
-            className={`px-5 py-2.5 text-xs font-bold rounded-lg transition-all shadow-xs cursor-pointer ${
+            className={`px-4 py-1.5 text-xs font-medium rounded-md transition-colors cursor-pointer ${
               danger
-                ? 'bg-rose-600 hover:bg-rose-700 text-white disabled:opacity-40 disabled:cursor-not-allowed shadow-sm'
-                : 'bg-forest hover:bg-[#163a2b] text-white shadow-sm'
+                ? 'bg-red-600 hover:bg-red-700 text-white disabled:opacity-40 disabled:cursor-not-allowed'
+                : 'bg-college hover:bg-college-light text-white'
             }`}
           >
             {confirmText}
@@ -224,34 +232,29 @@ function CertificateModal({ cert, user, onClose }) {
   if (!cert) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] bg-[#0c1813]/85 backdrop-blur-md p-3 sm:p-6 md:p-8 flex flex-col items-center justify-start sm:justify-center overflow-y-auto print:p-0 print:bg-white print:static animate-fade-in">
+    <div className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-xs p-3 sm:p-6 md:p-8 flex flex-col items-center justify-start sm:justify-center overflow-y-auto print:p-0 print:bg-white print:static">
       <div className="w-full max-w-[960px] flex items-center justify-between gap-3 mb-3 print:hidden">
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-mono font-semibold text-lime bg-lime/10 border border-lime/30 px-3 py-1.5 rounded-full flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-lime animate-pulse" />
-            Verified Credential · Official Certificate
-          </span>
-        </div>
-        <div className="flex items-center gap-2.5 ml-auto">
+        <span className="text-xs font-mono text-zinc-300 bg-white/10 px-3 py-1.5 rounded">
+          Verified Event Credential · Official Certificate
+        </span>
+        <div className="flex items-center gap-2 ml-auto">
           <button
             onClick={onClose}
-            className="bg-white/95 hover:bg-white text-ink text-xs sm:text-sm font-semibold px-4 py-2 rounded-lg shadow-sm transition-all cursor-pointer hover:scale-105 active:scale-95"
+            className="bg-white/90 hover:bg-white text-ink text-xs font-medium px-3.5 py-1.5 rounded shadow-sm transition-colors cursor-pointer"
           >
             ← Back
           </button>
           <button
             onClick={() => window.print()}
-            className="bg-lime hover:bg-lime-hover text-forest text-xs sm:text-sm font-bold px-4 py-2 rounded-lg shadow-glow-lime transition-all flex items-center gap-1.5 cursor-pointer hover:scale-105 active:scale-95"
+            className="bg-[#cfe870] hover:bg-[#d9f07a] text-[#183d28] text-xs font-bold px-4 py-1.5 rounded shadow-sm transition-colors flex items-center gap-1.5 cursor-pointer"
           >
-            <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
-            </svg>
+            <DownloadIcon className="w-3.5 h-3.5" />
             Print / Save PDF
           </button>
         </div>
       </div>
 
-      <div className="w-full max-w-[960px] bg-white border border-[#cfd6d1] shadow-2xl relative flex flex-row overflow-hidden rounded-sm print:shadow-none print:border-0 print:w-full print:max-w-none print:rounded-none">
+      <div className="w-full max-w-[960px] bg-white border border-[#cfd6d1] shadow-2xl relative flex flex-row overflow-hidden rounded-xs print:shadow-none print:border-0 print:w-full print:max-w-none print:rounded-none">
         <div className="w-3.5 sm:w-7 md:w-9 bg-[#183d28] shrink-0" />
 
         <div className="flex-1 flex flex-col justify-between pl-3.5 pr-3.5 sm:pl-7 sm:pr-7 md:pl-9 md:pr-9 pt-4 sm:pt-6 md:pt-8 pb-0 relative bg-white">
@@ -332,123 +335,112 @@ function CertificateModal({ cert, user, onClose }) {
   );
 }
 
-// ── Event Detail Drawer / Showcase Modal ────────────────────────────────────
+// ── Event Detail Modal (Academic Bulletin Style) ────────────────────────────
 function EventDetailModal({ event, user, onEnroll, onCancelEnroll, onClose, openCertificate }) {
   if (!event) return null;
 
   const totalSeats = event.seats || 50;
   const registeredCount = event.registered || 0;
   const seatsLeft = Math.max(0, totalSeats - registeredCount);
-  const percentFilled = Math.min(100, Math.round((registeredCount / totalSeats) * 100));
-  const t = categoryTheme[event.category] || categoryTheme.Workshop;
+  const badgeStyle = categoryBadgeStyles[event.category] || categoryBadgeStyles.Workshop;
 
   return (
-    <div className="fixed inset-0 bg-[#0c1813]/70 backdrop-blur-md z-50 grid place-items-center p-3 sm:p-5 animate-fade-in">
-      <div className="bg-white w-full max-w-2xl rounded-2xl shadow-elevated border border-line max-h-[92vh] overflow-y-auto relative animate-scale-in flex flex-col">
-        {/* Banner with Category Gradient */}
-        <div className={`p-6 sm:p-8 bg-gradient-to-br ${t.bg} text-white relative overflow-hidden rounded-t-2xl`}>
-          <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl pointer-events-none" />
-          <button
-            onClick={onClose}
-            className="absolute right-4 top-4 w-9 h-9 rounded-full bg-black/20 hover:bg-black/40 text-white/90 hover:text-white grid place-items-center text-xl font-bold transition-all cursor-pointer"
-          >
-            ×
-          </button>
-
-          <div className="flex items-center gap-2 mb-3">
-            <span className={`text-xs font-mono font-bold px-3 py-1 rounded-full uppercase tracking-wider border ${t.badgeBg}`}>
-              {icons[event.category]} {event.category}
-            </span>
-            <span className="text-xs text-white/70 font-mono">ID #{event.id}</span>
-            {event.is_registered && (
-              <span className="bg-lime text-forest text-xs px-2.5 py-0.5 rounded-full font-bold flex items-center gap-1 shadow-sm">
-                ✓ Registered
+    <div className="fixed inset-0 bg-black/40 backdrop-blur-xs z-50 grid place-items-center p-3 sm:p-5">
+      <div className="bg-white w-full max-w-2xl rounded-xl shadow-modal border border-border max-h-[92vh] overflow-y-auto relative flex flex-col">
+        {/* Header */}
+        <div className="p-6 border-b border-border">
+          <div className="flex items-center justify-between gap-3 mb-2.5">
+            <div className="flex items-center gap-2">
+              <span className={`text-xs font-medium px-2.5 py-0.5 rounded border ${badgeStyle}`}>
+                {event.category}
               </span>
-            )}
+              <span className="text-xs font-mono text-muted">ID #{event.id}</span>
+            </div>
+            <button
+              onClick={onClose}
+              className="text-muted hover:text-ink w-7 h-7 rounded flex items-center justify-center font-bold text-lg cursor-pointer"
+            >
+              ×
+            </button>
           </div>
 
-          <h2 className="font-display text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white mb-2 leading-tight">
+          <h2 className="font-serif text-2xl sm:text-3xl font-semibold text-ink leading-tight">
             {event.title}
           </h2>
-          <p className="text-xs sm:text-sm text-white/80 flex items-center gap-2">
-            <span>📍 {event.venue}</span>
-            <span>·</span>
-            <span>⏰ {event.time}</span>
-          </p>
         </div>
 
-        {/* Content Body */}
-        <div className="p-6 sm:p-8 space-y-6">
-          {/* Schedule Chips Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            {[
-              ['Event Date', event.date, '📅'],
-              ['Time', event.time, '⏰'],
-              ['Location', event.venue, '📍'],
-              ['Deadline', event.deadline || 'Same day', '⏳'],
-            ].map(([lbl, val, ic]) => (
-              <div key={lbl} className="bg-[#f7f9f6] border border-line/80 p-3.5 rounded-xl">
-                <span className="text-[10px] font-mono text-muted uppercase tracking-wider block mb-1">
-                  {ic} {lbl}
-                </span>
-                <span className="font-bold text-xs sm:text-sm text-ink block truncate">{val}</span>
-              </div>
-            ))}
+        {/* Info Grid */}
+        <div className="p-6 space-y-6">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-college-surface/60 p-3.5 rounded-lg border border-border">
+            <div>
+              <span className="text-[11px] text-muted uppercase font-mono block">Date</span>
+              <strong className="text-xs font-semibold text-ink mt-0.5 block">{event.date}</strong>
+            </div>
+            <div>
+              <span className="text-[11px] text-muted uppercase font-mono block">Timing</span>
+              <strong className="text-xs font-semibold text-ink mt-0.5 block">{event.time}</strong>
+            </div>
+            <div>
+              <span className="text-[11px] text-muted uppercase font-mono block">Location</span>
+              <strong className="text-xs font-semibold text-ink mt-0.5 block truncate">{event.venue}</strong>
+            </div>
+            <div>
+              <span className="text-[11px] text-muted uppercase font-mono block">Deadline</span>
+              <strong className="text-xs font-semibold text-ink mt-0.5 block">{event.deadline || 'Same day'}</strong>
+            </div>
           </div>
 
-          {/* Seat Capacity Meter */}
-          <div className="bg-[#fcfdfa] border border-line p-4 rounded-xl">
-            <div className="flex items-center justify-between text-xs font-semibold mb-2">
-              <span className="text-ink flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-                Capacity Utilization: <strong>{registeredCount} / {totalSeats} seats</strong>
+          {/* Seat Capacity Bar */}
+          <div>
+            <div className="flex items-center justify-between text-xs mb-1.5 font-medium">
+              <span className="text-subtle">
+                Enrolled: <strong>{registeredCount}</strong> / {totalSeats} participants
               </span>
-              <span className={seatsLeft <= 5 ? 'text-rose-600 font-bold' : 'text-emerald-700 font-bold'}>
-                {seatsLeft === 0 ? 'Fully Booked' : `${seatsLeft} seats remaining`}
+              <span className={seatsLeft <= 5 ? 'text-red-700 font-semibold' : 'text-college font-semibold'}>
+                {seatsLeft === 0 ? 'Full' : `${seatsLeft} seats remaining`}
               </span>
             </div>
-            <div className="w-full bg-[#e8eee4] h-2.5 rounded-full overflow-hidden p-0.5">
+            <div className="w-full bg-gray-100 h-1.5 rounded-full overflow-hidden">
               <div
-                className={`h-full rounded-full transition-all duration-700 ${
-                  percentFilled >= 95 ? 'bg-rose-500' : percentFilled >= 70 ? 'bg-amber-500' : 'bg-emerald-600'
-                }`}
-                style={{ width: `${percentFilled}%` }}
+                className="bg-college h-full rounded-full transition-all"
+                style={{ width: `${Math.min(100, Math.round((registeredCount / totalSeats) * 100))}%` }}
               />
             </div>
           </div>
 
           {/* Description */}
           <div>
-            <h4 className="font-display text-sm font-bold uppercase tracking-wider text-muted mb-2 flex items-center gap-1.5">
-              <span>✦</span> Event Details & Overview
+            <h4 className="text-xs font-semibold text-muted uppercase tracking-wider mb-2 font-mono">
+              Program Description & Agenda
             </h4>
-            <div className="text-sm text-[#313f38] leading-relaxed whitespace-pre-line bg-[#fbfcf9] p-4 rounded-xl border border-line/60">
-              {event.description || 'No detailed syllabus or prerequisites provided for this event.'}
-            </div>
+            <p className="text-sm text-subtle leading-relaxed whitespace-pre-line bg-gray-50/70 p-4 rounded-lg border border-border">
+              {event.description || 'No detailed program outline provided.'}
+            </p>
           </div>
         </div>
 
-        {/* Modal Footer Actions */}
-        <div className="p-4 sm:p-6 bg-[#f7f9f6] border-t border-line rounded-b-2xl flex flex-wrap items-center justify-between gap-3 mt-auto">
+        {/* Footer Actions */}
+        <div className="p-4 sm:p-5 bg-gray-50 border-t border-border rounded-b-xl flex items-center justify-between gap-3 mt-auto">
           <button
             onClick={onClose}
-            className="text-xs px-4 py-2.5 border border-line rounded-xl font-semibold text-muted hover:text-ink hover:bg-white transition-all cursor-pointer"
+            className="text-xs px-3.5 py-2 border border-border rounded-md font-medium text-subtle hover:text-ink hover:bg-white transition-colors cursor-pointer"
           >
             Close
           </button>
 
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2">
             {event.is_registered ? (
               <>
                 <button
                   onClick={() => openCertificate(event)}
-                  className="bg-lime hover:bg-lime-hover text-forest text-xs font-bold px-4 py-2.5 rounded-xl shadow-glow-lime transition-all flex items-center gap-1.5 cursor-pointer hover:scale-105 active:scale-95"
+                  className="bg-[#cfe870] hover:bg-[#d9f07a] text-[#183d28] text-xs font-semibold px-4 py-2 rounded-md shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer"
                 >
-                  🎖️ View Certificate
+                  <CertificateIcon className="w-3.5 h-3.5" />
+                  View Certificate
                 </button>
                 <button
                   onClick={() => onCancelEnroll(event.id)}
-                  className="text-xs text-rose-600 hover:text-white hover:bg-rose-600 border border-rose-300 px-3.5 py-2.5 rounded-xl font-semibold transition-all cursor-pointer active:scale-95"
+                  className="text-xs text-red-700 hover:bg-red-50 border border-red-200 px-3 py-2 rounded-md font-medium transition-colors cursor-pointer"
                 >
                   Cancel Registration
                 </button>
@@ -457,9 +449,9 @@ function EventDetailModal({ event, user, onEnroll, onCancelEnroll, onClose, open
               <button
                 disabled={seatsLeft === 0}
                 onClick={() => onEnroll(event.id)}
-                className="bg-forest hover:bg-[#163a2b] text-white text-xs font-bold px-6 py-2.5 rounded-xl transition-all shadow-md hover:shadow-lg disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer hover:scale-105 active:scale-95 flex items-center gap-1.5"
+                className="bg-college hover:bg-college-light text-white text-xs font-medium px-4 py-2 rounded-md shadow-xs disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-colors"
               >
-                {seatsLeft === 0 ? 'Full' : 'Reserve Your Spot →'}
+                {seatsLeft === 0 ? 'Capacity Full' : 'Register for Event →'}
               </button>
             )}
           </div>
@@ -495,123 +487,119 @@ function EditEventModal({ event, onClose, onSaved }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-[#0c1813]/70 backdrop-blur-md z-50 grid place-items-center p-3 sm:p-5 animate-fade-in">
+    <div className="fixed inset-0 bg-black/40 backdrop-blur-xs z-50 grid place-items-center p-3 sm:p-5">
       <form
         onSubmit={handleSubmit}
-        className="bg-white w-full max-w-xl p-6 sm:p-8 rounded-2xl shadow-elevated border border-line max-h-[92vh] overflow-y-auto animate-scale-in"
+        className="bg-white w-full max-w-xl p-6 rounded-xl shadow-modal border border-border max-h-[92vh] overflow-y-auto"
       >
-        <div className="flex items-center justify-between border-b border-line pb-4 mb-5">
+        <div className="flex items-center justify-between border-b border-border pb-3 mb-4">
           <div>
-            <span className="font-mono text-xs uppercase bg-forest text-lime px-2.5 py-0.5 rounded-full font-bold">
-              Event #{event.id}
-            </span>
-            <h3 className="font-display text-xl sm:text-2xl font-bold tracking-tight text-ink mt-1.5">
-              Edit Event Listing
-            </h3>
+            <span className="text-xs font-mono text-muted">Editing Event #{event.id}</span>
+            <h3 className="font-semibold text-lg text-ink">Update Event Details</h3>
           </div>
-          <button type="button" onClick={onClose} className="w-8 h-8 rounded-full bg-black/5 hover:bg-black/10 text-muted hover:text-ink font-bold grid place-items-center cursor-pointer">
+          <button type="button" onClick={onClose} className="text-muted hover:text-ink text-xl font-bold cursor-pointer">
             ×
           </button>
         </div>
 
-        {err && <p className="text-xs text-rose-600 mb-4 bg-rose-50 p-3 border border-rose-200 rounded-xl">{err}</p>}
+        {err && <p className="text-xs text-red-600 mb-3 bg-red-50 p-2 rounded border border-red-200">{err}</p>}
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
-          <label className="sm:col-span-2 text-xs font-bold text-muted flex flex-col gap-1.5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+          <label className="sm:col-span-2 text-xs font-medium text-subtle flex flex-col gap-1">
             Event Title
             <input
               required
               value={form.title || ''}
               onChange={(e) => setForm({ ...form, title: e.target.value })}
-              className="border border-line p-3 bg-white rounded-xl text-sm font-medium focus:ring-2 focus:ring-forest focus:outline-none transition-all"
+              className="border border-border p-2 bg-white rounded-md text-sm focus:ring-1 focus:ring-college focus:outline-none"
             />
           </label>
-          <label className="text-xs font-bold text-muted flex flex-col gap-1.5">
+          <label className="text-xs font-medium text-subtle flex flex-col gap-1">
             Category
             <select
               value={form.category || 'Workshop'}
               onChange={(e) => setForm({ ...form, category: e.target.value })}
-              className="border border-line p-3 bg-white rounded-xl text-sm font-medium focus:ring-2 focus:ring-forest focus:outline-none transition-all"
+              className="border border-border p-2 bg-white rounded-md text-sm focus:ring-1 focus:ring-college focus:outline-none"
             >
               {['Workshop', 'Technical', 'Cultural', 'Placement', 'Seminar'].map((x) => (
                 <option key={x}>{x}</option>
               ))}
             </select>
           </label>
-          <label className="text-xs font-bold text-muted flex flex-col gap-1.5">
-            Total Capacity (Seats)
+          <label className="text-xs font-medium text-subtle flex flex-col gap-1">
+            Max Seats
             <input
               required
               type="number"
               min="1"
               value={form.seats || 50}
               onChange={(e) => setForm({ ...form, seats: parseInt(e.target.value, 10) || 50 })}
-              className="border border-line p-3 bg-white rounded-xl text-sm font-medium focus:ring-2 focus:ring-forest focus:outline-none transition-all"
+              className="border border-border p-2 bg-white rounded-md text-sm focus:ring-1 focus:ring-college focus:outline-none"
             />
           </label>
-          <label className="text-xs font-bold text-muted flex flex-col gap-1.5">
+          <label className="text-xs font-medium text-subtle flex flex-col gap-1">
             Date
             <input
               required
               type="date"
               value={form.date || ''}
               onChange={(e) => setForm({ ...form, date: e.target.value })}
-              className="border border-line p-3 bg-white rounded-xl text-sm font-medium focus:ring-2 focus:ring-forest focus:outline-none transition-all"
+              className="border border-border p-2 bg-white rounded-md text-sm focus:ring-1 focus:ring-college focus:outline-none"
             />
           </label>
-          <label className="text-xs font-bold text-muted flex flex-col gap-1.5">
+          <label className="text-xs font-medium text-subtle flex flex-col gap-1">
             Time
             <input
               required
               value={form.time || ''}
               onChange={(e) => setForm({ ...form, time: e.target.value })}
-              className="border border-line p-3 bg-white rounded-xl text-sm font-medium focus:ring-2 focus:ring-forest focus:outline-none transition-all"
+              className="border border-border p-2 bg-white rounded-md text-sm focus:ring-1 focus:ring-college focus:outline-none"
             />
           </label>
-          <label className="text-xs font-bold text-muted flex flex-col gap-1.5">
+          <label className="text-xs font-medium text-subtle flex flex-col gap-1">
             Venue
             <input
               required
               value={form.venue || ''}
               onChange={(e) => setForm({ ...form, venue: e.target.value })}
-              className="border border-line p-3 bg-white rounded-xl text-sm font-medium focus:ring-2 focus:ring-forest focus:outline-none transition-all"
+              className="border border-border p-2 bg-white rounded-md text-sm focus:ring-1 focus:ring-college focus:outline-none"
             />
           </label>
-          <label className="text-xs font-bold text-muted flex flex-col gap-1.5">
-            Registration Deadline
+          <label className="text-xs font-medium text-subtle flex flex-col gap-1">
+            Deadline
             <input
               required
               type="date"
               value={form.deadline || ''}
               onChange={(e) => setForm({ ...form, deadline: e.target.value })}
-              className="border border-line p-3 bg-white rounded-xl text-sm font-medium focus:ring-2 focus:ring-forest focus:outline-none transition-all"
+              className="border border-border p-2 bg-white rounded-md text-sm focus:ring-1 focus:ring-college focus:outline-none"
             />
           </label>
-          <label className="sm:col-span-2 text-xs font-bold text-muted flex flex-col gap-1.5">
+          <label className="sm:col-span-2 text-xs font-medium text-subtle flex flex-col gap-1">
             Description
             <textarea
               rows="3"
               value={form.description || ''}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
-              className="border border-line p-3 bg-white rounded-xl text-sm font-medium focus:ring-2 focus:ring-forest focus:outline-none transition-all"
+              className="border border-border p-2 bg-white rounded-md text-sm focus:ring-1 focus:ring-college focus:outline-none"
             />
           </label>
         </div>
 
-        <div className="flex items-center justify-end gap-2.5 pt-4 border-t border-line">
+        <div className="flex items-center justify-end gap-2 pt-3 border-t border-border">
           <button
             type="button"
             onClick={onClose}
-            className="text-xs px-4 py-2.5 border border-line rounded-xl hover:bg-black/[0.04] font-semibold text-muted transition-colors cursor-pointer"
+            className="text-xs px-3.5 py-1.5 border border-border rounded-md font-medium text-subtle hover:bg-gray-50 cursor-pointer"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={saving}
-            className="bg-forest hover:bg-[#163a2b] text-white text-xs font-bold px-6 py-2.5 rounded-xl transition-all shadow-sm cursor-pointer hover:scale-105 active:scale-95"
+            className="bg-college hover:bg-college-light text-white text-xs font-medium px-4 py-1.5 rounded-md shadow-xs cursor-pointer"
           >
-            {saving ? 'Saving changes…' : 'Save Changes →'}
+            {saving ? 'Saving…' : 'Save Changes'}
           </button>
         </div>
       </form>
@@ -619,7 +607,7 @@ function EditEventModal({ event, onClose, onSaved }) {
   );
 }
 
-// ── Attendee Modal (Admin) with Attendance Toggle & Unenroll ────────────────
+// ── Attendee Modal (Roster & Attendance Registry) ───────────────────────────
 function AttendeeModal({ eventId, onClose, notify }) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -695,122 +683,115 @@ function AttendeeModal({ eventId, onClose, notify }) {
   });
 
   return (
-    <div className="fixed inset-0 bg-[#0c1813]/70 backdrop-blur-md z-50 grid place-items-center p-3 sm:p-5 animate-fade-in">
-      <div className="bg-white w-full max-w-4xl p-6 sm:p-8 relative shadow-elevated border border-line rounded-2xl max-h-[92vh] flex flex-col animate-scale-in">
+    <div className="fixed inset-0 bg-black/40 backdrop-blur-xs z-50 grid place-items-center p-3 sm:p-5">
+      <div className="bg-white w-full max-w-4xl p-6 rounded-xl shadow-modal border border-border max-h-[92vh] flex flex-col">
         {/* Header */}
-        <div className="flex items-start justify-between border-b border-line pb-4 mb-4">
+        <div className="flex items-start justify-between border-b border-border pb-3 mb-4">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="bg-forest text-lime text-xs font-mono px-2.5 py-0.5 rounded-full font-bold uppercase">
-                {data?.event?.category || 'Event'}
+              <span className="text-xs font-mono font-medium bg-gray-100 text-subtle px-2 py-0.5 rounded">
+                Event #{eventId}
               </span>
-              <span className="text-xs text-muted font-mono">Event #{eventId}</span>
+              <span className="text-xs text-muted">Official Roster</span>
             </div>
-            <h2 className="font-display text-2xl sm:text-3xl font-extrabold tracking-tight text-ink">
+            <h2 className="text-xl sm:text-2xl font-semibold text-ink">
               {data?.event?.title || 'Registered Students'}
             </h2>
             {data?.event && (
-              <p className="text-xs text-muted mt-1">
-                📅 {data.event.date} · ⏰ {data.event.time} · 📍 {data.event.venue} · 💺 {data.total} / {data.event.seats || 50} enrolled
+              <p className="text-xs text-muted mt-0.5">
+                {data.event.date} · {data.event.venue} · {data.total} of {data.event.seats || 50} seats enrolled
               </p>
             )}
           </div>
           <button
             onClick={onClose}
-            className="w-9 h-9 rounded-full bg-black/5 hover:bg-black/10 text-muted hover:text-ink text-xl font-bold grid place-items-center transition-colors cursor-pointer"
+            className="text-muted hover:text-ink text-2xl leading-none font-bold p-1 cursor-pointer"
           >
             ×
           </button>
         </div>
 
         {/* Toolbar */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 mb-4">
-          <div className="relative flex-1 max-w-md">
-            <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted text-xs">🔍</span>
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 mb-3">
+          <div className="relative flex-1 max-w-sm">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted">
+              <SearchIcon className="w-3.5 h-3.5" />
+            </span>
             <input
               type="text"
-              placeholder="Search by student name, reg no, dept..."
+              placeholder="Filter by name, reg no, department..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-9 pr-3.5 py-2.5 border border-line rounded-xl text-xs bg-white focus:outline-none focus:ring-2 focus:ring-forest transition-all"
+              className="w-full pl-8 pr-3 py-1.5 border border-border rounded-md text-xs bg-white focus:outline-none focus:ring-1 focus:ring-college"
             />
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-xs font-mono bg-cream text-forest px-3 py-2 rounded-lg font-bold border border-line">
-              Enrolled: {filtered.length} {filtered.length === 1 ? 'student' : 'students'}
+            <span className="text-xs font-mono bg-gray-100 text-subtle px-2.5 py-1.5 rounded">
+              Enrolled: {filtered.length}
             </span>
             <button
               onClick={exportCSV}
               disabled={!data?.students?.length}
-              className="bg-forest hover:bg-[#163a2b] text-white disabled:opacity-40 text-xs px-4 py-2.5 rounded-xl font-semibold transition-all flex items-center gap-1.5 cursor-pointer shadow-sm hover:scale-105 active:scale-95"
+              className="bg-college hover:bg-college-light text-white disabled:opacity-40 text-xs px-3 py-1.5 rounded-md font-medium transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs"
             >
-              📥 Export CSV
+              <DownloadIcon className="w-3.5 h-3.5" />
+              Export CSV
             </button>
           </div>
         </div>
 
         {/* Table Container */}
-        <div className="flex-1 overflow-y-auto border border-line rounded-xl">
+        <div className="flex-1 overflow-y-auto border border-border rounded-lg">
           {loading ? (
-            <div className="py-16 text-center text-muted text-sm flex flex-col items-center gap-3">
-              <span className="inline-block w-6 h-6 border-2 border-forest/30 border-t-forest rounded-full animate-spin" />
-              Loading student roster…
-            </div>
+            <div className="py-12 text-center text-muted text-xs">Loading roster…</div>
           ) : error ? (
-            <div className="py-12 text-center text-rose-600 text-sm px-4">Error: {error}</div>
+            <div className="py-12 text-center text-red-600 text-xs">{error}</div>
           ) : filtered.length === 0 ? (
-            <div className="py-16 text-center text-muted text-sm px-4">
-              {search ? 'No registered students match your search.' : 'No students have registered for this event yet.'}
+            <div className="py-12 text-center text-muted text-xs">
+              {search ? 'No registered students match filter.' : 'No students registered yet.'}
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs border-collapse min-w-[680px]">
-                <thead className="bg-[#f2f5ef] text-forest font-bold sticky top-0 border-b border-line font-mono text-[11px] uppercase tracking-wider">
+              <table className="w-full text-left text-xs border-collapse min-w-[650px]">
+                <thead className="bg-gray-50 text-subtle font-medium sticky top-0 border-b border-border text-[11px] uppercase tracking-wider">
                   <tr>
-                    <th className="p-3.5 w-12 text-center">#</th>
-                    <th className="p-3.5">Student Name</th>
-                    <th className="p-3.5">Reg No</th>
-                    <th className="p-3.5">Dept & Class</th>
-                    <th className="p-3.5">Contact Info</th>
-                    <th className="p-3.5">Registered At</th>
-                    <th className="p-3.5 text-center">Attendance</th>
-                    <th className="p-3.5 text-right">Actions</th>
+                    <th className="p-3 w-10 text-center">#</th>
+                    <th className="p-3">Student Name</th>
+                    <th className="p-3">Reg No</th>
+                    <th className="p-3">Dept & Class</th>
+                    <th className="p-3">Contact</th>
+                    <th className="p-3 text-center">Attendance</th>
+                    <th className="p-3 text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-line/60">
+                <tbody className="divide-y divide-border">
                   {filtered.map((s, idx) => (
-                    <tr key={s.user_id + '-' + idx} className="hover:bg-black/[0.02] transition-colors">
-                      <td className="p-3.5 text-center text-muted font-mono">{idx + 1}</td>
-                      <td className="p-3.5 font-bold text-ink flex items-center gap-2.5">
-                        <span className="w-7 h-7 rounded-full bg-forest text-lime text-xs font-bold grid place-items-center shrink-0 shadow-xs">
-                          {(s.name || 'S').charAt(0).toUpperCase()}
-                        </span>
-                        <span>{s.name}</span>
-                      </td>
-                      <td className="p-3.5 font-mono font-medium text-forest">{s.reg_no}</td>
-                      <td className="p-3.5 text-muted">{s.department} · {s.class}</td>
-                      <td className="p-3.5 font-mono text-ink">
+                    <tr key={s.user_id + '-' + idx} className="hover:bg-gray-50/70 transition-colors">
+                      <td className="p-3 text-center text-muted font-mono">{idx + 1}</td>
+                      <td className="p-3 font-medium text-ink">{s.name}</td>
+                      <td className="p-3 font-mono text-subtle">{s.reg_no}</td>
+                      <td className="p-3 text-muted">{s.department} · {s.class}</td>
+                      <td className="p-3 font-mono text-subtle text-[11px]">
                         <div>{s.email}</div>
-                        {s.phone && <div className="text-[10px] text-muted">{s.phone}</div>}
+                        {s.phone && <div className="text-muted">{s.phone}</div>}
                       </td>
-                      <td className="p-3.5 text-muted whitespace-nowrap">{s.registered_at}</td>
-                      <td className="p-3.5 text-center">
+                      <td className="p-3 text-center">
                         <button
                           onClick={() => toggleAttendance(s.user_id, s.status)}
-                          className={`inline-flex items-center gap-1 font-bold text-[10px] px-3 py-1 rounded-full uppercase tracking-wider transition-all cursor-pointer hover:scale-105 active:scale-95 ${
+                          className={`inline-flex items-center gap-1 font-medium text-[11px] px-2.5 py-0.5 rounded cursor-pointer transition-colors ${
                             s.status === 'Attended'
                               ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
-                              : 'bg-cream text-forest hover:bg-lime border border-line'
+                              : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-300'
                           }`}
-                          title="Click to toggle Present/Attended status"
+                          title="Click to toggle status"
                         >
                           {s.status === 'Attended' ? '✓ Attended' : s.status || 'Confirmed'}
                         </button>
                       </td>
-                      <td className="p-3.5 text-right">
+                      <td className="p-3 text-right">
                         <button
                           onClick={() => removeStudent(s.user_id, s.name)}
-                          className="text-rose-600 hover:text-white hover:bg-rose-600 text-xs font-semibold border border-rose-300 px-2.5 py-1 rounded-lg transition-all cursor-pointer"
+                          className="text-red-600 hover:underline text-xs font-medium cursor-pointer"
                         >
                           Remove
                         </button>
@@ -824,11 +805,11 @@ function AttendeeModal({ eventId, onClose, notify }) {
         </div>
 
         {/* Modal Footer */}
-        <div className="pt-4 mt-3 flex items-center justify-between text-xs text-muted border-t border-line">
-          <span>Campus Circle · Official Event Attendance Registry</span>
+        <div className="pt-3 mt-3 flex items-center justify-between text-xs text-muted border-t border-border">
+          <span>Click status button to toggle official attendance record.</span>
           <button
             onClick={onClose}
-            className="bg-forest text-white px-5 py-2 rounded-xl hover:bg-[#163a2b] font-bold cursor-pointer transition-all hover:scale-105 active:scale-95"
+            className="bg-gray-100 hover:bg-gray-200 text-ink px-4 py-1.5 rounded-md font-medium cursor-pointer"
           >
             Close
           </button>
@@ -838,7 +819,7 @@ function AttendeeModal({ eventId, onClose, notify }) {
   );
 }
 
-// ── Discover Component ──────────────────────────────────────────────────────
+// ── Discover Component (Collegiate Editorial View) ──────────────────────────
 function Discover({ events, user, enroll, cancelEnroll, openDetail, openAttendees, deleteEvent, editEvent }) {
   const [filter, setFilter] = useState('All');
   const [search, setSearch] = useState('');
@@ -870,121 +851,39 @@ function Discover({ events, user, enroll, cancelEnroll, openDetail, openAttendee
 
   return (
     <>
-      {/* ── Modern Hero Section ── */}
-      <section className="relative overflow-hidden pt-8 sm:pt-14 pb-12 sm:pb-20 border-b border-line bg-gradient-to-b from-white via-cream to-cream">
-        {/* Soft Ambient Background Glows */}
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute top-10 right-10 w-80 h-80 bg-lime/15 rounded-full blur-3xl pointer-events-none" />
-
-        <div className="max-w-[1180px] mx-auto px-4 sm:px-6 relative flex flex-col md:flex-row items-center justify-between gap-8 lg:gap-14">
-          <div className="flex-1 max-w-xl text-center md:text-left">
-            <div className="inline-flex items-center gap-2 bg-forest text-lime text-xs font-mono font-bold px-3.5 py-1.5 rounded-full mb-4 shadow-sm border border-forest/30">
-              <span className="w-2 h-2 rounded-full bg-lime animate-pulse" />
-              <span>ER. PERUMAL MANIMEKALAI COLLEGE OF ENGINEERING</span>
-            </div>
-
-            <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.08] text-ink mb-4">
-              Events worth leaving <br className="hidden sm:inline" />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-forest via-[#16553b] to-emerald-600">
-                your room for.
-              </span>
-            </h1>
-
-            <p className="text-muted text-sm sm:text-base leading-relaxed max-w-lg mx-auto md:mx-0 mb-6">
-              Discover official college hackathons, technical workshops, placement talks, and cultural festivals — with single-click registrations and instant verified credentials.
+      {/* ── College Header Banner ── */}
+      <section className="border-b border-border bg-white py-10 sm:py-14">
+        <div className="max-w-[1140px] mx-auto px-4 sm:px-6">
+          <div className="max-w-3xl">
+            <p className="text-[11px] font-mono uppercase tracking-widest text-college font-semibold mb-2 flex items-center gap-2">
+              <span className="inline-block w-1.5 h-1.5 rounded-full bg-college"></span>
+              <span>ACADEMIC YEAR 2026 · ER. PERUMAL MANIMEKALAI COLLEGE OF ENGINEERING</span>
             </p>
-
-            <div className="flex flex-wrap items-center justify-center md:justify-start gap-3">
-              <button
-                className="bg-forest hover:bg-[#163a2b] text-white px-6 py-3.5 rounded-xl text-sm font-bold shadow-md hover:shadow-lg transition-all inline-flex items-center gap-2.5 cursor-pointer hover:scale-105 active:scale-95 group"
-                onClick={() => document.querySelector('#events')?.scrollIntoView({ behavior: 'smooth' })}
-              >
-                Explore Campus Events
-                <span className="w-6 h-6 rounded-full bg-lime text-forest grid place-items-center font-bold text-xs group-hover:translate-x-1 transition-transform">
-                  →
-                </span>
-              </button>
-
-              <div className="flex items-center gap-4 text-xs font-mono text-muted py-2 px-3 bg-white/60 backdrop-blur-xs rounded-xl border border-line">
-                <span className="flex items-center gap-1 font-bold text-forest">⚡ Live Roster</span>
-                <span>·</span>
-                <span className="flex items-center gap-1 font-bold text-forest">🎖️ Official PDF</span>
-              </div>
-            </div>
+            <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight text-ink mb-3 leading-tight">
+              Campus Events & Symposia Directory
+            </h1>
+            <p className="text-subtle text-sm sm:text-base leading-relaxed">
+              Official registration portal for department workshops, hackathons, placement training, and student conferences. Register with your college credentials to participate and receive verified institutional certificates.
+            </p>
           </div>
-
-          {/* Up Next Card Preview */}
-          <div className="w-full md:w-[320px] lg:w-[350px] shrink-0 bg-gradient-to-br from-[#102a1f] via-[#16382a] to-[#0c1f17] text-white p-6 sm:p-7 rounded-2xl shadow-elevated border border-white/10 hover:scale-[1.02] transition-all relative overflow-hidden group">
-            <div className="absolute top-0 right-0 w-36 h-36 bg-lime/10 rounded-full blur-2xl pointer-events-none" />
-            <div className="flex items-center justify-between font-mono text-[10px] text-lime tracking-widest uppercase mb-3">
-              <span className="font-bold flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-lime animate-ping" />
-                UPCOMING HIGHLIGHT
-              </span>
-              <span className="bg-white/10 px-2 py-0.5 rounded-full text-white/80">TECHNICAL</span>
-            </div>
-
-            <div className="my-3">
-              <strong className="text-5xl font-display font-extrabold leading-none block text-white tracking-tight">
-                11
-                <small className="text-xs tracking-widest uppercase font-mono text-lime ml-2 font-bold">OCTOBER</small>
-              </strong>
-              <h3 className="font-display font-bold text-lg text-white mt-3 leading-snug">
-                CodeCraft Hackathon 2026
-              </h3>
-              <p className="text-xs text-white/70 mt-1 flex items-center gap-1">
-                <span>📍 C Block Auditorium</span>
-                <span>·</span>
-                <span>⏰ 09:00 AM</span>
-              </p>
-            </div>
-
-            <div className="pt-4 border-t border-white/10 flex items-center justify-between text-xs">
-              <span className="text-white/70 font-mono">120 Total Capacity</span>
-              <span className="text-lime font-bold group-hover:translate-x-1 transition-transform">View Details →</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Live Features Strip */}
-        <div className="max-w-[1180px] mx-auto px-4 sm:px-6 mt-10 pt-6 border-t border-line/60 grid grid-cols-2 sm:grid-cols-4 gap-3 text-center sm:text-left">
-          {[
-            ['500+ Students', 'Active college participants', '🎓'],
-            ['Single-Click', 'Instant confirmation & Brevo email', '⚡'],
-            ['Official Credential', 'Signed PMC digital certificates', '🎖️'],
-            ['Admin Rosters', 'Live attendance & CSV export', '📋'],
-          ].map(([title, desc, ic]) => (
-            <div key={title} className="flex items-start gap-2.5 p-2 rounded-xl">
-              <span className="text-xl">{ic}</span>
-              <div>
-                <strong className="font-display text-xs sm:text-sm font-bold text-ink block">{title}</strong>
-                <span className="text-[11px] text-muted leading-tight block">{desc}</span>
-              </div>
-            </div>
-          ))}
         </div>
       </section>
 
       {/* Recommendations Banner */}
       {user?.role === 'student' && rec.length > 0 && (
-        <section className="bg-gradient-to-r from-[#e7eee1] via-[#ebf2e6] to-[#e4ede0] border-b border-line px-4 sm:px-[6.5vw] py-5">
-          <div className="max-w-[1180px] mx-auto flex flex-col md:flex-row md:items-center justify-between gap-3">
-            <div className="flex items-center gap-2.5">
-              <span className="w-7 h-7 rounded-lg bg-forest text-lime grid place-items-center text-xs font-bold shrink-0">✨</span>
-              <div>
-                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-muted block">CURATED FOR YOU</span>
-                <h3 className="font-display text-sm sm:text-base font-bold text-forest">Based on your interests:</h3>
-              </div>
-            </div>
+        <section className="bg-college-surface border-b border-border py-3.5 px-4 sm:px-6">
+          <div className="max-w-[1140px] mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+            <span className="text-xs font-medium text-college flex items-center gap-1.5">
+              <span className="font-bold">Recommended for you:</span> Based on your department and interests
+            </span>
             <div className="flex flex-wrap gap-2">
               {rec.map((e) => (
                 <button
                   key={e.id}
                   onClick={() => openDetail(e)}
-                  className="bg-white hover:bg-forest hover:text-white px-3.5 py-2 rounded-xl text-xs font-bold shadow-xs flex items-center gap-2 cursor-pointer transition-all hover:scale-105 active:scale-95 border border-line"
+                  className="bg-white hover:bg-gray-50 text-ink text-xs px-3 py-1 rounded border border-border font-medium shadow-xs transition-colors cursor-pointer"
                 >
-                  <span className="text-forest group-hover:text-lime font-mono">{icons[e.category]}</span>
-                  <span>{e.title}</span>
+                  {e.title} →
                 </button>
               ))}
             </div>
@@ -993,70 +892,65 @@ function Discover({ events, user, enroll, cancelEnroll, openDetail, openAttendee
       )}
 
       {/* Events Listing Section */}
-      <section id="events" className="max-w-[1180px] mx-auto px-4 sm:px-6 py-10 sm:py-16">
-        {/* Section Header with Search & Sort */}
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 mb-6">
-          <div>
-            <p className="font-mono tracking-widest text-muted text-xs uppercase mb-1 font-semibold">ALL UPCOMING SESSIONS</p>
-            <h2 className="font-display text-3xl sm:text-4xl font-extrabold tracking-tight text-ink">What's on campus</h2>
+      <section id="events" className="max-w-[1140px] mx-auto px-4 sm:px-6 py-8 sm:py-12 flex-1">
+        {/* Search & Filter Toolbar */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-6 pb-5 border-b border-border">
+          {/* Category Filter Pills */}
+          <div className="flex flex-wrap items-center gap-1.5">
+            {['All', 'Workshop', 'Technical', 'Cultural', 'Placement', 'Seminar'].map((x) => {
+              const count = x === 'All' ? events.length : events.filter((e) => e.category === x).length;
+              const active = filter === x;
+              return (
+                <button
+                  key={x}
+                  onClick={() => setFilter(x)}
+                  className={`text-xs px-3.5 py-1.5 rounded-full transition-colors cursor-pointer font-medium flex items-center gap-1.5 ${
+                    active
+                      ? 'bg-college text-white shadow-xs'
+                      : 'border border-border text-subtle hover:text-ink hover:bg-white bg-transparent'
+                  }`}
+                >
+                  <span>{x}</span>
+                  <span className={`text-[10px] font-mono opacity-80`}>({count})</span>
+                </button>
+              );
+            })}
           </div>
 
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+          {/* Search + Sort */}
+          <div className="flex items-center gap-2">
             <div className="relative">
-              <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted text-xs">🔍</span>
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted">
+                <SearchIcon className="w-3.5 h-3.5" />
+              </span>
               <input
                 type="text"
-                placeholder="Search events, venues, keywords..."
+                placeholder="Search events..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="pl-9 pr-4 py-2.5 border border-line rounded-xl text-xs bg-white focus:outline-none focus:ring-2 focus:ring-forest transition-all w-full sm:w-60 shadow-xs"
+                className="pl-8 pr-3 py-1.5 border border-border rounded-md text-xs bg-white focus:outline-none focus:ring-1 focus:ring-college w-48 sm:w-56"
               />
             </div>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="py-2.5 px-3.5 border border-line rounded-xl text-xs bg-white focus:outline-none focus:ring-2 focus:ring-forest text-ink font-semibold shadow-xs cursor-pointer"
+              className="py-1.5 px-2.5 border border-border rounded-md text-xs bg-white focus:outline-none focus:ring-1 focus:ring-college text-subtle font-medium cursor-pointer"
             >
-              <option value="date">Sort: Upcoming Date</option>
-              <option value="popular">Sort: Most Enrolled</option>
-              <option value="seats">Sort: Seats Remaining</option>
+              <option value="date">Date</option>
+              <option value="popular">Most Enrolled</option>
+              <option value="seats">Remaining Seats</option>
             </select>
           </div>
         </div>
 
-        {/* Category Pills */}
-        <div className="flex flex-wrap gap-2 mb-8">
-          {['All', 'Workshop', 'Technical', 'Cultural', 'Placement', 'Seminar'].map((x) => {
-            const count = x === 'All' ? events.length : events.filter((e) => e.category === x).length;
-            const active = filter === x;
-            return (
-              <button
-                key={x}
-                onClick={() => setFilter(x)}
-                className={`text-xs px-4 py-2 rounded-xl transition-all font-bold flex items-center gap-2 cursor-pointer shadow-xs active:scale-95 ${
-                  active
-                    ? 'bg-forest text-lime shadow-md'
-                    : 'bg-white hover:bg-[#f0f3eb] text-[#4d5c53] border border-line'
-                }`}
-              >
-                <span>{x !== 'All' ? icons[x] : '✦'} {x}</span>
-                <span className={`text-[10px] font-mono px-1.5 py-0.2 rounded-full ${active ? 'bg-white/20 text-white' : 'bg-black/5 text-muted'}`}>
-                  {count}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-
         {/* Event Cards Grid */}
         {list.length === 0 ? (
-          <div className="bg-white p-12 text-center text-muted rounded-2xl border border-line shadow-xs">
-            <span className="text-3xl block mb-2">🔍</span>
-            <p className="font-bold text-ink text-base">No events match your criteria</p>
-            <p className="text-xs text-muted mt-1">Try clearing your search query or choosing another category filter.</p>
+          <div className="bg-white p-12 text-center text-muted rounded-lg border border-border">
+            <p className="font-medium text-ink text-sm">No events match the selected criteria.</p>
+            <p className="text-xs text-muted mt-1">Try clearing your search query or selecting another category.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {list.map((e) => (
               <EventCard
                 key={e.id}
@@ -1077,128 +971,124 @@ function Discover({ events, user, enroll, cancelEnroll, openDetail, openAttendee
   );
 }
 
-// ── Redesigned Event Card ───────────────────────────────────────────────────
+// ── Event Card (Clean Collegiate Academic Format) ───────────────────────────
 function EventCard({ e, enroll, cancelEnroll, user, deleteEvent, editEvent, openAttendees, openDetail }) {
-  const t = categoryTheme[e.category] || categoryTheme.Workshop;
+  const badgeStyle = categoryBadgeStyles[e.category] || categoryBadgeStyles.Workshop;
   const totalSeats = e.seats || 50;
   const registeredCount = e.registered || 0;
   const seatsLeft = Math.max(0, totalSeats - registeredCount);
   const pct = Math.min(100, Math.round((registeredCount / totalSeats) * 100));
 
   return (
-    <article
-      className="bg-white rounded-2xl overflow-hidden border border-line shadow-soft hover:shadow-elevated hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between group"
-    >
-      {/* Top Banner with Rich Category Theme */}
-      <div className={`p-5 bg-gradient-to-br ${t.bg} text-white relative overflow-hidden`}>
-        <div className="flex justify-between items-start relative z-10">
-          <span className={`text-[11px] font-mono font-bold px-2.5 py-1 rounded-full uppercase tracking-wider border ${t.badgeBg} shadow-xs`}>
-            {icons[e.category]} {e.category}
+    <article className="bg-white rounded-lg border border-border shadow-card hover:shadow-card-hover transition-all flex flex-col justify-between p-5">
+      <div>
+        {/* Top Category & Date */}
+        <div className="flex items-center justify-between gap-2 mb-3">
+          <span className={`text-[11px] font-medium px-2 py-0.5 rounded border ${badgeStyle}`}>
+            {e.category}
           </span>
-          <div className="bg-black/30 backdrop-blur-xs px-2.5 py-1 rounded-lg text-right font-mono text-[11px] font-bold text-white border border-white/10">
-            {new Date(e.date + 'T00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-          </div>
+          <span className="text-xs font-mono font-medium text-muted">
+            {new Date(e.date + 'T00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+          </span>
         </div>
 
-        {/* Category Glyph Accent */}
-        <div
-          onClick={() => openDetail(e)}
-          className="my-3 font-serif text-5xl text-lime/90 opacity-90 transition-transform group-hover:scale-110 cursor-pointer select-none"
-        >
-          {icons[e.category]}
-        </div>
-
+        {/* Title */}
         <h3
           onClick={() => openDetail(e)}
-          className="font-display text-lg sm:text-xl font-bold tracking-tight text-white leading-snug cursor-pointer hover:underline line-clamp-2"
+          className="font-semibold text-base text-ink leading-snug hover:text-college transition-colors cursor-pointer mb-2"
         >
           {e.title}
         </h3>
+
+        {/* Venue & Time */}
+        <div className="space-y-1 text-xs text-subtle mb-4">
+          <div className="flex items-center gap-1.5">
+            <ClockIcon className="w-3.5 h-3.5 text-muted shrink-0" />
+            <span>{e.time}</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <MapPinIcon className="w-3.5 h-3.5 text-muted shrink-0" />
+            <span className="truncate">{e.venue}</span>
+          </div>
+        </div>
+
+        {/* Capacity Bar */}
+        <div className="mb-4">
+          <div className="flex justify-between text-[11px] text-muted mb-1 font-medium">
+            <span>{registeredCount} / {totalSeats} seats</span>
+            <span className={seatsLeft <= 5 ? 'text-red-700 font-semibold' : ''}>
+              {seatsLeft === 0 ? 'Full' : `${seatsLeft} left`}
+            </span>
+          </div>
+          <div className="w-full bg-gray-100 h-1 rounded-full overflow-hidden">
+            <div
+              className={`h-full rounded-full ${pct >= 90 ? 'bg-red-600' : 'bg-college'}`}
+              style={{ width: `${pct}%` }}
+            />
+          </div>
+        </div>
       </div>
 
-      {/* Card Body & Details */}
-      <div className="p-5 flex-1 flex flex-col justify-between gap-4">
-        <div className="space-y-2.5 text-xs text-muted">
-          <div className="flex items-center gap-2">
-            <span>⏰</span>
-            <span className="font-medium text-ink">{e.time}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span>📍</span>
-            <span className="font-medium text-ink truncate">{e.venue}</span>
-          </div>
+      {/* Card Action Row */}
+      <div className="pt-3 border-t border-border flex items-center justify-between gap-2">
+        {e.is_registered ? (
+          <button
+            onClick={() => openDetail(e)}
+            className="text-xs font-medium text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-3 py-1.5 rounded transition-colors flex items-center gap-1 cursor-pointer"
+          >
+            <CheckIcon className="w-3 h-3 text-emerald-700" />
+            <span>Registered</span>
+          </button>
+        ) : (
+          <button
+            disabled={seatsLeft === 0}
+            onClick={() => enroll(e.id)}
+            className="bg-college hover:bg-college-light text-white text-xs font-medium px-3.5 py-1.5 rounded transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+          >
+            {seatsLeft === 0 ? 'Full' : 'Register'}
+          </button>
+        )}
 
-          {/* Seat Capacity Progress */}
-          <div className="pt-2">
-            <div className="flex items-center justify-between text-[11px] font-semibold mb-1">
-              <span className="text-muted">Seats: {registeredCount}/{totalSeats}</span>
-              <span className={seatsLeft <= 5 ? 'text-rose-600 font-bold' : 'text-emerald-700 font-bold'}>
-                {seatsLeft === 0 ? 'Full' : `${seatsLeft} left`}
-              </span>
-            </div>
-            <div className="w-full bg-[#edf1ea] h-1.5 rounded-full overflow-hidden">
-              <div
-                className={`h-full rounded-full ${pct >= 95 ? 'bg-rose-500' : pct >= 70 ? 'bg-amber-500' : 'bg-emerald-600'}`}
-                style={{ width: `${pct}%` }}
-              />
-            </div>
-          </div>
-        </div>
+        <button
+          onClick={() => openDetail(e)}
+          className="text-xs text-subtle hover:text-ink font-medium px-2 py-1.5 cursor-pointer"
+        >
+          Details →
+        </button>
 
-        {/* Bottom Actions Bar */}
-        <div className="pt-3 border-t border-line/70 flex items-center justify-between gap-2">
-          {e.is_registered ? (
+        {user?.role === 'admin' && (
+          <div className="flex items-center gap-1 ml-auto">
             <button
-              onClick={() => openDetail(e)}
-              className="bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-2 rounded-xl transition-all flex items-center gap-1 cursor-pointer"
+              type="button"
+              onClick={() => openAttendees(e.id)}
+              className="text-xs text-subtle hover:text-ink border border-border px-2 py-1 rounded hover:bg-gray-50 transition-colors flex items-center gap-1 cursor-pointer"
+              title="View attendees"
             >
-              ✓ Enrolled · View →
+              <UsersIcon className="w-3.5 h-3.5 text-muted" />
+              <span>{registeredCount}</span>
             </button>
-          ) : (
             <button
-              disabled={seatsLeft === 0}
-              onClick={() => enroll(e.id)}
-              className="bg-forest hover:bg-[#163a2b] text-white text-xs font-bold px-4 py-2 rounded-xl transition-all shadow-xs disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer hover:scale-105 active:scale-95"
+              type="button"
+              onClick={() => editEvent(e)}
+              className="text-xs text-subtle hover:text-ink border border-border px-2 py-1 rounded hover:bg-gray-50 transition-colors cursor-pointer"
             >
-              {seatsLeft === 0 ? 'Full' : 'Enroll Now →'}
+              Edit
             </button>
-          )}
-
-          {user?.role === 'admin' && (
-            <div className="flex items-center gap-1.5">
-              <button
-                type="button"
-                onClick={() => openAttendees(e.id)}
-                className="text-xs bg-lime hover:bg-lime-hover text-forest font-bold px-2.5 py-1.5 rounded-lg transition-all flex items-center gap-1 shadow-xs cursor-pointer hover:scale-105"
-                title="View registered student roster"
-              >
-                👥 {registeredCount}
-              </button>
-              <button
-                type="button"
-                onClick={() => editEvent(e)}
-                className="text-xs text-muted hover:text-ink hover:bg-black/5 border border-line p-1.5 rounded-lg transition-all cursor-pointer"
-                title="Edit event"
-              >
-                ✏️
-              </button>
-              <button
-                type="button"
-                onClick={() => deleteEvent(e.id)}
-                className="text-xs text-rose-600 hover:text-white hover:bg-rose-600 border border-rose-200 p-1.5 rounded-lg transition-all cursor-pointer"
-                title="Delete event"
-              >
-                🗑️
-              </button>
-            </div>
-          )}
-        </div>
+            <button
+              type="button"
+              onClick={() => deleteEvent(e.id)}
+              className="text-xs text-red-600 hover:text-red-800 border border-red-200 px-2 py-1 rounded hover:bg-red-50 transition-colors cursor-pointer"
+            >
+              Delete
+            </button>
+          </div>
+        )}
       </div>
     </article>
   );
 }
 
-// ── My Events (Student Plans & Credentials) ─────────────────────────────────
+// ── My Events (Student Personal Schedule) ───────────────────────────────────
 function MyEvents({ user, cancelEnroll, notify }) {
   const [rows, setRows] = useState([]);
   const [cert, setCert] = useState(null);
@@ -1211,7 +1101,7 @@ function MyEvents({ user, cancelEnroll, notify }) {
   useEffect(() => { loadPlans(); }, [user]);
 
   const handleCancel = async (eventId, eventTitle) => {
-    if (!window.confirm(`Cancel your registration for "${eventTitle}"? This will free up your seat.`)) return;
+    if (!window.confirm(`Cancel your registration for "${eventTitle}"?`)) return;
     try {
       await api(`/events/${eventId}/registrations/${user.id}`, { method: 'DELETE' });
       notify('Registration cancelled.', 'info');
@@ -1232,26 +1122,24 @@ function MyEvents({ user, cancelEnroll, notify }) {
     <>
       {cert && <CertificateModal cert={cert} user={user} onClose={() => setCert(null)} />}
 
-      <section className="max-w-[1180px] mx-auto px-4 sm:px-6 py-10 sm:py-16 min-h-[75vh]">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+      <section className="max-w-[1140px] mx-auto px-4 sm:px-6 py-8 sm:py-12 flex-1">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-border">
           <div>
-            <p className="font-mono tracking-widest text-muted text-xs uppercase mb-1 font-semibold">PERSONAL SCHEDULE</p>
-            <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-ink">
-              My Events & Passes
-            </h1>
+            <p className="text-[11px] font-mono uppercase tracking-widest text-muted mb-1">REGISTERED SESSIONS</p>
+            <h1 className="font-serif text-2xl sm:text-3xl font-semibold text-ink">My Event Schedule</h1>
           </div>
 
-          <div className="flex items-center gap-1.5 bg-white p-1.5 rounded-xl border border-line shadow-xs">
+          <div className="flex items-center gap-1.5 bg-gray-100 p-1 rounded-md">
             {[
-              ['all', 'All Plans'],
+              ['all', 'All Events'],
               ['upcoming', 'Upcoming'],
               ['completed', 'Completed & Attended'],
             ].map(([k, label]) => (
               <button
                 key={k}
                 onClick={() => setTab(k)}
-                className={`text-xs px-3.5 py-2 rounded-lg font-bold transition-all cursor-pointer ${
-                  tab === k ? 'bg-forest text-white shadow-sm' : 'text-muted hover:text-ink'
+                className={`text-xs px-3 py-1.5 rounded font-medium transition-colors cursor-pointer ${
+                  tab === k ? 'bg-white text-ink shadow-xs' : 'text-subtle hover:text-ink'
                 }`}
               >
                 {label}
@@ -1261,60 +1149,57 @@ function MyEvents({ user, cancelEnroll, notify }) {
         </div>
 
         {filteredRows.length ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl">
+          <div className="space-y-3 max-w-3xl">
             {filteredRows.map((r) => (
               <div
                 key={r.id}
-                className="bg-white border border-line p-5 rounded-2xl shadow-soft hover:shadow-elevated transition-all flex flex-col justify-between gap-4"
+                className="bg-white border border-border p-4 rounded-lg shadow-card flex flex-col sm:flex-row sm:items-center justify-between gap-4"
               >
                 <div className="flex items-start gap-4">
-                  <div className="w-14 h-14 rounded-xl bg-forest text-white flex flex-col items-center justify-center shrink-0 shadow-sm">
-                    <b className="font-display text-lg font-bold leading-none">{new Date(r.date + 'T00:00').getDate()}</b>
-                    <span className="font-mono text-[9px] uppercase text-lime font-bold mt-0.5">
+                  <div className="text-center w-12 shrink-0 py-1 bg-gray-50 border border-border rounded">
+                    <b className="font-semibold text-base block text-ink">{new Date(r.date + 'T00:00').getDate()}</b>
+                    <span className="font-mono text-[10px] uppercase text-muted block">
                       {new Date(r.date + 'T00:00').toLocaleDateString('en-US', { month: 'short' })}
                     </span>
                   </div>
 
-                  <div className="flex-1">
-                    <span className="font-mono text-[10px] uppercase font-bold text-muted bg-[#f0f3eb] px-2 py-0.5 rounded-full inline-block mb-1">
+                  <div>
+                    <span className="text-[10px] font-medium uppercase font-mono text-muted bg-gray-100 px-1.5 py-0.5 rounded inline-block mb-1">
                       {r.category}
                     </span>
-                    <h3 className="font-display text-base font-bold text-ink leading-snug">{r.title}</h3>
-                    <p className="text-xs text-muted mt-1">{r.time} · {r.venue}</p>
+                    <h3 className="font-medium text-sm text-ink">{r.title}</h3>
+                    <p className="text-xs text-muted">{r.time} · {r.venue}</p>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between pt-3 border-t border-line/70">
-                  <span className={`text-xs font-bold px-2.5 py-1 rounded-full flex items-center gap-1.5 ${
-                    r.status === 'Attended' ? 'bg-emerald-100 text-emerald-800' : 'bg-cream text-forest border border-line'
+                <div className="flex items-center gap-2.5 ml-16 sm:ml-0">
+                  <span className={`text-[11px] font-medium px-2 py-0.5 rounded ${
+                    r.status === 'Attended' ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-100 text-gray-700'
                   }`}>
-                    <span className="w-1.5 h-1.5 rounded-full bg-current" />
                     {r.status}
                   </span>
 
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => setCert(r)}
-                      className="text-xs bg-lime hover:bg-lime-hover text-forest font-bold px-3.5 py-1.5 rounded-xl transition-all shadow-xs flex items-center gap-1 cursor-pointer hover:scale-105 active:scale-95"
-                    >
-                      🎖️ Certificate
-                    </button>
-                    <button
-                      onClick={() => handleCancel(r.id, r.title)}
-                      className="text-xs text-rose-600 hover:text-white hover:bg-rose-600 border border-rose-300 px-3 py-1.5 rounded-xl font-semibold transition-all cursor-pointer"
-                    >
-                      Cancel
-                    </button>
-                  </div>
+                  <button
+                    onClick={() => setCert(r)}
+                    className="text-xs bg-[#cfe870] hover:bg-[#d9f07a] text-[#183d28] font-semibold px-3 py-1.5 rounded transition-colors flex items-center gap-1 cursor-pointer shadow-xs"
+                  >
+                    <CertificateIcon className="w-3.5 h-3.5" />
+                    Certificate
+                  </button>
+
+                  <button
+                    onClick={() => handleCancel(r.id, r.title)}
+                    className="text-xs text-red-600 hover:text-red-800 border border-border hover:border-red-300 px-2.5 py-1.5 rounded font-medium transition-colors cursor-pointer"
+                  >
+                    Cancel
+                  </button>
                 </div>
               </div>
             ))}
           </div>
         ) : (
-          <div className="bg-white max-w-xl p-8 rounded-2xl border border-line shadow-xs text-center">
-            <span className="text-3xl block mb-2">🎟️</span>
-            <p className="font-bold text-ink text-base">No registered events yet</p>
-            <p className="text-xs text-muted mt-1">Browse upcoming campus events to reserve your seat and unlock official certificates.</p>
+          <div className="bg-white p-8 rounded-lg border border-border text-center text-muted text-xs max-w-lg">
+            No events in this schedule. Browse upcoming campus events to register.
           </div>
         )}
       </section>
@@ -1322,7 +1207,7 @@ function MyEvents({ user, cancelEnroll, notify }) {
   );
 }
 
-// ── Profile (Student & Admin Profile with In-Place Edit) ─────────────────────
+// ── Profile (Academic Record & Digital Student ID) ──────────────────────────
 function Profile({ user, onUserUpdated, notify }) {
   const [data, setData] = useState(user);
   const [editing, setEditing] = useState(false);
@@ -1366,139 +1251,133 @@ function Profile({ user, onUserUpdated, notify }) {
   ];
 
   return (
-    <section className="max-w-[1180px] mx-auto px-4 sm:px-6 py-10 sm:py-16 min-h-[75vh]">
-      <div className="flex items-center justify-between max-w-xl mb-8">
+    <section className="max-w-[1140px] mx-auto px-4 sm:px-6 py-8 sm:py-12 flex-1">
+      <div className="flex items-center justify-between max-w-xl mb-6 pb-4 border-b border-border">
         <div>
-          <p className="font-mono tracking-widest text-muted text-xs uppercase mb-1 font-semibold">ACCOUNT CREDENTIALS</p>
-          <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-ink">
-            Profile & ID
-          </h1>
+          <p className="text-[11px] font-mono uppercase tracking-widest text-muted mb-1">INSTITUTIONAL RECORD</p>
+          <h1 className="font-serif text-2xl sm:text-3xl font-semibold text-ink">Student Profile & Credentials</h1>
         </div>
         {!editing && (
           <button
             onClick={() => setEditing(true)}
-            className="text-xs bg-forest hover:bg-[#163a2b] text-white px-4 py-2.5 rounded-xl font-bold transition-all shadow-sm cursor-pointer hover:scale-105 active:scale-95"
+            className="text-xs bg-college hover:bg-college-light text-white px-3.5 py-1.5 rounded-md font-medium transition-colors cursor-pointer"
           >
-            ✏️ Edit Profile
+            Edit Profile
           </button>
         )}
       </div>
 
-      {err && <p className="text-rose-600 text-xs mb-4 max-w-xl bg-rose-50 p-3 rounded-xl border border-rose-200">{err}</p>}
+      {err && <p className="text-red-600 text-xs mb-4 max-w-xl bg-red-50 p-2.5 rounded border border-red-200">{err}</p>}
 
       {editing ? (
-        <form onSubmit={saveProfile} className="bg-white border border-line rounded-2xl p-6 sm:p-8 max-w-xl shadow-soft space-y-4">
-          <h3 className="font-display text-xl font-bold text-ink pb-3 border-b border-line">Edit Profile Details</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <label className="sm:col-span-2 text-xs font-bold text-muted flex flex-col gap-1.5">
+        <form onSubmit={saveProfile} className="bg-white border border-border rounded-lg p-6 max-w-xl shadow-card space-y-4">
+          <h3 className="font-semibold text-sm text-ink pb-2 border-b border-border">Update Student Record</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <label className="sm:col-span-2 text-xs font-medium text-subtle flex flex-col gap-1">
               Full Name
               <input
                 required
                 value={form.name || ''}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
-                className="w-full border border-line p-3 bg-white rounded-xl text-sm font-medium focus:ring-2 focus:ring-forest focus:outline-none"
+                className="border border-border p-2 bg-white rounded-md text-sm focus:ring-1 focus:ring-college focus:outline-none"
               />
             </label>
-            <label className="text-xs font-bold text-muted flex flex-col gap-1.5">
+            <label className="text-xs font-medium text-subtle flex flex-col gap-1">
               Registration Number
               <input
                 value={form.reg_no || ''}
                 onChange={(e) => setForm({ ...form, reg_no: e.target.value })}
-                className="w-full border border-line p-3 bg-white rounded-xl text-sm font-mono focus:ring-2 focus:ring-forest focus:outline-none"
+                className="border border-border p-2 bg-white rounded-md text-sm font-mono focus:ring-1 focus:ring-college focus:outline-none"
               />
             </label>
-            <label className="text-xs font-bold text-muted flex flex-col gap-1.5">
+            <label className="text-xs font-medium text-subtle flex flex-col gap-1">
               Department
               <input
                 value={form.department || ''}
                 onChange={(e) => setForm({ ...form, department: e.target.value })}
-                className="w-full border border-line p-3 bg-white rounded-xl text-sm font-medium focus:ring-2 focus:ring-forest focus:outline-none"
+                className="border border-border p-2 bg-white rounded-md text-sm focus:ring-1 focus:ring-college focus:outline-none"
               />
             </label>
-            <label className="text-xs font-bold text-muted flex flex-col gap-1.5">
+            <label className="text-xs font-medium text-subtle flex flex-col gap-1">
               Class / Section
               <input
                 value={form.class || ''}
                 onChange={(e) => setForm({ ...form, class: e.target.value })}
-                className="w-full border border-line p-3 bg-white rounded-xl text-sm font-medium focus:ring-2 focus:ring-forest focus:outline-none"
+                className="border border-border p-2 bg-white rounded-md text-sm focus:ring-1 focus:ring-college focus:outline-none"
               />
             </label>
-            <label className="text-xs font-bold text-muted flex flex-col gap-1.5">
+            <label className="text-xs font-medium text-subtle flex flex-col gap-1">
               Phone Number
               <input
                 value={form.phone || ''}
                 onChange={(e) => setForm({ ...form, phone: e.target.value })}
                 placeholder="+91 9876543210"
-                className="w-full border border-line p-3 bg-white rounded-xl text-sm font-mono focus:ring-2 focus:ring-forest focus:outline-none"
+                className="border border-border p-2 bg-white rounded-md text-sm font-mono focus:ring-1 focus:ring-college focus:outline-none"
               />
             </label>
-            <label className="sm:col-span-2 text-xs font-bold text-muted flex flex-col gap-1.5">
+            <label className="sm:col-span-2 text-xs font-medium text-subtle flex flex-col gap-1">
               Interests & Keywords
               <input
                 value={form.interests || ''}
                 onChange={(e) => setForm({ ...form, interests: e.target.value })}
-                placeholder="Technical, Hackathon, Cultural"
-                className="w-full border border-line p-3 bg-white rounded-xl text-sm font-medium focus:ring-2 focus:ring-forest focus:outline-none"
+                placeholder="Technical, Hackathons, Cultural"
+                className="border border-border p-2 bg-white rounded-md text-sm focus:ring-1 focus:ring-college focus:outline-none"
               />
             </label>
           </div>
 
-          <div className="flex items-center justify-end gap-2.5 pt-4 border-t border-line">
+          <div className="flex items-center justify-end gap-2 pt-3 border-t border-border">
             <button
               type="button"
               onClick={() => { setEditing(false); setForm(data); }}
-              className="text-xs px-4 py-2.5 border border-line rounded-xl hover:bg-black/5 font-bold text-muted cursor-pointer"
+              className="text-xs px-3.5 py-1.5 border border-border rounded-md font-medium text-subtle hover:bg-gray-50 cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={saving}
-              className="bg-forest hover:bg-[#163a2b] text-white text-xs font-bold px-6 py-2.5 rounded-xl shadow-sm cursor-pointer hover:scale-105 active:scale-95"
+              className="bg-college hover:bg-college-light text-white text-xs font-medium px-4 py-1.5 rounded-md shadow-xs cursor-pointer"
             >
-              {saving ? 'Saving…' : 'Save Profile'}
+              {saving ? 'Saving…' : 'Save Changes'}
             </button>
           </div>
         </form>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl">
           {/* Details Table */}
-          <div className="bg-white border border-line rounded-2xl shadow-soft divide-y divide-line overflow-hidden">
+          <div className="bg-white border border-border rounded-lg shadow-card divide-y divide-border overflow-hidden">
             {rows.map(([label, value]) => (
-              <div key={label} className="flex items-center justify-between px-5 py-4 gap-4">
-                <span className="text-xs font-bold text-muted uppercase tracking-wider shrink-0">{label}</span>
-                <span className="text-sm font-semibold text-ink text-right break-all">{value || '—'}</span>
+              <div key={label} className="flex items-center justify-between px-4 py-3 gap-4">
+                <span className="text-xs text-muted font-medium shrink-0">{label}</span>
+                <span className="text-xs font-medium text-ink text-right break-all">{value || '—'}</span>
               </div>
             ))}
           </div>
 
-          {/* Student ID Card Badge Preview */}
-          <div className="bg-gradient-to-br from-[#0c2219] via-[#133728] to-[#0a1c14] text-white p-7 rounded-2xl shadow-elevated flex flex-col justify-between border-2 border-lime/30 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-40 h-40 bg-lime/15 rounded-full blur-3xl pointer-events-none" />
+          {/* Institutional Student Card */}
+          <div className="bg-white border border-border rounded-lg shadow-card p-6 flex flex-col justify-between">
             <div>
-              <div className="flex items-center justify-between border-b border-white/20 pb-4 mb-5">
-                <div>
-                  <span className="text-[10px] font-mono tracking-widest text-lime uppercase font-bold block">COLLEGE IDENTIFIER</span>
-                  <span className="text-xs font-extrabold text-white">ER. PERUMAL MANIMEKALAI COLLEGE</span>
+              <div className="flex items-center justify-between border-b border-border pb-3 mb-4">
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 rounded bg-college text-white text-[10px] font-bold grid place-items-center">
+                    PMC
+                  </div>
+                  <span className="text-xs font-semibold text-ink">Er. Perumal Manimekalai College</span>
                 </div>
-                <i className="font-serif text-[22px] not-italic bg-lime text-forest inline-grid place-items-center w-8 h-8 rounded-full font-bold shadow-md">c</i>
+                <span className="text-[10px] font-mono text-muted uppercase">Student ID</span>
               </div>
 
-              <div className="flex items-center gap-4 mb-5">
-                <div className="w-16 h-16 rounded-2xl bg-lime text-forest font-display text-3xl font-extrabold grid place-items-center shrink-0 shadow-md">
-                  {(data.name || 'S').charAt(0).toUpperCase()}
-                </div>
-                <div>
-                  <h3 className="font-display font-extrabold text-xl text-white leading-tight">{data.name}</h3>
-                  <p className="text-xs text-lime font-mono mt-1 font-bold">{data.reg_no || 'PMC-STUDENT'}</p>
-                  <p className="text-xs text-white/80">{data.department} · {data.class}</p>
-                </div>
+              <div className="space-y-1 mb-4">
+                <h3 className="font-semibold text-base text-ink">{data.name}</h3>
+                <p className="text-xs font-mono text-college font-medium">{data.reg_no || 'NOT ASSIGNED'}</p>
+                <p className="text-xs text-subtle">{data.department} · {data.class}</p>
               </div>
             </div>
 
-            <div className="pt-4 border-t border-white/15 flex items-center justify-between text-xs font-mono text-white/80">
-              <span className="font-bold">ROLE: {data.role?.toUpperCase()}</span>
-              <span className="bg-lime/20 text-lime px-2.5 py-0.5 rounded-full font-bold border border-lime/30">VERIFIED ✓</span>
+            <div className="pt-3 border-t border-border flex items-center justify-between text-[11px] text-muted">
+              <span>Status: <strong className="text-emerald-700">Verified Member</strong></span>
+              <span className="font-mono">Dept of IT</span>
             </div>
           </div>
         </div>
@@ -1507,7 +1386,7 @@ function Profile({ user, onUserUpdated, notify }) {
   );
 }
 
-// ── Admin Component (4 Powerhouse Tabs) ─────────────────────────────────────
+// ── Admin Command Center (Institutional Portal) ─────────────────────────────
 function Admin({ refresh, events, openAttendees, deleteEvent, editEvent, notify }) {
   const [tab, setTab] = useState('rosters');
   const [stats, setStats] = useState({});
@@ -1546,7 +1425,7 @@ function Admin({ refresh, events, openAttendees, deleteEvent, editEvent, notify 
       loadStats();
       setForm({ category: 'Workshop', seats: 50, image: 'general' });
       setAiPrompt('');
-      notify('Event published successfully.', 'success');
+      notify('Event published.', 'success');
       setTab('rosters');
     } catch (e) {
       notify(e.message, 'error');
@@ -1567,7 +1446,7 @@ function Admin({ refresh, events, openAttendees, deleteEvent, editEvent, notify 
         time: result.time || prev.time,
         venue: result.venue || prev.venue,
       }));
-      notify('AI populated event details!', 'success');
+      notify('Draft filled with Gemini AI.', 'success');
     } catch (e) {
       setAiError(e.message);
     } finally {
@@ -1579,7 +1458,7 @@ function Admin({ refresh, events, openAttendees, deleteEvent, editEvent, notify 
     setConfirmModal({
       isOpen: true,
       title: 'Delete Student Account',
-      message: `Are you sure you want to delete student "${userName}"? All their registrations and credentials will be permanently erased.`,
+      message: `Permanently delete student "${userName}" and all associated event registrations?`,
       danger: true,
       confirmText: 'Delete Student',
       onConfirm: async () => {
@@ -1603,7 +1482,7 @@ function Admin({ refresh, events, openAttendees, deleteEvent, editEvent, notify 
     setConfirmModal({
       isOpen: true,
       title: 'DELETE ALL REGISTERED STUDENTS',
-      message: `CAUTION: This will permanently erase ALL ${users.length} registered student accounts and delete all their event registrations. The admin account will remain safe.`,
+      message: `Permanently erase all ${users.length} registered student accounts and delete all their event registrations. The admin account will remain untouched.`,
       danger: true,
       requireWord: 'DELETE',
       confirmText: 'DELETE ALL USERS',
@@ -1626,7 +1505,7 @@ function Admin({ refresh, events, openAttendees, deleteEvent, editEvent, notify 
 
   const exportUsersCSV = () => {
     if (!users.length) return;
-    const headers = ['#', 'Student Name', 'Reg No', 'Department', 'Class', 'Email', 'Phone', 'Events Registered'];
+    const headers = ['#', 'Student Name', 'Reg No', 'Department', 'Class', 'Email', 'Phone', 'Registrations'];
     const rows = users.map((u, idx) => [
       idx + 1,
       `"${(u.name || '').replace(/"/g, '""')}"`,
@@ -1662,28 +1541,26 @@ function Admin({ refresh, events, openAttendees, deleteEvent, editEvent, notify 
     <>
       <ConfirmModal {...confirmModal} />
 
-      <section className="max-w-[1180px] mx-auto px-4 sm:px-6 py-10 sm:py-16 min-h-[75vh]">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+      <section className="max-w-[1140px] mx-auto px-4 sm:px-6 py-8 sm:py-12 flex-1">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-4 border-b border-border">
           <div>
-            <p className="font-mono tracking-widest text-muted text-xs uppercase mb-1 font-semibold">EVENT OFFICE PORTAL</p>
-            <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-ink">
-              Admin Command Center
-            </h1>
+            <p className="text-[11px] font-mono uppercase tracking-widest text-muted mb-1">EVENT OFFICE PORTAL</p>
+            <h1 className="font-serif text-2xl sm:text-3xl font-semibold text-ink">Administrative Dashboard</h1>
           </div>
 
           {/* Tab Navigation */}
-          <div className="flex flex-wrap items-center gap-1.5 bg-white p-1.5 rounded-xl border border-line shadow-xs">
+          <div className="flex flex-wrap items-center gap-1 bg-gray-100 p-1 rounded-md">
             {[
-              ['rosters', '📅 Events & Rosters'],
-              ['users', '👥 User Directory'],
-              ['publish', '✨ Publish & AI'],
-              ['analytics', '📊 Analytics'],
+              ['rosters', 'Events & Rosters'],
+              ['users', 'Student Directory'],
+              ['publish', 'Publish Event'],
+              ['analytics', 'Analytics'],
             ].map(([k, label]) => (
               <button
                 key={k}
                 onClick={() => setTab(k)}
-                className={`text-xs px-4 py-2 rounded-lg font-bold transition-all cursor-pointer ${
-                  tab === k ? 'bg-forest text-white shadow-sm' : 'text-muted hover:text-ink'
+                className={`text-xs px-3.5 py-1.5 rounded font-medium transition-colors cursor-pointer ${
+                  tab === k ? 'bg-white text-ink shadow-xs' : 'text-subtle hover:text-ink'
                 }`}
               >
                 {label}
@@ -1693,42 +1570,38 @@ function Admin({ refresh, events, openAttendees, deleteEvent, editEvent, notify 
         </div>
 
         {/* Metric Cards Strip */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5 mb-6">
           {[
-            ['Active Events', stats.events || 0, 'bg-white', '📅'],
-            ['Total Registrations', stats.registrations || 0, 'bg-white', '⚡'],
-            ['Registered Students', stats.students || 0, 'bg-emerald-50/70 border-emerald-200', '🎓'],
-            ['Verified Attendees', stats.attended || 0, 'bg-lime/20 border-lime/40', '🎖️'],
-          ].map(([label, val, bg, ic]) => (
-            <div key={label} className={`${bg} p-5 rounded-2xl shadow-soft border border-line flex flex-col justify-between`}>
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xl">{ic}</span>
-                <span className="text-[10px] font-mono text-muted uppercase font-bold">Metrics</span>
-              </div>
-              <b className="font-display text-3xl sm:text-4xl font-extrabold text-ink">{val}</b>
-              <span className="text-xs text-muted font-bold mt-1">{label}</span>
+            ['Active Events', stats.events || 0],
+            ['Total Registrations', stats.registrations || 0],
+            ['Enrolled Students', stats.students || 0],
+            ['Verified Attendance', stats.attended || 0],
+          ].map(([label, val]) => (
+            <div key={label} className="bg-white p-4 rounded-lg border border-border shadow-card">
+              <span className="text-[11px] font-mono text-muted uppercase block mb-1">{label}</span>
+              <b className="text-2xl font-semibold text-ink block">{val}</b>
             </div>
           ))}
         </div>
 
         {/* ── TAB 1: EVENTS & ROSTERS ── */}
         {tab === 'rosters' && (
-          <div className="bg-white p-6 sm:p-8 border border-line rounded-2xl shadow-soft animate-fade-in">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-4 border-b border-line">
+          <div className="bg-white p-6 border border-border rounded-lg shadow-card">
+            <div className="flex items-center justify-between gap-3 mb-5 pb-3 border-b border-border">
               <div>
-                <h2 className="font-display text-xl sm:text-2xl font-bold tracking-tight text-ink">Active Events & Rosters</h2>
-                <p className="text-xs text-muted mt-0.5">Manage existing events, view registered attendees, toggle attendance credentials.</p>
+                <h2 className="text-base font-semibold text-ink">Active Events & Participant Rosters</h2>
+                <p className="text-xs text-muted mt-0.5">View enrolled students and verify attendance credentials.</p>
               </div>
               <button
                 onClick={() => setTab('publish')}
-                className="bg-forest hover:bg-[#163a2b] text-white text-xs font-bold px-4 py-2.5 rounded-xl transition-all self-start sm:self-auto cursor-pointer shadow-sm hover:scale-105 active:scale-95"
+                className="bg-college hover:bg-college-light text-white text-xs font-medium px-3.5 py-1.5 rounded-md transition-colors cursor-pointer"
               >
-                + Publish New Event
+                + New Event
               </button>
             </div>
 
             {(!events || events.length === 0) ? (
-              <p className="text-xs text-muted py-8 text-center">No events found. Publish one to get started.</p>
+              <p className="text-xs text-muted py-8 text-center">No active events found.</p>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {events.map((ev) => {
@@ -1737,48 +1610,49 @@ function Admin({ refresh, events, openAttendees, deleteEvent, editEvent, notify 
                   const pct = Math.min(100, Math.round((regCount / totalSeats) * 100));
 
                   return (
-                    <div key={ev.id} className="p-5 border border-line bg-[#fcfdfa] rounded-xl flex flex-col justify-between gap-4 hover:border-forest/40 transition-all shadow-xs">
+                    <div key={ev.id} className="p-4 border border-border rounded-lg bg-gray-50/50 flex flex-col justify-between gap-3">
                       <div>
-                        <div className="flex items-center justify-between gap-2 mb-2">
-                          <span className="text-[10px] font-mono uppercase bg-forest text-lime px-2.5 py-0.5 rounded-full font-bold">
+                        <div className="flex items-center justify-between gap-2 mb-1">
+                          <span className="text-[10px] font-mono uppercase bg-gray-200 text-subtle px-2 py-0.5 rounded font-medium">
                             {ev.category}
                           </span>
                           <span className="text-xs text-muted font-mono">{ev.date}</span>
                         </div>
-                        <h4 className="font-display font-bold text-base text-ink leading-snug">{ev.title}</h4>
-                        <p className="text-xs text-muted mt-1">{ev.time} · {ev.venue}</p>
+                        <h4 className="font-medium text-sm text-ink">{ev.title}</h4>
+                        <p className="text-xs text-muted mt-0.5">{ev.time} · {ev.venue}</p>
 
-                        <div className="mt-3 bg-white p-2.5 border border-line rounded-lg">
-                          <div className="flex justify-between text-[11px] font-bold text-muted mb-1">
-                            <span>Enrolled: <strong className="text-ink">{regCount}</strong> / {totalSeats}</span>
+                        <div className="mt-2.5 bg-white p-2 border border-border rounded">
+                          <div className="flex justify-between text-[11px] text-muted mb-1 font-mono">
+                            <span>Enrolled: {regCount} / {totalSeats}</span>
                             <span>{pct}% filled</span>
                           </div>
-                          <div className="w-full bg-[#e8eee4] h-1.5 rounded-full overflow-hidden">
-                            <div className="bg-forest h-full rounded-full" style={{ width: `${pct}%` }} />
+                          <div className="w-full bg-gray-100 h-1 rounded-full overflow-hidden">
+                            <div className="bg-college h-full rounded-full" style={{ width: `${pct}%` }} />
                           </div>
                         </div>
                       </div>
 
-                      <div className="flex items-center justify-between pt-3 border-t border-line">
+                      <div className="flex items-center justify-between pt-2 border-t border-border">
                         <button
                           type="button"
                           onClick={() => openAttendees(ev.id)}
-                          className="bg-lime hover:bg-lime-hover text-forest text-xs font-bold px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5 shadow-xs cursor-pointer hover:scale-105 active:scale-95"
+                          className="bg-college-surface text-college hover:bg-college hover:text-white text-xs font-medium px-3 py-1.5 rounded border border-college/20 transition-colors flex items-center gap-1.5 cursor-pointer"
                         >
-                          👥 View Students ({regCount})
+                          <UsersIcon className="w-3.5 h-3.5" />
+                          <span>View Students ({regCount})</span>
                         </button>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1.5">
                           <button
                             type="button"
                             onClick={() => editEvent(ev)}
-                            className="text-xs text-ink hover:bg-black/5 border border-line px-3 py-1.5 rounded-lg font-bold transition-all cursor-pointer"
+                            className="text-xs text-subtle hover:text-ink border border-border px-2.5 py-1 rounded bg-white hover:bg-gray-50 transition-colors cursor-pointer"
                           >
                             Edit
                           </button>
                           <button
                             type="button"
                             onClick={() => deleteEvent(ev.id)}
-                            className="text-xs text-rose-600 hover:text-white hover:bg-rose-600 border border-rose-300 px-3 py-1.5 rounded-lg font-bold transition-all cursor-pointer"
+                            className="text-xs text-red-600 hover:text-red-800 border border-red-200 px-2 py-1 rounded hover:bg-red-50 transition-colors cursor-pointer"
                           >
                             Delete
                           </button>
@@ -1794,108 +1668,98 @@ function Admin({ refresh, events, openAttendees, deleteEvent, editEvent, notify 
 
         {/* ── TAB 2: USER DIRECTORY (User Request: Delete all users / individual users) ── */}
         {tab === 'users' && (
-          <div className="bg-white p-6 sm:p-8 border border-line rounded-2xl shadow-soft animate-fade-in">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-4 border-b border-line">
+          <div className="bg-white p-6 border border-border rounded-lg shadow-card">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5 pb-3 border-b border-border">
               <div>
-                <h2 className="font-display text-xl sm:text-2xl font-bold tracking-tight text-ink">
-                  Registered Student Directory
-                </h2>
-                <p className="text-xs text-muted mt-0.5">
-                  Manage all enrolled student accounts, view registrations, export directory, or delete users.
-                </p>
+                <h2 className="text-base font-semibold text-ink">Registered Student Directory</h2>
+                <p className="text-xs text-muted mt-0.5">Manage registered accounts and export student attendance lists.</p>
               </div>
 
-              <div className="flex flex-wrap items-center gap-2.5">
+              <div className="flex flex-wrap items-center gap-2">
                 <button
                   type="button"
                   onClick={exportUsersCSV}
                   disabled={!users.length}
-                  className="bg-forest hover:bg-[#163a2b] text-white disabled:opacity-40 text-xs px-4 py-2.5 rounded-xl font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-sm hover:scale-105 active:scale-95"
+                  className="bg-white border border-border hover:bg-gray-50 text-subtle text-xs px-3.5 py-1.5 rounded-md font-medium transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs"
                 >
-                  📥 Export Students CSV
+                  <DownloadIcon className="w-3.5 h-3.5" />
+                  Export CSV
                 </button>
                 <button
                   type="button"
                   onClick={handleDeleteAllUsers}
                   disabled={!users.length}
-                  className="bg-rose-600 hover:bg-rose-700 disabled:opacity-40 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer shadow-sm hover:scale-105 active:scale-95"
+                  className="bg-red-600 hover:bg-red-700 disabled:opacity-40 text-white text-xs font-medium px-3.5 py-1.5 rounded-md transition-colors cursor-pointer shadow-xs"
                   title="Remove all registered students"
                 >
-                  ⚠️ Delete All Registered Students
+                  Delete All Registered Students
                 </button>
               </div>
             </div>
 
-            {/* Search filter */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 mb-4">
-              <div className="relative flex-1 max-w-md">
-                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted text-xs">🔍</span>
+            {/* Filter */}
+            <div className="flex items-center justify-between gap-3 mb-3">
+              <div className="relative max-w-sm w-full">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted">
+                  <SearchIcon className="w-3.5 h-3.5" />
+                </span>
                 <input
                   type="text"
-                  placeholder="Search by student name, reg no, department, class..."
+                  placeholder="Search by name, reg no, department..."
                   value={userSearch}
                   onChange={(e) => setUserSearch(e.target.value)}
-                  className="w-full pl-9 pr-4 py-2.5 border border-line rounded-xl text-xs bg-white focus:outline-none focus:ring-2 focus:ring-forest transition-all"
+                  className="w-full pl-8 pr-3 py-1.5 border border-border rounded-md text-xs bg-white focus:outline-none focus:ring-1 focus:ring-college"
                 />
               </div>
-              <span className="text-xs font-mono bg-[#f0f3eb] text-forest px-3 py-2 rounded-lg font-bold whitespace-nowrap self-start sm:self-auto border border-line">
-                Total Students: {filteredUsers.length}
+              <span className="text-xs font-mono text-muted">
+                Total: {filteredUsers.length} students
               </span>
             </div>
 
             {/* Table */}
-            <div className="border border-line rounded-xl overflow-hidden">
+            <div className="border border-border rounded-lg overflow-hidden">
               {loadingUsers ? (
-                <div className="py-16 text-center text-muted text-sm flex flex-col items-center gap-3">
-                  <span className="inline-block w-6 h-6 border-2 border-forest/30 border-t-forest rounded-full animate-spin" />
-                  Loading student directory…
-                </div>
+                <div className="py-12 text-center text-muted text-xs">Loading directory…</div>
               ) : filteredUsers.length === 0 ? (
-                <div className="py-16 text-center text-muted text-sm px-4">
-                  {userSearch ? 'No students match your search query.' : 'No registered students yet.'}
+                <div className="py-12 text-center text-muted text-xs">
+                  {userSearch ? 'No students match your search.' : 'No registered students.'}
                 </div>
               ) : (
                 <div className="overflow-x-auto">
-                  <table className="w-full text-left text-xs border-collapse min-w-[700px]">
-                    <thead className="bg-[#f2f5ef] text-forest font-bold sticky top-0 border-b border-line font-mono text-[11px] uppercase tracking-wider">
+                  <table className="w-full text-left text-xs border-collapse min-w-[650px]">
+                    <thead className="bg-gray-50 text-subtle font-medium sticky top-0 border-b border-border text-[11px] uppercase tracking-wider">
                       <tr>
-                        <th className="p-3.5 w-12 text-center">#</th>
-                        <th className="p-3.5">Student Name</th>
-                        <th className="p-3.5">Reg No</th>
-                        <th className="p-3.5">Department & Class</th>
-                        <th className="p-3.5">Contact (Email & Phone)</th>
-                        <th className="p-3.5 text-center">Registrations</th>
-                        <th className="p-3.5 text-right">Actions</th>
+                        <th className="p-3 w-10 text-center">#</th>
+                        <th className="p-3">Student Name</th>
+                        <th className="p-3">Reg No</th>
+                        <th className="p-3">Department & Class</th>
+                        <th className="p-3">Contact</th>
+                        <th className="p-3 text-center">Registrations</th>
+                        <th className="p-3 text-right">Actions</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-line/60">
+                    <tbody className="divide-y divide-border">
                       {filteredUsers.map((u, idx) => (
-                        <tr key={u.id} className="hover:bg-black/[0.02] transition-colors">
-                          <td className="p-3.5 text-center text-muted font-mono">{idx + 1}</td>
-                          <td className="p-3.5 font-bold text-ink flex items-center gap-2.5">
-                            <span className="w-7 h-7 rounded-full bg-forest text-lime text-xs font-bold grid place-items-center shrink-0 shadow-xs">
-                              {(u.name || 'S').charAt(0).toUpperCase()}
-                            </span>
-                            <span>{u.name}</span>
-                          </td>
-                          <td className="p-3.5 font-mono font-medium text-forest">{u.reg_no}</td>
-                          <td className="p-3.5 text-muted">{u.department} · {u.class}</td>
-                          <td className="p-3.5 font-mono text-ink">
+                        <tr key={u.id} className="hover:bg-gray-50/70 transition-colors">
+                          <td className="p-3 text-center text-muted font-mono">{idx + 1}</td>
+                          <td className="p-3 font-medium text-ink">{u.name}</td>
+                          <td className="p-3 font-mono text-subtle">{u.reg_no}</td>
+                          <td className="p-3 text-muted">{u.department} · {u.class}</td>
+                          <td className="p-3 font-mono text-subtle text-[11px]">
                             <div>{u.email}</div>
-                            {u.phone && <div className="text-[10px] text-muted">{u.phone}</div>}
+                            {u.phone && <div className="text-muted">{u.phone}</div>}
                           </td>
-                          <td className="p-3.5 text-center">
-                            <span className="inline-block bg-[#f0f3eb] text-forest font-bold text-[11px] px-3 py-1 rounded-full border border-line">
-                              {u.registrations_count || 0} enrolled
+                          <td className="p-3 text-center">
+                            <span className="inline-block bg-gray-100 text-subtle font-mono text-[11px] px-2 py-0.5 rounded">
+                              {u.registrations_count || 0}
                             </span>
                           </td>
-                          <td className="p-3.5 text-right">
+                          <td className="p-3 text-right">
                             <button
                               onClick={() => handleDeleteUser(u.id, u.name)}
-                              className="text-rose-600 hover:text-white hover:bg-rose-600 text-xs font-bold border border-rose-300 px-3 py-1.5 rounded-lg transition-all cursor-pointer"
-                              title="Delete this student"
+                              className="text-red-600 hover:underline text-xs font-medium cursor-pointer"
                             >
-                              🗑️ Delete
+                              Delete
                             </button>
                           </td>
                         </tr>
@@ -1908,53 +1772,45 @@ function Admin({ refresh, events, openAttendees, deleteEvent, editEvent, notify 
           </div>
         )}
 
-        {/* ── TAB 3: PUBLISH & AI AUTO-FILL ── */}
+        {/* ── TAB 3: PUBLISH EVENT ── */}
         {tab === 'publish' && (
-          <div className="space-y-6 animate-fade-in">
-            {/* AI Auto-Fill Card */}
-            <div className="bg-gradient-to-br from-[#0c2219] via-[#133728] to-[#0a1c14] p-6 sm:p-8 rounded-2xl shadow-elevated border border-lime/20 max-w-2xl relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-48 h-48 bg-lime/10 rounded-full blur-3xl pointer-events-none" />
-              <div className="flex items-center gap-2.5 mb-3">
-                <span className="text-xl">✨</span>
-                <h3 className="text-white font-display font-bold text-base tracking-wide">GEMINI AI EVENT WRITER</h3>
-                <span className="text-[#cfe870]/80 text-xs font-mono ml-auto hidden sm:inline">Automatic Content Generation</span>
-              </div>
-              <p className="text-xs text-white/70 mb-3">Enter notes or topic ideas, and Gemini will format an engaging, formatted event listing.</p>
-              <div className="flex flex-col sm:flex-row gap-2.5">
+          <div className="space-y-4 max-w-2xl">
+            {/* AI Assistant Help */}
+            <div className="bg-college-surface border border-college/20 p-4 rounded-lg">
+              <span className="text-xs font-semibold text-college block mb-1">
+                Editorial Assistant (Gemini)
+              </span>
+              <p className="text-xs text-subtle mb-2.5 leading-relaxed">
+                Enter rough notes, prerequisites, or topics, and the drafting tool will populate title, category, timings, and description.
+              </p>
+              <div className="flex gap-2">
                 <input
                   type="text"
-                  placeholder="e.g. 24hr AI hackathon in C block auditorium with mentoring and prizes"
+                  placeholder="e.g. 24hr hackathon in C block auditorium with mentoring and prizes"
                   value={aiPrompt}
                   onChange={(e) => setAiPrompt(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && aiAutoFill()}
-                  className="flex-1 bg-white/10 border border-white/20 text-white placeholder:text-white/40 px-4 py-3 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-lime"
+                  className="flex-1 bg-white border border-border text-ink px-3 py-1.5 rounded-md text-xs focus:outline-none focus:ring-1 focus:ring-college"
                 />
                 <button
                   type="button"
                   onClick={aiAutoFill}
                   disabled={aiLoading || !aiPrompt.trim()}
-                  className="bg-lime hover:bg-lime-hover text-forest px-6 py-3 rounded-xl text-sm font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-glow-lime whitespace-nowrap cursor-pointer hover:scale-105 active:scale-95"
+                  className="bg-college hover:bg-college-light text-white text-xs font-medium px-4 py-1.5 rounded-md transition-colors disabled:opacity-40 cursor-pointer"
                 >
-                  {aiLoading ? (
-                    <>
-                      <span className="inline-block w-4 h-4 border-2 border-forest/30 border-t-forest rounded-full animate-spin" />
-                      Generating…
-                    </>
-                  ) : (
-                    <>✨ Auto-Fill</>
-                  )}
+                  {aiLoading ? 'Drafting…' : 'Generate Draft'}
                 </button>
               </div>
-              {aiError && <p className="text-rose-300 text-xs mt-2.5">{aiError}</p>}
+              {aiError && <p className="text-red-600 text-xs mt-2">{aiError}</p>}
             </div>
 
             {/* Event Form */}
             <form
-              className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 bg-white p-6 sm:p-8 border border-line rounded-2xl shadow-soft max-w-2xl"
+              className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 bg-white p-6 border border-border rounded-lg shadow-card"
               onSubmit={submitEvent}
             >
-              <h2 className="sm:col-span-2 font-display text-xl sm:text-2xl font-bold tracking-tight text-ink mb-1">
-                Publish a New Event
+              <h2 className="sm:col-span-2 text-base font-semibold text-ink pb-2 border-b border-border">
+                Event Information
               </h2>
               {[
                 ['title', 'Event Title'],
@@ -1963,24 +1819,24 @@ function Admin({ refresh, events, openAttendees, deleteEvent, editEvent, notify 
                 ['venue', 'Venue'],
                 ['deadline', 'Registration Deadline'],
               ].map(([k, l]) => (
-                <label key={k} className="text-xs font-bold text-muted flex flex-col gap-1.5">
+                <label key={k} className="text-xs font-medium text-subtle flex flex-col gap-1">
                   {l}
                   <input
                     required
                     type={k === 'date' || k === 'deadline' ? 'date' : 'text'}
                     value={form[k] || ''}
                     onChange={(e) => setForm({ ...form, [k]: e.target.value })}
-                    className="w-full border border-line p-3 bg-white rounded-xl text-sm font-medium focus:ring-2 focus:ring-forest focus:outline-none transition-all"
+                    className="border border-border p-2 bg-white rounded-md text-sm focus:ring-1 focus:ring-college focus:outline-none"
                   />
                 </label>
               ))}
 
-              <label className="text-xs font-bold text-muted flex flex-col gap-1.5">
+              <label className="text-xs font-medium text-subtle flex flex-col gap-1">
                 Category
                 <select
                   value={form.category}
                   onChange={(e) => setForm({ ...form, category: e.target.value })}
-                  className="w-full border border-line p-3 bg-white rounded-xl text-sm font-medium focus:ring-2 focus:ring-forest focus:outline-none transition-all"
+                  className="border border-border p-2 bg-white rounded-md text-sm focus:ring-1 focus:ring-college focus:outline-none"
                 >
                   {['Workshop', 'Technical', 'Cultural', 'Placement', 'Seminar'].map((x) => (
                     <option key={x}>{x}</option>
@@ -1988,19 +1844,19 @@ function Admin({ refresh, events, openAttendees, deleteEvent, editEvent, notify 
                 </select>
               </label>
 
-              <label className="text-xs font-bold text-muted flex flex-col gap-1.5">
-                Max Capacity (Seats)
+              <label className="text-xs font-medium text-subtle flex flex-col gap-1">
+                Seat Capacity
                 <input
                   required
                   type="number"
                   min="1"
                   value={form.seats || 50}
                   onChange={(e) => setForm({ ...form, seats: parseInt(e.target.value, 10) || 50 })}
-                  className="w-full border border-line p-3 bg-white rounded-xl text-sm font-medium focus:ring-2 focus:ring-forest focus:outline-none transition-all"
+                  className="border border-border p-2 bg-white rounded-md text-sm focus:ring-1 focus:ring-college focus:outline-none"
                 />
               </label>
 
-              <label className="sm:col-span-2 text-xs font-bold text-muted flex flex-col gap-1.5">
+              <label className="sm:col-span-2 text-xs font-medium text-subtle flex flex-col gap-1">
                 Description & Agenda
                 <textarea
                   rows="3"
@@ -2008,16 +1864,16 @@ function Admin({ refresh, events, openAttendees, deleteEvent, editEvent, notify 
                   value={form.description || ''}
                   onChange={(e) => setForm({ ...form, description: e.target.value })}
                   placeholder="Outline syllabus, prerequisite skills, mentors, and perks..."
-                  className="w-full border border-line p-3 bg-white rounded-xl text-sm font-medium focus:ring-2 focus:ring-forest focus:outline-none transition-all"
+                  className="border border-border p-2 bg-white rounded-md text-sm focus:ring-1 focus:ring-college focus:outline-none"
                 />
               </label>
 
-              <div className="sm:col-span-2 pt-3">
+              <div className="sm:col-span-2 pt-2">
                 <button
                   type="submit"
-                  className="w-full sm:w-auto bg-forest hover:bg-[#163a2b] text-white px-8 py-3 rounded-xl text-sm font-bold shadow-md transition-all cursor-pointer hover:scale-105 active:scale-95"
+                  className="bg-college hover:bg-college-light text-white px-5 py-2 rounded-md text-xs font-medium shadow-xs transition-colors cursor-pointer"
                 >
-                  Publish Event →
+                  Publish Event
                 </button>
               </div>
             </form>
@@ -2026,36 +1882,36 @@ function Admin({ refresh, events, openAttendees, deleteEvent, editEvent, notify 
 
         {/* ── TAB 4: ANALYTICS & INSIGHTS ── */}
         {tab === 'analytics' && (
-          <div className="bg-white p-6 sm:p-8 border border-line rounded-2xl shadow-soft space-y-6 animate-fade-in max-w-3xl">
-            <h2 className="font-display text-xl sm:text-2xl font-bold tracking-tight text-ink">System Analytics & Turnout</h2>
+          <div className="bg-white p-6 border border-border rounded-lg shadow-card space-y-5 max-w-2xl">
+            <h2 className="text-base font-semibold text-ink">System Participation Overview</h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="bg-[#fcfdfa] border border-line p-5 rounded-xl">
-                <h4 className="font-mono text-xs uppercase font-bold text-muted mb-4">Event Categories Breakdown</h4>
-                <div className="space-y-2.5">
+              <div className="border border-border p-4 rounded-lg bg-gray-50/50">
+                <h4 className="text-xs font-mono uppercase text-muted mb-3 font-semibold">Events by Category</h4>
+                <div className="space-y-2 text-xs">
                   {Object.entries(stats.categories || {}).map(([cat, cnt]) => (
-                    <div key={cat} className="flex items-center justify-between text-xs">
-                      <span className="font-bold text-ink">{icons[cat] || '✦'} {cat}</span>
-                      <span className="font-mono bg-[#f0f3eb] px-2.5 py-1 rounded-full font-bold text-forest">{cnt} events</span>
+                    <div key={cat} className="flex items-center justify-between">
+                      <span className="font-medium text-ink">{cat}</span>
+                      <span className="font-mono text-muted">{cnt} events</span>
                     </div>
                   ))}
                 </div>
               </div>
 
-              <div className="bg-[#fcfdfa] border border-line p-5 rounded-xl">
-                <h4 className="font-mono text-xs uppercase font-bold text-muted mb-4">Attendance Verification</h4>
-                <div className="space-y-3 text-xs">
+              <div className="border border-border p-4 rounded-lg bg-gray-50/50">
+                <h4 className="text-xs font-mono uppercase text-muted mb-3 font-semibold">Attendance Summary</h4>
+                <div className="space-y-2 text-xs">
                   <div className="flex justify-between">
                     <span className="text-muted">Total Registrations</span>
                     <strong className="text-ink">{stats.registrations || 0}</strong>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted">Verified Attended</span>
-                    <strong className="text-emerald-700 font-bold">{stats.attended || 0}</strong>
+                    <strong className="text-emerald-700">{stats.attended || 0}</strong>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted">Overall Turnout Rate</span>
-                    <strong className="text-forest font-mono text-sm font-bold">
+                    <span className="text-muted">Attendance Rate</span>
+                    <strong className="text-college font-mono">
                       {stats.registrations ? Math.round(((stats.attended || 0) / stats.registrations) * 100) : 0}%
                     </strong>
                   </div>
@@ -2069,7 +1925,7 @@ function Admin({ refresh, events, openAttendees, deleteEvent, editEvent, notify 
   );
 }
 
-// ── Auth Component (Login / Register) ───────────────────────────────────────
+// ── Auth Component (Sign In / Register) ─────────────────────────────────────
 function Auth({ onDone, close }) {
   const [newUser, setNewUser] = useState(false);
   const [d, setD] = useState({});
@@ -2094,90 +1950,92 @@ function Auth({ onDone, close }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-[#0c1813]/70 backdrop-blur-md z-50 grid place-items-center p-4 animate-fade-in">
+    <div className="fixed inset-0 bg-black/40 backdrop-blur-xs z-50 grid place-items-center p-4">
       <form
         onSubmit={go}
-        className="bg-white w-full max-w-[430px] p-6 sm:p-9 relative shadow-elevated border border-line rounded-2xl max-h-[92vh] overflow-y-auto animate-scale-in"
+        className="bg-white w-full max-w-[400px] p-6 sm:p-8 relative shadow-modal border border-border rounded-xl max-h-[92vh] overflow-y-auto"
       >
         <button
           type="button"
-          className="absolute right-4 top-4 w-8 h-8 rounded-full bg-black/5 hover:bg-black/10 text-muted hover:text-ink text-xl font-bold grid place-items-center cursor-pointer transition-colors"
+          className="absolute right-4 top-4 text-muted hover:text-ink text-xl font-bold cursor-pointer"
           onClick={close}
         >
           ×
         </button>
 
-        <div className="flex items-center gap-2 mb-4">
-          <i className="font-serif text-[22px] not-italic bg-forest text-lime inline-grid place-items-center w-8 h-8 rounded-full font-bold shadow-sm">c</i>
-          <span className="font-display font-extrabold text-lg tracking-tight text-ink">campus<span className="text-muted font-normal">circle</span></span>
+        <div className="flex items-center gap-2.5 mb-3">
+          <div className="w-7 h-7 rounded bg-college text-white text-xs font-bold grid place-items-center">
+            PMC
+          </div>
+          <span className="font-semibold text-sm text-ink">Campus Circle</span>
         </div>
 
-        <h1 className="font-display text-2xl sm:text-3xl font-extrabold tracking-tight text-ink mb-1">
-          {newUser ? 'Join Campus Circle' : 'Welcome Back'}
+        <h1 className="text-xl font-semibold text-ink mb-1">
+          {newUser ? 'Create Student Account' : 'Student & Staff Sign In'}
         </h1>
-        <p className="text-muted text-xs sm:text-sm mb-6 leading-relaxed">
-          {newUser ? 'Register with your college details to join events & receive certificates.' : 'Sign in to access your registered events and certificates.'}
+        <p className="text-muted text-xs mb-5">
+          {newUser ? 'Register with your college details to enroll in sessions.' : 'Sign in with your registered college email.'}
         </p>
 
-        <div className="space-y-3.5">
+        <div className="space-y-3">
           {newUser && (
             <>
-              <label className="block text-xs font-bold text-muted">
+              <label className="block text-xs font-medium text-subtle">
                 Full Name
                 <input
                   required
                   value={d.name || ''}
                   onChange={(e) => setD({ ...d, name: e.target.value })}
                   placeholder="e.g. Abhilash R"
-                  className="w-full border border-line p-3 mt-1.5 bg-white rounded-xl text-sm font-medium focus:ring-2 focus:ring-forest focus:outline-none"
+                  className="w-full border border-border p-2 mt-1 bg-white rounded-md text-sm focus:ring-1 focus:ring-college focus:outline-none"
                 />
               </label>
-              <label className="block text-xs font-bold text-muted">
+              <label className="block text-xs font-medium text-subtle">
                 Registration Number
                 <input
                   required
                   placeholder="610825BIT001"
                   value={d.reg_no || ''}
                   onChange={(e) => setD({ ...d, reg_no: e.target.value })}
-                  className="w-full border border-line p-3 mt-1.5 bg-white rounded-xl text-sm font-mono focus:ring-2 focus:ring-forest focus:outline-none"
+                  className="w-full border border-border p-2 mt-1 bg-white rounded-md text-sm font-mono focus:ring-1 focus:ring-college focus:outline-none"
                 />
               </label>
-              <div className="grid grid-cols-2 gap-3">
-                <label className="block text-xs font-bold text-muted">
+              <div className="grid grid-cols-2 gap-2.5">
+                <label className="block text-xs font-medium text-subtle">
                   Department
                   <input
                     required
                     placeholder="IT"
                     value={d.department || ''}
                     onChange={(e) => setD({ ...d, department: e.target.value })}
-                    className="w-full border border-line p-3 mt-1.5 bg-white rounded-xl text-sm font-medium focus:ring-2 focus:ring-forest focus:outline-none"
+                    className="w-full border border-border p-2 mt-1 bg-white rounded-md text-sm focus:ring-1 focus:ring-college focus:outline-none"
                   />
                 </label>
-                <label className="block text-xs font-bold text-muted">
+                <label className="block text-xs font-medium text-subtle">
                   Class / Year
                   <input
                     required
                     placeholder="IV IT A"
                     value={d.class || ''}
                     onChange={(e) => setD({ ...d, class: e.target.value })}
-                    className="w-full border border-line p-3 mt-1.5 bg-white rounded-xl text-sm font-medium focus:ring-2 focus:ring-forest focus:outline-none"
+                    className="w-full border border-border p-2 mt-1 bg-white rounded-md text-sm focus:ring-1 focus:ring-college focus:outline-none"
                   />
                 </label>
               </div>
-              <label className="block text-xs font-bold text-muted">
+              <label className="block text-xs font-medium text-subtle">
                 Phone Number (Optional)
                 <input
                   type="tel"
                   placeholder="+91 9876543210"
                   value={d.phone || ''}
                   onChange={(e) => setD({ ...d, phone: e.target.value })}
-                  className="w-full border border-line p-3 mt-1.5 bg-white rounded-xl text-sm font-mono focus:ring-2 focus:ring-forest focus:outline-none"
+                  className="w-full border border-border p-2 mt-1 bg-white rounded-md text-sm font-mono focus:ring-1 focus:ring-college focus:outline-none"
                 />
               </label>
             </>
           )}
 
-          <label className="block text-xs font-bold text-muted">
+          <label className="block text-xs font-medium text-subtle">
             Email Address
             <input
               required
@@ -2185,10 +2043,10 @@ function Auth({ onDone, close }) {
               value={d.email || ''}
               onChange={(e) => setD({ ...d, email: e.target.value })}
               placeholder="student@campus.edu"
-              className="w-full border border-line p-3 mt-1.5 bg-white rounded-xl text-sm font-medium focus:ring-2 focus:ring-forest focus:outline-none"
+              className="w-full border border-border p-2 mt-1 bg-white rounded-md text-sm focus:ring-1 focus:ring-college focus:outline-none"
             />
           </label>
-          <label className="block text-xs font-bold text-muted">
+          <label className="block text-xs font-medium text-subtle">
             Password
             <input
               required
@@ -2196,30 +2054,30 @@ function Auth({ onDone, close }) {
               minLength={newUser ? 6 : undefined}
               value={d.password || ''}
               onChange={(e) => setD({ ...d, password: e.target.value })}
-              className="w-full border border-line p-3 mt-1.5 bg-white rounded-xl text-sm font-medium focus:ring-2 focus:ring-forest focus:outline-none"
+              className="w-full border border-border p-2 mt-1 bg-white rounded-md text-sm focus:ring-1 focus:ring-college focus:outline-none"
             />
           </label>
         </div>
 
-        {err && <p className="text-rose-600 text-xs font-bold mt-3 bg-rose-50 p-2.5 rounded-lg border border-rose-200">{err}</p>}
+        {err && <p className="text-red-600 text-xs font-medium mt-3 bg-red-50 p-2 rounded border border-red-200">{err}</p>}
 
         <button
           disabled={loading}
-          className="bg-forest hover:bg-[#163a2b] text-white w-full py-3.5 rounded-xl text-sm font-bold mt-5 transition-all shadow-md disabled:opacity-50 cursor-pointer hover:scale-[1.02] active:scale-98"
+          className="bg-college hover:bg-college-light text-white w-full py-2.5 rounded-md text-xs font-medium mt-4 transition-colors disabled:opacity-50 cursor-pointer shadow-xs"
         >
-          {loading ? 'Please wait…' : newUser ? 'Create Account →' : 'Sign In →'}
+          {loading ? 'Please wait…' : newUser ? 'Create Account' : 'Sign In'}
         </button>
 
         <button
           type="button"
-          className="w-full text-center text-forest hover:underline text-xs mt-3.5 block font-bold cursor-pointer"
+          className="w-full text-center text-college hover:underline text-xs mt-3 block font-medium cursor-pointer"
           onClick={() => { setNewUser(!newUser); setErr(''); }}
         >
-          {newUser ? 'Already registered? Sign in instead' : 'New here? Create student account'}
+          {newUser ? 'Already registered? Sign in' : 'New student? Register here'}
         </button>
 
-        <div className="mt-4 pt-3 border-t border-line text-center text-[11px] font-mono text-muted bg-[#f7f9f5] p-2 rounded-lg">
-          Admin: <strong>admin@campus.edu</strong> / <strong>admin123</strong>
+        <div className="mt-4 pt-3 border-t border-border text-center text-[11px] font-mono text-muted bg-gray-50 p-2 rounded">
+          Admin account: <strong>admin@campus.edu</strong> / <strong>admin123</strong>
         </div>
       </form>
     </div>
@@ -2256,14 +2114,14 @@ function App() {
     setUser(u);
     localStorage.setItem('campus-user', JSON.stringify(u));
     setModal(false);
-    notify(`Welcome back, ${u.name}!`, 'success');
+    notify(`Signed in as ${u.name}.`, 'success');
   };
 
   const deleteEvent = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this event?')) return;
+    if (!window.confirm('Delete this event listing and associated registrations?')) return;
     try {
       await api(`/events/${id}`, { method: 'DELETE' });
-      notify('Event deleted successfully.', 'success');
+      notify('Event removed.', 'success');
       refresh();
     } catch (e) {
       notify(e.message, 'error');
@@ -2277,7 +2135,7 @@ function App() {
         method: 'POST',
         body: JSON.stringify({ user_id: user.id }),
       });
-      notify("You're registered — confirmation email sent!", 'success');
+      notify("Seat confirmed. Confirmation email dispatched.", 'success');
       refresh();
       if (detailEvent?.id === id) {
         setDetailEvent((prev) => ({ ...prev, is_registered: true, registered: (prev.registered || 0) + 1 }));
@@ -2304,10 +2162,10 @@ function App() {
   const navigate = (v) => { setView(v); setMenuOpen(false); };
 
   const navItems = [
-    { key: 'discover', label: 'Discover', icon: '✦', always: true },
-    { key: 'my-events', label: 'My Events', icon: '🎟️', auth: true },
-    { key: 'profile', label: 'Profile', icon: '👤', auth: true },
-    { key: 'admin', label: 'Admin', icon: '🛡️', adminOnly: true },
+    { key: 'discover', label: 'Discover', always: true },
+    { key: 'my-events', label: 'My Schedule', auth: true },
+    { key: 'profile', label: 'Profile', auth: true },
+    { key: 'admin', label: 'Admin Portal', adminOnly: true },
   ].filter((n) => {
     if (n.adminOnly) return user?.role === 'admin';
     if (n.auth) return !!user;
@@ -2318,103 +2176,108 @@ function App() {
     <>
       <Toast toast={toast} onClose={() => setToast(null)} />
 
-      {/* ── Glassmorphism Header ── */}
-      <header className="glass-nav h-[70px] px-4 md:px-[6.5vw] flex items-center justify-between border-b border-line sticky top-0 z-40 transition-all">
-        <a
-          className="font-display font-extrabold text-xl tracking-tight cursor-pointer flex items-center select-none group"
-          onClick={() => navigate('discover')}
-        >
-          <i className="font-serif text-[24px] not-italic bg-forest text-lime inline-grid place-items-center w-8 h-8 rounded-full mr-2.5 shadow-md group-hover:scale-110 transition-transform">c</i>
-          <span className="text-ink">campus<span className="text-muted font-normal">circle</span></span>
-          <span className="ml-2.5 hidden lg:inline-block text-[10px] font-mono uppercase bg-[#e9eee5] text-forest px-2.5 py-0.5 rounded-full font-bold border border-line">
-            PMC
-          </span>
-        </a>
-
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-1.5 bg-[#f0f3eb]/70 p-1 rounded-full border border-line/80">
-          {navItems.map((n) => {
-            const active = view === n.key;
-            return (
-              <button
-                key={n.key}
-                className={`text-xs px-4 py-2 rounded-full font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-                  active
-                    ? 'bg-forest text-white shadow-sm'
-                    : 'text-muted hover:text-ink hover:bg-black/5'
-                }`}
-                onClick={() => navigate(n.key)}
-              >
-                <span>{n.icon}</span>
-                <span>{n.label}</span>
-              </button>
-            );
-          })}
-        </nav>
-
-        {/* Right User Bar */}
-        <div className="flex items-center gap-2.5 text-sm">
-          {user ? (
-            <div className="flex items-center gap-2">
-              <button
-                className="flex items-center gap-2 bg-white hover:bg-[#f2f5ee] border border-line py-1.5 px-3 rounded-full shadow-xs transition-all cursor-pointer hover:scale-105"
-                onClick={() => navigate('profile')}
-                title="View student profile"
-              >
-                <span className="w-6 h-6 rounded-full bg-forest text-lime text-xs font-bold grid place-items-center">
-                  {user.name[0]}
-                </span>
-                <span className="text-xs font-bold text-ink max-w-[100px] truncate">{user.name.split(' ')[0]}</span>
-                <span className="text-[10px] font-mono text-muted uppercase bg-cream px-1.5 py-0.5 rounded font-bold">
-                  {user.role}
-                </span>
-              </button>
-              <button
-                className="hidden sm:inline-block text-xs px-3 py-1.5 text-muted hover:text-ink hover:bg-black/5 rounded-lg font-semibold transition-colors cursor-pointer"
-                onClick={() => { localStorage.removeItem('campus-user'); setUser(null); navigate('discover'); notify('Signed out.', 'info'); }}
-              >
-                Sign out
-              </button>
-            </div>
-          ) : (
-            <button
-              className="bg-forest hover:bg-[#163a2b] text-white text-xs font-bold px-4 py-2 rounded-full transition-all shadow-xs cursor-pointer hover:scale-105 active:scale-95 flex items-center gap-1.5"
-              onClick={() => setModal(true)}
-            >
-              <span>Sign in</span>
-              <span>→</span>
-            </button>
-          )}
-
-          {/* Mobile hamburger */}
-          <button
-            className="md:hidden w-9 h-9 rounded-lg bg-black/5 hover:bg-black/10 text-ink grid place-items-center text-lg cursor-pointer transition-colors"
-            onClick={() => setMenuOpen(!menuOpen)}
-            aria-label="Toggle menu"
+      {/* ── College Header Bar ── */}
+      <header className="bg-white border-b border-border sticky top-0 z-40">
+        <div className="max-w-[1140px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+          <a
+            className="flex items-center gap-2.5 cursor-pointer select-none"
+            onClick={() => navigate('discover')}
           >
-            {menuOpen ? '✕' : '☰'}
-          </button>
+            <div className="w-8 h-8 rounded bg-college text-white text-xs font-bold grid place-items-center tracking-wider">
+              PMC
+            </div>
+            <div className="flex flex-col">
+              <span className="font-semibold text-sm text-ink leading-tight">Campus Circle</span>
+              <span className="text-[10px] text-muted hidden sm:inline">Er. Perumal Manimekalai College of Engineering</span>
+            </div>
+          </a>
+
+          {/* Desktop Nav Items */}
+          <nav className="hidden md:flex items-center gap-1">
+            {navItems.map((n) => {
+              const active = view === n.key;
+              return (
+                <button
+                  key={n.key}
+                  className={`text-xs px-3.5 py-1.5 rounded-md font-medium transition-colors cursor-pointer ${
+                    active
+                      ? 'bg-college text-white shadow-xs'
+                      : 'text-subtle hover:text-ink hover:bg-gray-100'
+                  }`}
+                  onClick={() => navigate(n.key)}
+                >
+                  {n.label}
+                </button>
+              );
+            })}
+          </nav>
+
+          {/* Right User Bar */}
+          <div className="flex items-center gap-2 text-xs">
+            {user ? (
+              <div className="flex items-center gap-2">
+                <button
+                  className="flex items-center gap-1.5 border border-border py-1 px-2.5 rounded-md bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer"
+                  onClick={() => navigate('profile')}
+                >
+                  <span className="w-5 h-5 rounded-full bg-college text-white font-semibold text-[10px] grid place-items-center">
+                    {user.name[0]}
+                  </span>
+                  <span className="font-medium text-ink max-w-[100px] truncate">{user.name.split(' ')[0]}</span>
+                </button>
+                <button
+                  className="hidden sm:inline-block text-muted hover:text-ink px-2 py-1 transition-colors cursor-pointer"
+                  onClick={() => { localStorage.removeItem('campus-user'); setUser(null); navigate('discover'); notify('Signed out.', 'info'); }}
+                >
+                  Sign out
+                </button>
+              </div>
+            ) : (
+              <button
+                className="bg-college hover:bg-college-light text-white text-xs font-medium px-3.5 py-1.5 rounded-md transition-colors shadow-xs cursor-pointer"
+                onClick={() => setModal(true)}
+              >
+                Sign in
+              </button>
+            )}
+
+            {/* Mobile Hamburger */}
+            <button
+              className="md:hidden p-1.5 text-muted hover:text-ink cursor-pointer flex items-center justify-center rounded border border-border"
+              onClick={() => setMenuOpen(!menuOpen)}
+              aria-label="Toggle navigation"
+            >
+              {menuOpen ? (
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              )}
+            </button>
+          </div>
         </div>
       </header>
 
       {/* Mobile Drawer */}
       {menuOpen && (
-        <div className="md:hidden glass-nav border-b border-line px-4 py-3 flex flex-col gap-2 z-40 shadow-md animate-fade-in">
+        <div className="md:hidden bg-white border-b border-border px-4 py-3 flex flex-col gap-1 z-40 shadow-card">
           {navItems.map((n) => (
             <button
               key={n.key}
-              className={`text-left py-2.5 px-3 text-xs rounded-xl font-bold transition-all cursor-pointer flex items-center gap-2 ${
-                view === n.key ? 'bg-forest text-white' : 'text-muted hover:bg-black/5'
+              className={`text-left py-2 px-2.5 text-xs rounded font-medium transition-colors cursor-pointer ${
+                view === n.key ? 'bg-college text-white' : 'text-subtle hover:bg-gray-100'
               }`}
               onClick={() => navigate(n.key)}
             >
-              <span>{n.icon}</span>
-              <span>{n.label}</span>
+              {n.label}
             </button>
           ))}
           {user && (
             <button
-              className="text-left py-2 px-3 text-xs text-rose-600 border-t border-line mt-1 cursor-pointer font-bold"
+              className="text-left py-2 px-2.5 text-xs text-red-600 border-t border-border mt-1 font-medium cursor-pointer"
               onClick={() => { localStorage.removeItem('campus-user'); setUser(null); navigate('discover'); setMenuOpen(false); notify('Signed out.', 'info'); }}
             >
               Sign out
@@ -2424,7 +2287,7 @@ function App() {
       )}
 
       {/* Main Views */}
-      <main>
+      <main className="flex-1 flex flex-col">
         {view === 'discover' && (
           <Discover
             events={events}
@@ -2488,7 +2351,7 @@ function App() {
         <EditEventModal
           event={editingEvent}
           onClose={() => setEditingEvent(null)}
-          onSaved={() => { setEditingEvent(null); refresh(); notify('Event updated successfully.', 'success'); }}
+          onSaved={() => { setEditingEvent(null); refresh(); notify('Event updated.', 'success'); }}
         />
       )}
 
@@ -2496,19 +2359,18 @@ function App() {
         <CertificateModal cert={certModal} user={user} onClose={() => setCertModal(null)} />
       )}
 
-      {/* ── Footer ── */}
-      <footer className="border-t border-line mt-24 py-12 px-4 md:px-[6.5vw] bg-white text-xs text-muted">
-        <div className="max-w-[1180px] mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2.5">
-            <i className="font-serif text-[18px] not-italic bg-forest text-lime inline-grid place-items-center w-6 h-6 rounded-full font-bold">c</i>
-            <span className="font-display font-bold text-ink">Campus Circle</span>
+      {/* Footer */}
+      <footer className="border-t border-border mt-auto py-8 px-4 sm:px-6 bg-white text-xs text-muted">
+        <div className="max-w-[1140px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <span className="font-semibold text-ink">Campus Circle</span>
             <span>·</span>
             <span>Er. Perumal Manimekalai College of Engineering</span>
           </div>
-          <div className="flex items-center gap-4 font-mono text-[11px]">
-            <span>Dept of Information Technology</span>
+          <div className="flex items-center gap-3 font-mono text-[11px]">
+            <span>Department of Information Technology</span>
             <span>·</span>
-            <span className="text-forest font-bold">Verified Event Registry</span>
+            <span>Official Event Registry</span>
           </div>
         </div>
       </footer>

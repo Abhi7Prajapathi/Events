@@ -3,86 +3,67 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Campus Circle · Official College Event Platform</title>
-    <meta name="description" content="Official event discovery, registration, and certified credential platform for Er. Perumal Manimekalai College of Engineering." />
+    <title>Campus Circle · Er. Perumal Manimekalai College of Engineering</title>
+    <meta name="description" content="Official event management, participation registry, and credential platform for Er. Perumal Manimekalai College of Engineering." />
     
-    <!-- Modern Google Fonts: Plus Jakarta Sans & Outfit for modern UI + Playfair for editorial prestige + DM Mono for credentials -->
+    <!-- Modern Clean Typography: Inter for UI & Newsreader for collegiate prestige -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Outfit:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,600;1,6..72,400&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap"
       rel="stylesheet"
     />
     
-    <!-- Tailwind CSS CDN with Custom Extended Design System -->
+    <!-- Tailwind CSS CDN with Human-Crafted Collegiate System -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
         theme: {
           extend: {
             colors: {
-              ink: '#101815',
-              'ink-light': '#21302a',
-              forest: '#0f291e',
+              college: '#143825',
+              'college-dark': '#0c2317',
+              'college-light': '#1e5236',
+              'college-surface': '#f2f6f3',
+              ink: '#111827',
+              subtle: '#374151',
+              muted: '#6b7280',
+              canvas: '#f8f9fa',
+              surface: '#ffffff',
+              border: '#e5e7eb',
+              'border-strong': '#d1d5db',
               emerald: {
-                DEFAULT: '#10b981',
-                dark: '#064e3b',
-                light: '#a7f3d0',
+                DEFAULT: '#15803d',
+                50: '#f0fdf4',
+                100: '#dcfce7',
+                700: '#15803d',
               },
-              cream: '#f9f9f6',
-              paper: '#ffffff',
-              line: '#e6e9e4',
-              'line-strong': '#d0d5cd',
-              lime: '#cfe870',
-              'lime-hover': '#dcf27d',
-              'lime-glow': '#eefaa8',
-              muted: '#627269',
-              'muted-light': '#94a39b',
             },
             fontFamily: {
-              sans: ['"Plus Jakarta Sans"', '"Outfit"', 'sans-serif'],
-              display: ['"Outfit"', 'sans-serif'],
-              serif: ['"Playfair Display"', 'serif'],
+              sans: ['"Inter"', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
+              serif: ['"Newsreader"', '"Playfair Display"', 'Georgia', 'serif'],
               mono: ['"DM Mono"', 'monospace'],
             },
             boxShadow: {
-              'xs': '0 1px 2px rgba(16, 24, 21, 0.05)',
-              'soft': '0 4px 20px -2px rgba(16, 24, 21, 0.06), 0 2px 6px -1px rgba(16, 24, 21, 0.03)',
-              'elevated': '0 20px 35px -10px rgba(15, 41, 30, 0.12), 0 1px 3px rgba(16, 24, 21, 0.05)',
-              'glow-lime': '0 0 25px -4px rgba(207, 232, 112, 0.45)',
-              'glow-emerald': '0 0 30px -5px rgba(16, 185, 129, 0.35)',
+              'card': '0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.03)',
+              'card-hover': '0 6px 12px -2px rgba(0, 0, 0, 0.06), 0 3px 6px -2px rgba(0, 0, 0, 0.04)',
+              'modal': '0 20px 25px -5px rgba(0, 0, 0, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.06)',
             },
             borderRadius: {
               'xs': '4px',
-              'sm': '8px',
-              'DEFAULT': '12px',
-              'md': '14px',
-              'lg': '18px',
-              'xl': '24px',
-              '2xl': '32px',
-            },
-            animation: {
-              'fade-in': 'fadeIn 0.25s ease-out forwards',
-              'scale-in': 'scaleIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-              'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-            },
-            keyframes: {
-              fadeIn: {
-                '0%': { opacity: '0', transform: 'translateY(6px)' },
-                '100%': { opacity: '1', transform: 'translateY(0)' },
-              },
-              scaleIn: {
-                '0%': { opacity: '0', transform: 'scale(0.96) translateY(8px)' },
-                '100%': { opacity: '1', transform: 'scale(1) translateY(0)' },
-              },
+              'sm': '6px',
+              'DEFAULT': '8px',
+              'md': '10px',
+              'lg': '12px',
+              'xl': '16px',
             },
           },
         },
       };
     </script>
   </head>
-  <body class="bg-cream text-ink font-sans antialiased selection:bg-lime selection:text-forest min-h-screen">
-    <div id="root"></div>
+  <body class="bg-canvas text-ink font-sans antialiased min-h-screen flex flex-col selection:bg-college selection:text-white">
+    <div id="root" class="flex-1 flex flex-col"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

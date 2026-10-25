@@ -1,70 +1,37 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Outfit:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,600;1,6..72,400&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap');
 
-/* Smooth Scrolling & Custom Scrollbar */
+/* Base Styles */
 html {
   scroll-behavior: smooth;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
 }
 
+/* Custom Clean Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f4f6f2;
+  background: #f1f3f5;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #cdd4c8;
-  border-radius: 4px;
+  background: #cbd5e1;
+  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #9fb097;
+  background: #94a3b8;
 }
 
-/* Glassmorphism Navigation */
-.glass-nav {
-  background: rgba(251, 250, 246, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-
-/* Glass Card */
-.glass-card {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(222, 227, 219, 0.8);
-}
-
-/* Premium Gradient Borders */
-.gradient-border-emerald {
-  border: 1px solid transparent;
-  background-origin: border-box;
-  background-clip: padding-box, border-box;
-  background-image: linear-gradient(to right, #0f291e, #1a3c2d), linear-gradient(to right, #cfe870, #10b981);
-}
-
-/* Subtle Shimmer for High-Priority Elements */
-@keyframes subtle-shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-
-.shimmer-badge {
-  background: linear-gradient(90deg, rgba(207,232,112,0.15) 0%, rgba(207,232,112,0.45) 50%, rgba(207,232,112,0.15) 100%);
-  background-size: 200% 100%;
-  animation: subtle-shimmer 3s infinite linear;
-}
-
-/* Additional print stylesheet rules for Certificates */
+/* Certificate Print Stylesheet */
 @media print {
   @page {
     size: landscape;
     margin: 8mm;
   }
-  header, nav, button:not(.print-keep), .toast, section:not(.plain) {
+  header, nav, button:not(.print-keep), .toast, footer, section:not(.plain) {
     display: none !important;
   }
   body {
