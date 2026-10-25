@@ -1963,12 +1963,13 @@ function Auth({ onDone, close }) {
           ×
         </button>
 
-        <div className="flex items-center gap-2.5 mb-3">
-          <div className="w-7 h-7 rounded bg-college text-white text-xs font-bold grid place-items-center">
-            PMC
-          </div>
-          <span className="font-semibold text-sm text-ink">Campus Circle</span>
-        </div>
+        <a
+          className="font-bold text-xl tracking-tighter cursor-pointer flex items-center select-none mb-4 group"
+          onClick={close}
+        >
+          <i className="font-serif text-[26px] not-italic bg-ink text-lime inline-grid place-items-center w-[28px] h-[28px] rounded-full mr-2 shadow group-hover:scale-105 transition-transform">c</i>
+          <span className="text-ink">campus<span className="text-[#7b827e] font-normal">circle</span></span>
+        </a>
 
         <h1 className="text-xl font-semibold text-ink mb-1">
           {newUser ? 'Create Student Account' : 'Student & Staff Sign In'}
@@ -2180,16 +2181,14 @@ function App() {
       <header className="bg-white border-b border-border sticky top-0 z-40">
         <div className="max-w-[1140px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <a
-            className="flex items-center gap-2.5 cursor-pointer select-none"
+            className="font-bold text-xl tracking-tighter cursor-pointer flex items-center select-none group"
             onClick={() => navigate('discover')}
           >
-            <div className="w-8 h-8 rounded bg-college text-white text-xs font-bold grid place-items-center tracking-wider">
+            <i className="font-serif text-[26px] not-italic bg-ink text-lime inline-grid place-items-center w-[28px] h-[28px] rounded-full mr-2 shadow group-hover:scale-105 transition-transform">c</i>
+            <span className="text-ink">campus<span className="text-[#7b827e] font-normal">circle</span></span>
+            <span className="ml-2 hidden sm:inline-block text-[10px] font-mono uppercase bg-college-surface text-college px-2 py-0.5 rounded font-semibold border border-college/20">
               PMC
-            </div>
-            <div className="flex flex-col">
-              <span className="font-semibold text-sm text-ink leading-tight">Campus Circle</span>
-              <span className="text-[10px] text-muted hidden sm:inline">Er. Perumal Manimekalai College of Engineering</span>
-            </div>
+            </span>
           </a>
 
           {/* Desktop Nav Items */}
@@ -2363,9 +2362,10 @@ function App() {
       <footer className="border-t border-border mt-auto py-8 px-4 sm:px-6 bg-white text-xs text-muted">
         <div className="max-w-[1140px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <span className="font-semibold text-ink">Campus Circle</span>
-            <span>·</span>
-            <span>Er. Perumal Manimekalai College of Engineering</span>
+            <i className="font-serif text-[18px] not-italic bg-ink text-lime inline-grid place-items-center w-[20px] h-[20px] rounded-full">c</i>
+            <span className="font-bold text-sm tracking-tighter text-ink">campus<span className="text-[#7b827e] font-normal">circle</span></span>
+            <span className="text-muted">·</span>
+            <span className="text-muted">Er. Perumal Manimekalai College of Engineering</span>
           </div>
           <div className="flex items-center gap-3 font-mono text-[11px]">
             <span>Department of Information Technology</span>
