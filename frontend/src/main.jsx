@@ -2077,9 +2077,7 @@ function Auth({ onDone, close }) {
           {newUser ? 'Already registered? Sign in' : 'New student? Register here'}
         </button>
 
-        <div className="mt-4 pt-3 border-t border-border text-center text-[11px] font-mono text-muted bg-gray-50 p-2 rounded">
-          Admin account: <strong>admin@campus.edu</strong> / <strong>admin123</strong>
-        </div>
+        
       </form>
     </div>
   );
